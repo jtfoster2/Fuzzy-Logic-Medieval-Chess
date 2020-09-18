@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
 """
 This is the driver file. Responsible for handling user input and displaying current GameState
 """
 
+#imports
 import pygame as p
-from Chess import ChessEngine
+from Backend import ChessEngine
 
 WIDTH = HEIGHT = 400
 DIMENSION = 8
@@ -14,7 +16,6 @@ IMAGES = {}
 """
 Initialize a global dictionary of images. This will be called exactly once in the main
 """
-
 
 def loadImages():
     pieces = ['wP', 'wR', 'wN', 'wB', 'wQ', 'wK', 'bP', 'bR', 'bN', 'bB', 'bQ', 'bK']
