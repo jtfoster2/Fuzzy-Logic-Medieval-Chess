@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 This class is responsible for storing all the information about current state of chess game.
 It will also be responsible for valid moves at the current state.
@@ -27,6 +28,26 @@ class GameState():
         self.board[move.endRow][move.endCol] = move.pieceMoved
         self.moveLog.append(move)  # log the move to potentially display it later
         self.whiteToMove = not self.whiteToMove  # swap players
+    
+    #returns an integer representing the piece in a given space
+    def getPiece(self, row, col):
+        piece = self.board[row][col]
+        kind = -1 #0:empty, 1:pawn, 2:rook, 3:knight, 4:bishop, 5:queen, 6:king
+        if piece[1] == "-":
+            kind = 0
+        elif piece[1]=="P":
+            kind = 1
+        elif piece[1]=="R":
+            kind = 2
+        elif piece[1]=="N":
+            kind = 3
+        elif piece[1]=="B":
+            kind = 4
+        elif piece[1]=="Q":
+            kind = 5
+        else:
+            kind = 6
+        return kind
 
 
 class Move():
