@@ -4,6 +4,7 @@ This class is responsible for storing all the information about current state of
 It will also be responsible for valid moves at the current state.
 Also keep move log.
 """
+from Backend import LegalMoveGen
 
 class GameState():
     def __init__(self):
@@ -22,7 +23,8 @@ class GameState():
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
         self.whiteToMove = True
         self.moveLog = []
-
+        self.MoveGen = LegalMoveGen.MoveGen(self)
+        
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
         self.board[move.endRow][move.endCol] = move.pieceMoved
