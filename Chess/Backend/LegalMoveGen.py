@@ -102,6 +102,52 @@ class LegalMoveGen():
                         break
                     else:
                         break
+        #knight move handling
+
+        #bishop move handling
+        if self.piece_type == 4:
+
+            #upward right movement
+            for i in range(1,8):
+                if self.parent.getPiece(row+i,col+i) == 0:
+                    self.legal_moves.append((row+i,col+i))
+                elif self.parent.getPiece(row+i,col+i) != -1:
+                    if self.parent.getColor(row+i,col+i)!=self.piece_color:
+                        self.legal_moves.append((row+i,col+i))
+                        break
+                    else:
+                        break
+            #upward left movement
+            for i in range(1,8):
+                if self.parent.getPiece(row+i,col-i) == 0:
+                    self.legal_moves.append((row+i,col-i))
+                elif self.parent.getPiece(row+i,col-i) != -1:
+                    if self.parent.getColor(row+i,col-i)!=self.piece_color:
+                        self.legal_moves.append((row+i,col-i))
+                        break
+                    else:
+                        break
+            #downward right movement
+            for i in range(1,8):
+                if self.parent.getPiece(row-i,col+i) == 0:
+                    self.legal_moves.append((row-i,col+i))
+                elif self.parent.getPiece(row-i,col+i) != -1:
+                    if self.parent.getColor(row-i,col+i)!=self.piece_color:
+                        self.legal_moves.append((row-i,col+i))
+                        break
+                    else:
+                        break
+            #downward left movement
+            for i in range(1,8):
+                if self.parent.getPiece(row-i,col-i) == 0:
+                    self.legal_moves.append((row-i,col-i))
+                elif self.parent.getPiece(row-i,col-i) != -1:
+                    if self.parent.getColor(row-i,col-i)!=self.piece_color:
+                        self.legal_moves.append((row-i,col-i))
+                        break
+                    else:
+                        break
+
 
     def isLegal(self,row,col):
         if (row,col) in self.legal_moves:
