@@ -6,7 +6,7 @@ This is the driver file. Responsible for handling user input and displaying curr
 import pygame as p
 from Backend import ChessEngine
 
-WIDTH = HEIGHT = 400
+WIDTH = HEIGHT = 1600
 DIMENSION = 8
 SQ_SIZE = HEIGHT // DIMENSION
 MAX_FPS = 15
