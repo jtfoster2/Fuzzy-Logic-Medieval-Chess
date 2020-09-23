@@ -30,6 +30,7 @@ The main driver for our code. This will handle user input and updating graphics.
 
 def main():
     p.init()
+    p.display.set_caption('Python Chess Game')
     screen = p.display.set_mode((WIDTH, HEIGHT))
     clock = p.time.Clock()
     screen.fill(p.Color("white"))

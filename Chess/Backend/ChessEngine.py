@@ -50,7 +50,18 @@ class GameState():
         else:
             kind = 6
         return kind
-
+    
+    #returns an integer representing the color of a piece
+    def getColor(self, row, col):
+        piece = self.board[row][col]
+        color = -1 #0:white, 1:black
+        if self.getPiece(row,col) == 0:
+            print("Error: Empty Square")
+        elif piece[0] == "w":
+            color = 0
+        else:
+            color = 1
+        return color
 
 class Move():
     # chess rank file notation
