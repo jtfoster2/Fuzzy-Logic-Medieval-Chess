@@ -190,6 +190,89 @@ class LegalMoveGen():
                     else:
                         break
 
+        #queen Move Handling
+        if self.piece_type == 5:
+
+            #upward movement
+            for i in range(1,8):
+                if self.parent.getPiece(row+i,col) == 0:
+                    self.legal_moves.append((row+i,col))
+                elif self.parent.getPiece(row+i,col) != -1:
+                    if self.parent.getColor(row+i,col)!=self.piece_color:
+                        self.legal_moves.append((row+i,col))
+                        break
+                    else:
+                        break
+            #downward movement
+            for i in range(1,8):
+                if self.parent.getPiece(row-i,col) == 0:
+                    self.legal_moves.append((row-i,col))
+                elif self.parent.getPiece(row-i,col) != -1:
+                    if self.parent.getColor(row-i,col)!=self.piece_color:
+                        self.legal_moves.append((row-i,col))
+                        break
+                    else:
+                        break
+            #right movement
+            for i in range(1,8):
+                if self.parent.getPiece(row,col+i) == 0:
+                    self.legal_moves.append((row,col+i))
+                elif self.parent.getPiece(row,col+i) != -1:
+                    if self.parent.getColor(row,col+i)!=self.piece_color:
+                        self.legal_moves.append((row,col+i))
+                        break
+                    else:
+                        break
+            #left movement
+            for i in range(1,8):
+                if self.parent.getPiece(row,col-i) == 0:
+                    self.legal_moves.append((row,col-i))
+                elif self.parent.getPiece(row,col-i) != -1:
+                    if self.parent.getColor(row,col-i)!=self.piece_color:
+                        self.legal_moves.append((row,col-i))
+                        break
+                    else:
+                        break
+             #upward right movement
+            for i in range(1,8):
+                if self.parent.getPiece(row+i,col+i) == 0:
+                    self.legal_moves.append((row+i,col+i))
+                elif self.parent.getPiece(row+i,col+i) != -1:
+                    if self.parent.getColor(row+i,col+i)!=self.piece_color:
+                        self.legal_moves.append((row+i,col+i))
+                        break
+                    else:
+                        break
+            #upward left movement
+            for i in range(1,8):
+                if self.parent.getPiece(row+i,col-i) == 0:
+                    self.legal_moves.append((row+i,col-i))
+                elif self.parent.getPiece(row+i,col-i) != -1:
+                    if self.parent.getColor(row+i,col-i)!=self.piece_color:
+                        self.legal_moves.append((row+i,col-i))
+                        break
+                    else:
+                        break
+            #downward right movement
+            for i in range(1,8):
+                if self.parent.getPiece(row-i,col+i) == 0:
+                    self.legal_moves.append((row-i,col+i))
+                elif self.parent.getPiece(row-i,col+i) != -1:
+                    if self.parent.getColor(row-i,col+i)!=self.piece_color:
+                        self.legal_moves.append((row-i,col+i))
+                        break
+                    else:
+                        break
+            #downward left movement
+            for i in range(1,8):
+                if self.parent.getPiece(row-i,col-i) == 0:
+                    self.legal_moves.append((row-i,col-i))
+                elif self.parent.getPiece(row-i,col-i) != -1:
+                    if self.parent.getColor(row-i,col-i)!=self.piece_color:
+                        self.legal_moves.append((row-i,col-i))
+                        break
+                    else:
+                        break
 
     def isLegal(self,row,col):
         if (row,col) in self.legal_moves:
