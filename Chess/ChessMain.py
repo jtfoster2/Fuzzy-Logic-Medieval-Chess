@@ -46,19 +46,19 @@ def main():
                 location = p.mouse.get_pos()  # (x,y) location of mouse
                 col = location[0]//SQ_SIZE
                 row = location[1]//SQ_SIZE
-                if gs.getPiece(row,col) != 0:
-                    if sqSelected == (row, col):  # the user clicked same square twice
-                        sqSelected = ()  # deselect
-                        playerClicks = []  # clear player clicks
-                    else:
-                        sqSelected = (row, col)
-                        playerClicks.append(sqSelected)  # append for both 1st and 2nd clicks
-                    if len(playerClicks) == 2:  # after second click
-                        move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
+                if sqSelected == (row, col):  # the user clicked same square twice
+                    sqSelected = ()  # deselect
+                    playerClicks = []  # clear player clicks
+                else:
+                    sqSelected = (row, col)
+                    playerClicks.append(sqSelected)  # append for both 1st and 2nd clicks
+                if len(playerClicks) == 2:  # after second click
+                    move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
+                    if gs.getPiece(playerClicks[0][0], playerClicks[0][1])!=0:
                         print(move.getChessNotation())
                         gs.makeMove(move)
-                        sqSelected = ()  # reset user clicks
-                        playerClicks = []
+                    sqSelected = ()  # reset user clicks
+                    playerClicks = []
 
         drawGameState(screen, gs)
         clock.tick(MAX_FPS)
