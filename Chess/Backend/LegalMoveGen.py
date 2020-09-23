@@ -2,41 +2,94 @@
 """
 This is the legal move generator. This generates a list of legal moves for a piece.
 """
-class MoveGen():
-    moves = []
-    legal_moves = []
+class LegalMoveGen():
+    legal_moves = [] #put tuples for legal spaces (row,col) in here
     piece_type = -1 #1:pawn, 2:rook, 3:knight, 4:bishop, 5:queen, 6:king
     piece_color = -1 #0:white, 1:black
+    parent = 0
 
     def __init__(self, parent):
         self.parent = parent
 
     def generate(self, row, col):
-        piece_type = self.parent.getPiece(row,col)
-        
+        #get type and color
+        self.piece_type = self.parent.getPiece(row,col)
+        self.piece_color= self.parent.getColor(row,col)
+
+        #black pawn move handling
+        if self.piece_type == 1 and self.piece_color == 1:
+            #double jump handling
+            if self.pawnDoubleJump(row,col):
+                if self.parent.getPiece(row+2,col)==0:
+                    self.legal_moves.append((row+2,col))
+            #regular move handling
+            if self.parent.getPiece(row+1,col)==0:
+                move = (row+1,col)
+                self.legal_moves.append(move)
+            #capture handling
+            if self.parent.getPiece(row+1,col+1)!=0 and self.parent.getPiece(row+1,col+1)!=-1 and self.parent.getColor(row+1,col+1)!=1:
+                self.legal_moves.append((row+1,col+1))
+            if self.parent.getPiece(row+1,col-1) != 0 and self.parent.getPiece(row+1,col-1)!=-1 and self.parent.getColor(row+1,col-1)!=1:
+                self.legal_moves.append((row+1,col-1))
+            #en passant capture handling
+            if self.enPassantCapture(row,col):
+                if self.parent.getPiece(row+1,col+1)==0:
+                    self.legal_moves.append((row+1,col+1))
+                if self.parent.getPiece(row+1,col-1)==0:
+                    self.legal_moves.append((row+1,col-1))
+
+        #white pawn move handling
+        if self.piece_type == 1 and self.piece_color == 0:
+            #double jump handling
+            if self.pawnDoubleJump(row,col):
+                if self.parent.getPiece(row-2,col)==0:
+                    self.legal_moves.append((row-2,col))
+            #regular move handling
+            if self.parent.getPiece(row-1,col)==0:
+                move = (row-1,col)
+                self.legal_moves.append(move)
+            #capture handling
+            if self.parent.getPiece(row-1,col+1)!=0 and self.parent.getPiece(row-1,col+1)!=-1 and self.parent.getColor(row-1,col+1)!=0:
+                self.legal_moves.append((row-1,col+1))
+            if self.parent.getPiece(row-1,col-1) != 0 and self.parent.getPiece(row-1,col-1)!=-1 and self.parent.getColor(row-1,col-1)!=0:
+                self.legal_moves.append((row-1,col-1))
+            #en passant capture handling
+            if self.enPassantCapture(row,col):
+                if self.parent.getPiece(row-1,col+1)==0:
+                    self.legal_moves.append((row-1,col+1))
+                if self.parent.getPiece(row-1,col-1)==0:
+                    self.legal_moves.append((row-1,col-1))
+
+    
+    def isLegal(self,row,col):
+        if (row,col) in self.legal_moves:
+            return True
+        else:
+            return False
+
+    def clearGenerated(self):
+        self.legal_moves = []
+        self.piece_type = -1
+        self.piece_color = -1
 
     # boolean function, returns true if a double jump is legal for the pawn at the given coordinates
     def pawnDoubleJump(self, row, col):
         legal = False
         if self.parent.getPiece(row, col) == 1:
 
-            if self.hasMoved(row, row) == False:
+            if self.hasMoved(row, col) == False:
 
-                if (self.parent.getPiece((row - 1), col) == 0) and (self.parent.getPiece((row - 2), col) == 0):
+                if self.parent.getPiece(row + 1, col) == 0 and self.parent.getPiece(row + 2, col) == 0 and self.parent.getColor(row,col) == 1:
+                    legal = True
+
+                if self.parent.getPiece(row-1,col)==0 and self.parent.getPiece(row-2,col)==0 and self.parent.getColor(row,col)==0:
                     legal = True
 
         return legal
 
     # boolean function, returns true if an en passe capture is legal for the pawn at the given coordinates
     def enPassantCapture(self, row, col):
-        legal = False
-        lastmove = self.parent.moveLog[-1] #check last move made
-        if (self.parent.getPiece(row, col + 1) == 1) or (self.parent.getPiece(row, col - 1) == 1) :
-            if (lastmove.startRow == (row + 2)) and ((lastmove.startCol == (col + 1)) or (lastmove.startCol == (col - 1))):
-                if (lastmove.endRow == row) and ((lastmove.endCol == (col + 1)) or (lastmove.endCol == (col -1))):
-                    legal = True
-
-        return legal
+        return False #rewrite later to reflect black and white piece differences
 
     # boolean function, returns true when piece that was at the given location at start of game has been moved or captured
 

@@ -5,6 +5,7 @@ This is the driver file. Responsible for handling user input and displaying curr
 
 import pygame as p
 from Backend import ChessEngine
+from Backend import LegalMoveGen
 
 WIDTH = HEIGHT = 1600
 DIMENSION = 8
@@ -35,6 +36,7 @@ def main():
     clock = p.time.Clock()
     screen.fill(p.Color("white"))
     gs = ChessEngine.GameState()
+    mov = LegalMoveGen.LegalMoveGen(gs)
     loadImages()  # only do this once, before while loop
     running = True
     sqSelected = ()  # no square is selected initially, keeps track of last click of user ( tuple:(row, col))
@@ -49,6 +51,7 @@ def main():
                 row = location[1]//SQ_SIZE
                 if sqSelected == (row, col):  # the user clicked same square twice
                     sqSelected = ()  # deselect
+                    mov.clearGenerated()
                     playerClicks = []  # clear player clicks
                 else:
                     sqSelected = (row, col)
@@ -56,8 +59,13 @@ def main():
                 if len(playerClicks) == 2:  # after second click
                     move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
                     if gs.getPiece(playerClicks[0][0], playerClicks[0][1])!=0:
-                        print(move.getChessNotation())
-                        gs.makeMove(move)
+                        mov.generate(playerClicks[0][0], playerClicks[0][1])
+                        if  mov.isLegal(playerClicks[1][0],playerClicks[1][1]) == True:
+                            print(move.getChessNotation())
+                            gs.makeMove(move)
+                        else:
+                            print("ERROR: Move Not Legal")
+                    mov.clearGenerated()
                     sqSelected = ()  # reset user clicks
                     playerClicks = []
 

@@ -23,16 +23,21 @@ class GameState():
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]]
         self.whiteToMove = True
         self.moveLog = []
-        self.MoveGen = LegalMoveGen.MoveGen(self)
+        self.movedPieces=[]
         
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
         self.board[move.endRow][move.endCol] = move.pieceMoved
         self.moveLog.append(move)  # log the move to potentially display it later
+        if move.pieceMoved not in self.movedPieces:
+            self.movedPieces.append(move.pieceMoved)
         self.whiteToMove = not self.whiteToMove  # swap players
-    
+        
     #returns an integer representing the piece in a given space
     def getPiece(self, row, col):
+        if row > 7 or row < 0 or col > 7 or col < 0:
+            print("Error: Nonexistant Space")
+            return -1
         piece = self.board[row][col]
         kind = -1 #0:empty, 1:pawn, 2:rook, 3:knight, 4:bishop, 5:queen, 6:king
         if piece[1] == "-":
@@ -53,6 +58,9 @@ class GameState():
     
     #returns an integer representing the color of a piece
     def getColor(self, row, col):
+        if row > 7 or row < 0 or col > 7 or col < 0:
+            print("Error: Nonexistant Space")
+            return -1
         piece = self.board[row][col]
         color = -1 #0:white, 1:black
         if self.getPiece(row,col) == 0:
