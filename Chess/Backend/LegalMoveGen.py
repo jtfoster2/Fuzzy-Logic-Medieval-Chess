@@ -274,6 +274,51 @@ class LegalMoveGen():
                     else:
                         break
 
+        #king move handling
+        if self.piece_type == 6:
+
+            #down
+            if self.parent.getPiece(row+1,col)!=-1:
+                if self.parent.getPiece(row+1,col)==0 or self.parent.getColor(row+1,col)!=self.piece_color:
+                    self.legal_moves.append((row+1, col))
+            
+            #down right
+            if self.parent.getPiece(row+1,col+1)!=-1:
+                if self.parent.getPiece(row+1,col+1)==0 or self.parent.getColor(row+1,col+1)!=self.piece_color:
+                    self.legal_moves.append((row+1, col+1))
+            #down left
+            if self.parent.getPiece(row+1,col-1)!=-1:
+                if self.parent.getPiece(row+1,col-1)==0 or self.parent.getColor(row+1,col-1)!=self.piece_color:
+                    self.legal_moves.append((row+1, col-1))
+
+            #up
+            if self.parent.getPiece(row-1,col)!=-1:
+                if self.parent.getPiece(row-1,col)==0 or self.parent.getColor(row-1,col)!=self.piece_color:
+                    self.legal_moves.append((row-1, col))
+
+            #up right
+            if self.parent.getPiece(row-1,col+1)!=-1:
+                if self.parent.getPiece(row-1,col+1)==0 or self.parent.getColor(row-1,col+1)!=self.piece_color:
+                    self.legal_moves.append((row-1, col+1))
+
+            #up left
+            if self.parent.getPiece(row-1,col-1)!=-1:
+                if self.parent.getPiece(row-1,col-1)==0 or self.parent.getColor(row-1,col-1)!=self.piece_color:
+                    self.legal_moves.append((row-1, col-1))
+
+            #right
+            if self.parent.getPiece(row,col+1)!=-1:
+                if self.parent.getPiece(row,col+1)==0 or self.parent.getColor(row,col+1)!=self.piece_color:
+                    self.legal_moves.append((row, col+1))
+
+            #left
+            if self.parent.getPiece(row,col-1)!=-1:
+                if self.parent.getPiece(row,col-1)==0 or self.parent.getColor(row,col-1)!=self.piece_color:
+                    self.legal_moves.append((row, col-1))
+
+
+
+
     def isLegal(self,row,col):
         if (row,col) in self.legal_moves:
             return True
