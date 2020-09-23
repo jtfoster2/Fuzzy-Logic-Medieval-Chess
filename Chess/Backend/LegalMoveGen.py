@@ -103,6 +103,48 @@ class LegalMoveGen():
                     else:
                         break
         #knight move handling
+        if self.piece_type == 3:
+
+            #down two, right one
+            if self.parent.getPiece(row+2,col+1)!=-1:
+                if self.parent.getPiece(row+2,col+1)==0 or self.parent.getColor(row+2,col+1)!=self.piece_color:
+                    self.legal_moves.append((row+2,col+1))
+        
+            #down two, left one
+            if self.parent.getPiece(row+2,col-1)!=-1:
+                if self.parent.getPiece(row+2,col-1)==0 or self.parent.getColor(row+2,col-1)!=self.piece_color:
+                    self.legal_moves.append((row+2,col-1))
+
+            #up two, right one
+            if self.parent.getPiece(row-2,col+1)!=-1:
+                if self.parent.getPiece(row-2,col+1)==0 or self.parent.getColor(row-2,col+1)!=self.piece_color:
+                    self.legal_moves.append((row-2,col+1))
+
+            #up two, left one
+            if self.parent.getPiece(row-2,col-1)!=-1:
+                if self.parent.getPiece(row-2,col-1)==0 or self.parent.getColor(row-2,col-1)!=self.piece_color:
+                    self.legal_moves.append((row-2,col-1))
+
+            #right two, down one
+            if self.parent.getPiece(row+1,col+2)!=-1:
+                if self.parent.getPiece(row+1,col+2)==0 or self.parent.getColor(row+1,col+2)!=self.piece_color:
+                    self.legal_moves.append((row+1,col+2))
+
+            #right two, up one
+            if self.parent.getPiece(row-1,col+2)!=-1:
+                if self.parent.getPiece(row-1,col+2)==0 or self.parent.getColor(row-1,col+2)!=self.piece_color:
+                    self.legal_moves.append((row-1,col+2))
+
+            #left two, down one
+            if self.parent.getPiece(row+1,col-2)!=-1:
+                if self.parent.getPiece(row+1,col-2)==0 or self.parent.getColor(row+1,col-2)!=self.piece_color:
+                    self.legal_moves.append((row+1,col-2))
+
+            #left two, up one
+            if self.parent.getPiece(row-1,col-2)!=-1:
+                if self.parent.getPiece(row-1,col-2)==0 or self.parent.getColor(row-1,col-2)!=self.piece_color:
+                    self.legal_moves.append((row-1,col-2))
+
 
         #bishop move handling
         if self.piece_type == 4:
