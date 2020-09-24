@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
+
 """
-This file is responsible for storing all the information about current state of chess game.
-It also contains code for the move log and utility functions for gathering information about a piece at a given location.
+Class: Senior Project
+Group: 4A
+Topic: Distributed Chess AI
+Group Members: John Foster, Jordan Gibbons, Ian Gregoire, Mina Hanna, Leonel Hernandez, John Hurd, and Raf
+ael Quarles
+File Name: ChessEngine.py
+Project Area: Back End
+File Description: This file is responsible for storing all the information about current state of chess game. It also contains code for the move log and utility functions for gathering information about a piece ata given location.
 """
 
 #Expresses state of game

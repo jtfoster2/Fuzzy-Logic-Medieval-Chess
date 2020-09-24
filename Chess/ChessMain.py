@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """
-This file draws the board and integrates the chess engine to the GUI
+Class: Senior Project
+Group: 4A
+Topic: Distributed Chess AI
+Group Members: John Foster, Jordan Gibbons, Ian Gregoire, Mina Hanna, Leonel Hernandez, John Hurd, and Rafael Quarles
+File Name: ChessMain.py
+Project Area: Front End
+File Description: This file draws the board and integrates the chess engine to the GUI
 """
 
 #import pygame

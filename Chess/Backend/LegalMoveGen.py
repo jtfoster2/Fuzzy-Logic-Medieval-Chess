@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 """
-This is the legal move generator. This generates a list of legal moves for a piece.
+Class: Senior Project
+Group: 4A
+Topic: Distributed Chess AI
+Group Members: John Foster, Jordan Gibbons, Ian Gregoire, Mina Hanna, Leonel Hernandez, John Hurd, and Raf
+ael Quarles
+File Name: LegalMoveGen.py
+Project Area: Back End
+File Description: This file contains the legal move generator. It generates a list of legal moves for a piece.
 """
 class LegalMoveGen():
     legal_moves = [] #put tuples for legal spaces (row,col) in here
