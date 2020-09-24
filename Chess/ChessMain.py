@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 """
-This is the driver file. Responsible for handling user input and displaying current GameState
+This file draws the board and integrates the chess engine to the GUI
 """
 
+#import pygame
 import pygame as p
-from Backend import ChessEngine
-from Backend import LegalMoveGen
 
-WIDTH = HEIGHT = 1600
-DIMENSION = 8
+#import backend files
+from Backend import ChessEngine #facilitates piece movement
+from Backend import LegalMoveGen #generates legal moves
+
+#set game properties
+WIDTH = HEIGHT = 1600 #size of window
+DIMENSION = 8 
 SQ_SIZE = HEIGHT // DIMENSION
-MAX_FPS = 15
+MAX_FPS = 15 #frames per second
 IMAGES = {}
 
-"""
-Initialize a global dictionary of images. This will be called exactly once in the main
-"""
-
+#loads images for use on board
 def loadImages():
     pieces = ['wP', 'wR', 'wN', 'wB', 'wQ', 'wK', 'bP', 'bR', 'bN', 'bB', 'bQ', 'bK']
     for piece in pieces:
@@ -24,24 +25,28 @@ def loadImages():
     # Note: we can access an image by saying 'IMAGES['wP']'
 
 
-"""
-The main driver for our code. This will handle user input and updating graphics.
-"""
-
-
+#main function
 def main():
+    #initialize pygame and window infomration
     p.init()
     p.display.set_caption('Python Chess Game')
     screen = p.display.set_mode((WIDTH, HEIGHT))
-    clock = p.time.Clock()
+
+    #set clock and fill screen
+    clock = p.time.Clock() 
     screen.fill(p.Color("white"))
+
+    #initialize backend
     gs = ChessEngine.GameState()
     mov = LegalMoveGen.LegalMoveGen(gs)
     loadImages()  # only do this once, before while loop
     running = True
+
+    #initialize variables used to log clicks
     sqSelected = ()  # no square is selected initially, keeps track of last click of user ( tuple:(row, col))
     playerClicks = []  # keeps track of player clicks( two tuples: [(x,y), (x,y)])
-    while running:
+    while running: 
+        #handles clicks
         for e in p.event.get():
             if e.type == p.QUIT:
                 running = False
@@ -51,42 +56,38 @@ def main():
                 row = location[1]//SQ_SIZE
                 if sqSelected == (row, col):  # the user clicked same square twice
                     sqSelected = ()  # deselect
-                    mov.clearGenerated()
+                    mov.clearGenerated() #clear generated legal moves
                     playerClicks = []  # clear player clicks
                 else:
                     sqSelected = (row, col)
                     playerClicks.append(sqSelected)  # append for both 1st and 2nd clicks
                 if len(playerClicks) == 2:  # after second click
                     move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
-                    if gs.getPiece(playerClicks[0][0], playerClicks[0][1])!=0:
-                        mov.generate(playerClicks[0][0], playerClicks[0][1])
-                        if  mov.isLegal(playerClicks[1][0],playerClicks[1][1]) == True:
-                            print(move.getChessNotation())
-                            gs.makeMove(move)
+                    if gs.getPiece(playerClicks[0][0], playerClicks[0][1])!=0: #makes sure an empty square is not set to be moved
+                        mov.generate(playerClicks[0][0], playerClicks[0][1]) #generates legal moves
+                        if  mov.isLegal(playerClicks[1][0],playerClicks[1][1]) == True: #disallows illegal moves
+                            print(move.getChessNotation()) #prints move log entry
+                            gs.makeMove(move) #makes move
                         else:
-                            print("ERROR: Move Not Legal")
-                    mov.clearGenerated()
-                    sqSelected = ()  # reset user clicks
-                    playerClicks = []
-
+                            print("ERROR: Move Not Legal") #error message for illegal moves
+                    mov.clearGenerated() #clear generated legal moves
+                    sqSelected = ()  #reset user clicks
+                    playerClicks = []#clear player clicks
+        
+        #draw board
         drawGameState(screen, gs)
         clock.tick(MAX_FPS)
         p.display.flip()
 
 
-'''
-Responsible for all graphics within current game state.
-'''
+#function for drawing board
 def drawGameState(screen, gs):
     drawBoard(screen)  # draw squares on the board
     # add in piece highlighting or move suggestions (later)
     drawPieces(screen, gs.board)  # draw pieces on top of those squares
 
 
-'''
-Draw the squares on the board. 
-Top left square is always white/light.
-'''
+#function for drawing grid on board
 def drawBoard(screen):
     colors = [p.Color("white"), p.Color("dark grey")]
     for r in range(DIMENSION):
@@ -94,10 +95,7 @@ def drawBoard(screen):
             color = colors[((r + c) % 2)]
             p.draw.rect(screen, color, p.Rect(c * SQ_SIZE, r * SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
-
-'''
-Draw the pieces on the board using the current GameState.board 
-'''
+#places pieces on board based on current game state
 def drawPieces(screen, board):
     for r in range(DIMENSION):
         for c in range(DIMENSION):

@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
-This class is responsible for storing all the information about current state of chess game.
-It will also be responsible for valid moves at the current state.
-Also keep move log.
+This file is responsible for storing all the information about current state of chess game.
+It also contains code for the move log and utility functions for gathering information about a piece at a given location.
 """
-from Backend import LegalMoveGen
 
+#Expresses state of game
 class GameState():
     def __init__(self):
         # board is 8x8 2d list, each element of list has 2 characters.
@@ -24,7 +23,8 @@ class GameState():
         self.whiteToMove = True
         self.moveLog = []
         self.movedPieces=[]
-        
+    
+    #moves pieces and logs moves
     def makeMove(self, move):
         self.board[move.startRow][move.startCol] = "--"
         self.board[move.endRow][move.endCol] = move.pieceMoved
@@ -36,7 +36,6 @@ class GameState():
     #returns an integer representing the piece in a given space
     def getPiece(self, row, col):
         if row > 7 or row < 0 or col > 7 or col < 0:
-            print("Error: Nonexistant Space")
             return -1
         piece = self.board[row][col]
         kind = -1 #0:empty, 1:pawn, 2:rook, 3:knight, 4:bishop, 5:queen, 6:king
@@ -59,18 +58,18 @@ class GameState():
     #returns an integer representing the color of a piece
     def getColor(self, row, col):
         if row > 7 or row < 0 or col > 7 or col < 0:
-            print("Error: Nonexistant Space")
             return -1
         piece = self.board[row][col]
         color = -1 #0:white, 1:black
         if self.getPiece(row,col) == 0:
-            print("Error: Empty Square")
+            pass
         elif piece[0] == "w":
             color = 0
         else:
             color = 1
         return color
 
+#used to express information about a move
 class Move():
     # chess rank file notation
     # maps key to values

@@ -6,33 +6,40 @@ class LegalMoveGen():
     legal_moves = [] #put tuples for legal spaces (row,col) in here
     piece_type = -1 #1:pawn, 2:rook, 3:knight, 4:bishop, 5:queen, 6:king
     piece_color = -1 #0:white, 1:black
-    parent = 0
-
+    parent = 0#gamestate for utility functions
+    
+    #sets the gamestate that will use the generator
     def __init__(self, parent):
         self.parent = parent
-
+    
+    #Generates a list of legal moves for the current piece and places them in legal_moves
     def generate(self, row, col):
-        #get type and color
+
+        #get type and color of selected piece
         self.piece_type = self.parent.getPiece(row,col)
         self.piece_color= self.parent.getColor(row,col)
 
-        #black pawn move handling
-        if self.piece_type == 1 and self.piece_color == 1:
-            #double jump handling
+        #black pawn move handling 
+        if self.piece_type == 1 and self.piece_color == 1: #pawns only move forward, so a distinction must be made between black and white pawns
+            
+            #double jump handling 
             if self.pawnDoubleJump(row,col):
                 if self.parent.getPiece(row+2,col)==0:
                     self.legal_moves.append((row+2,col))
+            
             #regular move handling
             if self.parent.getPiece(row+1,col)==0:
                 move = (row+1,col)
                 self.legal_moves.append(move)
+            
             #capture handling
             if self.parent.getPiece(row+1,col+1)!=0 and self.parent.getPiece(row+1,col+1)!=-1 and self.parent.getColor(row+1,col+1)!=1:
                 self.legal_moves.append((row+1,col+1))
             if self.parent.getPiece(row+1,col-1) != 0 and self.parent.getPiece(row+1,col-1)!=-1 and self.parent.getColor(row+1,col-1)!=1:
                 self.legal_moves.append((row+1,col-1))
+            
             #en passant capture handling
-            if self.enPassantCapture(row,col):
+            if self.enPassantCapture(row,col): #enPassantCapture does not work yet
                 if self.parent.getPiece(row+1,col+1)==0:
                     self.legal_moves.append((row+1,col+1))
                 if self.parent.getPiece(row+1,col-1)==0:
@@ -40,19 +47,23 @@ class LegalMoveGen():
 
         #white pawn move handling
         if self.piece_type == 1 and self.piece_color == 0:
+            
             #double jump handling
             if self.pawnDoubleJump(row,col):
                 if self.parent.getPiece(row-2,col)==0:
                     self.legal_moves.append((row-2,col))
+            
             #regular move handling
             if self.parent.getPiece(row-1,col)==0:
                 move = (row-1,col)
                 self.legal_moves.append(move)
+            
             #capture handling
             if self.parent.getPiece(row-1,col+1)!=0 and self.parent.getPiece(row-1,col+1)!=-1 and self.parent.getColor(row-1,col+1)!=0:
                 self.legal_moves.append((row-1,col+1))
             if self.parent.getPiece(row-1,col-1) != 0 and self.parent.getPiece(row-1,col-1)!=-1 and self.parent.getColor(row-1,col-1)!=0:
                 self.legal_moves.append((row-1,col-1))
+            
             #en passant capture handling
             if self.enPassantCapture(row,col):
                 if self.parent.getPiece(row-1,col+1)==0:
@@ -62,7 +73,8 @@ class LegalMoveGen():
 
         #rook move handling
         if self.piece_type == 2:
-            #upward movement
+
+            #upward movement (All directions are from the point of view of white pieces. Up and down are reversed for black pieces)
             for i in range(1,8):
                 if self.parent.getPiece(row+i,col) == 0:
                     self.legal_moves.append((row+i,col))
@@ -72,6 +84,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+            
             #downward movement
             for i in range(1,8):
                 if self.parent.getPiece(row-i,col) == 0:
@@ -82,6 +95,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+            
             #right movement
             for i in range(1,8):
                 if self.parent.getPiece(row,col+i) == 0:
@@ -92,6 +106,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+            
             #left movement
             for i in range(1,8):
                 if self.parent.getPiece(row,col-i) == 0:
@@ -102,6 +117,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+        
         #knight move handling
         if self.piece_type == 3:
 
@@ -159,6 +175,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+            
             #upward left movement
             for i in range(1,8):
                 if self.parent.getPiece(row+i,col-i) == 0:
@@ -169,6 +186,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+            
             #downward right movement
             for i in range(1,8):
                 if self.parent.getPiece(row-i,col+i) == 0:
@@ -179,6 +197,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+            
             #downward left movement
             for i in range(1,8):
                 if self.parent.getPiece(row-i,col-i) == 0:
@@ -203,6 +222,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+            
             #downward movement
             for i in range(1,8):
                 if self.parent.getPiece(row-i,col) == 0:
@@ -213,6 +233,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+            
             #right movement
             for i in range(1,8):
                 if self.parent.getPiece(row,col+i) == 0:
@@ -223,6 +244,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+            
             #left movement
             for i in range(1,8):
                 if self.parent.getPiece(row,col-i) == 0:
@@ -233,7 +255,8 @@ class LegalMoveGen():
                         break
                     else:
                         break
-             #upward right movement
+            
+            #upward right movement
             for i in range(1,8):
                 if self.parent.getPiece(row+i,col+i) == 0:
                     self.legal_moves.append((row+i,col+i))
@@ -243,6 +266,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+            
             #upward left movement
             for i in range(1,8):
                 if self.parent.getPiece(row+i,col-i) == 0:
@@ -253,6 +277,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+            
             #downward right movement
             for i in range(1,8):
                 if self.parent.getPiece(row-i,col+i) == 0:
@@ -263,6 +288,7 @@ class LegalMoveGen():
                         break
                     else:
                         break
+            
             #downward left movement
             for i in range(1,8):
                 if self.parent.getPiece(row-i,col-i) == 0:
@@ -286,6 +312,7 @@ class LegalMoveGen():
             if self.parent.getPiece(row+1,col+1)!=-1:
                 if self.parent.getPiece(row+1,col+1)==0 or self.parent.getColor(row+1,col+1)!=self.piece_color:
                     self.legal_moves.append((row+1, col+1))
+            
             #down left
             if self.parent.getPiece(row+1,col-1)!=-1:
                 if self.parent.getPiece(row+1,col-1)==0 or self.parent.getColor(row+1,col-1)!=self.piece_color:
@@ -316,44 +343,52 @@ class LegalMoveGen():
                 if self.parent.getPiece(row,col-1)==0 or self.parent.getColor(row,col-1)!=self.piece_color:
                     self.legal_moves.append((row, col-1))
 
-
-
-
+    #checks if a move is contained in the legal move list
     def isLegal(self,row,col):
         if (row,col) in self.legal_moves:
             return True
         else:
             return False
 
+    #clears all generated information (so the generator can be used again next move)
     def clearGenerated(self):
         self.legal_moves = []
         self.piece_type = -1
         self.piece_color = -1
 
-    # boolean function, returns true if a double jump is legal for the pawn at the given coordinates
+    #boolean function, returns true if a double jump is legal for a piece at the given coordinates
     def pawnDoubleJump(self, row, col):
         legal = False
-        if self.parent.getPiece(row, col) == 1:
+        if self.parent.getPiece(row, col) == 1: #checks that the piece is a pawn
 
-            if self.hasMoved(row, col) == False:
+            if self.hasMoved(row, col) == False:#checks if the pawn has moved
 
+                #checks that the spaces to be traversed are empty for a black pawn
                 if self.parent.getPiece(row + 1, col) == 0 and self.parent.getPiece(row + 2, col) == 0 and self.parent.getColor(row,col) == 1:
                     legal = True
-
+                
+                #checks that the spaces to be traversed are empty for a white pawn
                 if self.parent.getPiece(row-1,col)==0 and self.parent.getPiece(row-2,col)==0 and self.parent.getColor(row,col)==0:
                     legal = True
 
         return legal
 
-    # boolean function, returns true if an en passe capture is legal for the pawn at the given coordinates
+    #boolean function, returns true if an en passe capture is legal for the pawn at the given coordinates
     def enPassantCapture(self, row, col):
-        return False #rewrite later to reflect black and white piece differences
+        return False #write later
+
+    #boolean function, returns true if queen side castling is legal for the piece (king) at the given coordinates
+    def queenSideCastle(self,row,col):
+        pass #write later
+    
+    #boolean function, returns true if king side castling is legal for the piece (king) at the given coordinates
+    def kingSideCastle(self,row,col):
+        pass #write later
 
     # boolean function, returns true when piece that was at the given location at start of game has been moved or captured
-
     def hasMoved(self, row, col):
         moved = False
-        for x in self.parent.moveLog:
-            if (x.startRow == row and x.startCol == col) or (x.endRow == row and x.endCol == col):
+        for x in self.parent.moveLog:#iterates through move log
+            if (x.startRow == row and x.startCol == col) or (x.endRow == row and x.endCol == col): #checks that the piece has not moved
                 moved = True
         return moved
