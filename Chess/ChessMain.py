@@ -74,6 +74,11 @@ def main():
                         if  mov.isLegal(playerClicks[1][0],playerClicks[1][1]) == True: #disallows illegal moves
                             print(move.getChessNotation()) #prints move log entry
                             gs.makeMove(move) #makes move
+                            #handles piece removal during en passant capture
+                            if mov.diagonal_is_en_passant == 1 and playerClicks[1][1] == playerClicks[0][1]+1:
+                                gs.board[playerClicks[0][0]][playerClicks[1][1]] = "--"
+                            if mov.diagonal_is_en_passant == 0 and playerClicks[1][1] == playerClicks[0][1]-1:
+                                gs.board[playerClicks[0][0]][playerClicks[1][1]] = "--"
                         else:
                             print("ERROR: Move Not Legal") #error message for illegal moves
                     mov.clearGenerated() #clear generated legal moves

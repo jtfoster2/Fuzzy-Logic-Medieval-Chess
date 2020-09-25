@@ -14,7 +14,7 @@ class LegalMoveGen():
     piece_type = -1 #1:pawn, 2:rook, 3:knight, 4:bishop, 5:queen, 6:king
     piece_color = -1 #0:white, 1:black
     parent = 0#gamestate for utility functions
-    
+    diagonal_is_en_passant = -1 #indicates en passant captures so pieces can be manually cleared from the board
     #sets the gamestate that will use the generator
     def __init__(self, parent):
         self.parent = parent
@@ -46,10 +46,13 @@ class LegalMoveGen():
                 self.legal_moves.append((row+1,col-1))
             
             #en passant capture handling
-            if self.enPassantCapture(row,col): #enPassantCapture does not work yet
+            if self.enPassantCapture(row,col) == 1:
                 if self.parent.getPiece(row+1,col+1)==0:
+                    self.diagonal_is_en_passant = 1
                     self.legal_moves.append((row+1,col+1))
+            if self.enPassantCapture(row,col) == 0:
                 if self.parent.getPiece(row+1,col-1)==0:
+                    self.diagonal_is_en_passant = 0
                     self.legal_moves.append((row+1,col-1))
 
         #white pawn move handling
@@ -72,11 +75,15 @@ class LegalMoveGen():
                 self.legal_moves.append((row-1,col-1))
             
             #en passant capture handling
-            if self.enPassantCapture(row,col):
+            if self.enPassantCapture(row,col) == 1:
                 if self.parent.getPiece(row-1,col+1)==0:
+                    self.diagonal_is_en_passant = 1
                     self.legal_moves.append((row-1,col+1))
+            if self.enPassantCapture(row,col) == 0:
                 if self.parent.getPiece(row-1,col-1)==0:
+                    self.diagonal_is_en_passant = 0
                     self.legal_moves.append((row-1,col-1))
+
 
         #rook move handling
         if self.piece_type == 2:
@@ -362,6 +369,7 @@ class LegalMoveGen():
         self.legal_moves = []
         self.piece_type = -1
         self.piece_color = -1
+        self.diagonal_is_en_passant = -1
 
     #boolean function, returns true if a double jump is legal for a piece at the given coordinates
     def pawnDoubleJump(self, row, col):
@@ -380,9 +388,38 @@ class LegalMoveGen():
 
         return legal
 
-    #boolean function, returns true if an en passe capture is legal for the pawn at the given coordinates
+    #returns -1 if no en passant is legal for the piece, 0 if taking the piece to the left via en passant is legal, and 1 for the piece on the right
     def enPassantCapture(self, row, col):
-        return False #write later
+
+        #black piece is capturing white piece
+        if self.parent.getPiece(row,col) == 1 and self.parent.getColor(row,col) == 1 and row==4: #check that the piece is a black pawn on its 5th rank
+            #take piece to the left (on board)
+            if self.parent.getPiece(row, col-1)==1 and self.parent.getColor(row,col-1)==0: #checks that piece directly left is a white pawn
+                if self.parent.moveLog[-1].endRow == row and self.parent.moveLog[-1].endCol == col-1: #checks that the white pawn moved last
+                    if self.parent.moveLog[-1].startRow == row+2 and self.parent.moveLog[-1].startCol == col-1: #checks that last move was a double jump
+                        return 0
+            #take piece to the right (on board)
+            if self.parent.getPiece(row, col+1)==1 and self.parent.getColor(row,col+1)==0: #checks that piece directly left is a white pawn
+                if self.parent.moveLog[-1].endRow == row and self.parent.moveLog[-1].endCol == col+1: #checks that the white pawn moved last
+                    if self.parent.moveLog[-1].startRow == row+2 and self.parent.moveLog[-1].startCol == col+1: #checks that last move was a double jump
+                        return 1
+            return -1
+
+        #white piece is capturing black piece
+        if self.parent.getPiece(row,col) == 1 and self.parent.getColor(row,col) == 0 and row==3: #check that the piece is a white pawn on its 5th rank
+            #take piece to the left (on board)
+            if self.parent.getPiece(row, col-1)==1 and self.parent.getColor(row,col-1)==1: #checks that piece directly left is a black pawn
+                if self.parent.moveLog[-1].endRow == row and self.parent.moveLog[-1].endCol == col-1: #checks that the black pawn moved last
+                    if self.parent.moveLog[-1].startRow == row-2 and self.parent.moveLog[-1].startCol == col-1: #checks that last move was a double jump
+                        return 0
+            #take piece to the right (on board)
+            if self.parent.getPiece(row, col+1)==1 and self.parent.getColor(row,col+1)==1: #checks that piece directly left is a black pawn
+                if self.parent.moveLog[-1].endRow == row and self.parent.moveLog[-1].endCol == col+1: #checks that the black pawn moved last
+                    if self.parent.moveLog[-1].startRow == row-2 and self.parent.moveLog[-1].startCol == col+1: #checks that last move was a double jump
+                        return 1
+            return -1
+
+
 
     #boolean function, returns true if queen side castling is legal for the piece (king) at the given coordinates
     def queenSideCastle(self,row,col):
