@@ -45,6 +45,8 @@ def main():
     #initialize backend
     gs = ChessEngine.GameState()
     mov = LegalMoveGen.LegalMoveGen(gs)
+    vmov = LegalMoveGen.VariantLegalMoveGen(gs)
+    is_normal_chess = False  #indicates whether normal chess or midieval corps chess will be played 
     loadImages()  # only do this once, before while loop
     running = True
 
@@ -52,38 +54,78 @@ def main():
     sqSelected = ()  # no square is selected initially, keeps track of last click of user ( tuple:(row, col))
     playerClicks = []  # keeps track of player clicks( two tuples: [(x,y), (x,y)])
     while running: 
-        #handles clicks
-        for e in p.event.get():
-            if e.type == p.QUIT:
-                running = False
-            elif e.type == p.MOUSEBUTTONDOWN:
-                location = p.mouse.get_pos()  # (x,y) location of mouse
-                col = location[0]//SQ_SIZE
-                row = location[1]//SQ_SIZE
-                if sqSelected == (row, col):  # the user clicked same square twice
-                    sqSelected = ()  # deselect
-                    mov.clearGenerated() #clear generated legal moves
-                    playerClicks = []  # clear player clicks
-                else:
-                    sqSelected = (row, col)
-                    playerClicks.append(sqSelected)  # append for both 1st and 2nd clicks
-                if len(playerClicks) == 2:  # after second click
-                    move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
-                    if gs.getPiece(playerClicks[0][0], playerClicks[0][1])!=0: #makes sure an empty square is not set to be moved
-                        mov.generate(playerClicks[0][0], playerClicks[0][1]) #generates legal moves
-                        if  mov.isLegal(playerClicks[1][0],playerClicks[1][1]) == True: #disallows illegal moves
-                            print(move.getChessNotation()) #prints move log entry
-                            gs.makeMove(move) #makes move
-                            #handles piece removal during en passant capture
-                            if mov.diagonal_is_en_passant == 1 and playerClicks[1][1] == playerClicks[0][1]+1:
-                                gs.board[playerClicks[0][0]][playerClicks[1][1]] = "--"
-                            if mov.diagonal_is_en_passant == 0 and playerClicks[1][1] == playerClicks[0][1]-1:
-                                gs.board[playerClicks[0][0]][playerClicks[1][1]] = "--"
-                        else:
-                            print("ERROR: Move Not Legal") #error message for illegal moves
-                    mov.clearGenerated() #clear generated legal moves
-                    sqSelected = ()  #reset user clicks
-                    playerClicks = []#clear player clicks
+        if is_normal_chess == True:
+            #handles clicks
+            for e in p.event.get():
+                if e.type == p.QUIT:
+                    running = False
+                elif e.type == p.MOUSEBUTTONDOWN:
+                    location = p.mouse.get_pos()  # (x,y) location of mouse
+                    col = location[0]//SQ_SIZE
+                    row = location[1]//SQ_SIZE
+                    if sqSelected == (row, col):  # the user clicked same square twice
+                        sqSelected = ()  # deselect
+                        mov.clearGenerated() #clear generated legal moves
+                        playerClicks = []  # clear player clicks
+                    else:
+                        sqSelected = (row, col)
+                        playerClicks.append(sqSelected)  # append for both 1st and 2nd clicks
+                    if len(playerClicks) == 2:  # after second click
+                        move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
+                        if gs.getPiece(playerClicks[0][0], playerClicks[0][1])!=0: #makes sure an empty square is not set to be moved
+                            mov.generate(playerClicks[0][0], playerClicks[0][1]) #generates legal moves
+                            if  mov.isLegal(playerClicks[1][0],playerClicks[1][1]) == True: #disallows illegal moves
+                                print(move.getChessNotation()) #prints move log entry
+                                gs.makeMove(move) #makes move
+
+                                #handles piece removal during en passant capture
+                                if mov.diagonal_is_en_passant == 1 and playerClicks[1][1] == playerClicks[0][1]+1:
+                                    gs.board[playerClicks[0][0]][playerClicks[1][1]] = "--"
+                                if mov.diagonal_is_en_passant == 0 and playerClicks[1][1] == playerClicks[0][1]-1:
+                                    gs.board[playerClicks[0][0]][playerClicks[1][1]] = "--"
+
+                            else:
+                                print("ERROR: Move Not Legal") #error message for illegal moves
+                        mov.clearGenerated() #clear generated legal moves
+                        sqSelected = ()  #reset user clicks
+                        playerClicks = []#clear player clicks
+
+        if is_normal_chess == False:
+            
+            #handles clicks
+            for e in p.event.get():
+                if e.type == p.QUIT:
+                    running = False
+                elif e.type == p.MOUSEBUTTONDOWN:
+                    location = p.mouse.get_pos()  # (x,y) location of mouse
+                    col = location[0]//SQ_SIZE
+                    row = location[1]//SQ_SIZE
+                    if sqSelected == (row, col):  # the user clicked same square twice
+                        sqSelected = ()  # deselect
+                        vmov.clearGenerated() #clear generated legal moves
+                        playerClicks = []  # clear player clicks
+                    else:
+                        sqSelected = (row, col)
+                        playerClicks.append(sqSelected)  # append for both 1st and 2nd clicks
+                    if len(playerClicks) == 2:  # after second click
+                        move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
+                        if gs.getPiece(playerClicks[0][0], playerClicks[0][1])!=0: #makes sure an empty square is not set to be moved
+                            vmov.generate(playerClicks[0][0], playerClicks[0][1]) #generates legal moves
+                            if  vmov.isLegalMove(playerClicks[1][0],playerClicks[1][1]) == True: #checks if legal move
+                                print(move.getChessNotation()) #prints move log entry
+                                gs.makeMove(move) #makes move
+                                if vmov.piece_type == 3:
+                                    vmov.knight_special_attack == True #indicator that if knight attacks after moving, dice roll is decreased by one
+                            elif vmov.isLegalAttack(playerClicks[1][0], playerClicks[1][1]) == True: #checks if legal attack
+                                if 1==1: #replace this with dice roll to determine attack success
+                                    print(move.getChessNotation()) #prints move log entry
+                                    gs.makeMove(move) #makes move
+                            else:
+                                print("ERROR: Move Not Legal") #error message for illegal moves
+
+                        vmov.clearGenerated() #clear generated legal moves
+                        sqSelected = ()  #reset user clicks
+                        playerClicks = []#clear player clicks
         
         #draw board
         drawGameState(screen, gs)
