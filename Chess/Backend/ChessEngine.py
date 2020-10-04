@@ -75,6 +75,35 @@ class GameState():
         else:
             color = 1
         return color
+    
+    #function for die roll, returns true if defending piece is captured
+     def dieroll(self, attacker, defender):
+        roll = random.randint(1, 6)
+        capture = False
+
+        if roll == 6:
+            capture = True
+
+        if roll == 5:
+            if (attacker >= 4) or (attacker == 3 and defender < 5) or (attacker == 2 and defender != 2) or (
+                    attacker == 1 and (defender == 4 or defender == 1)):
+                capture = True
+
+        if roll == 4:
+            if (attacker >= 5 and defender != 2) or (attacker == 4 and (defender == 4 or defender == 1)) or (
+                    attacker == 3 and defender <= 4 and defender != 2) or (attacker == 2 and defender >= 5) or (
+                    attacker == 1 and defender == 1):
+                capture = True
+
+        if roll == 3:
+            if defender == 1 and attacker >= 3:
+                capture = True
+
+        if roll == 2:
+            if defender == 1 and (attacker >= 5 or attacker == 3):
+                capture = True
+
+        return capture
 
 #used to express information about a move
 class Move():
