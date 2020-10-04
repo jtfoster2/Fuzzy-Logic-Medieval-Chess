@@ -11,6 +11,7 @@ File Description: This file draws the board and integrates the chess engine to t
 
 #import pygame
 import pygame as p
+import random
 
 #import backend files
 from Backend import ChessEngine #facilitates piece movement
@@ -115,11 +116,18 @@ def main():
                                 print(move.getChessNotation()) #prints move log entry
                                 gs.makeMove(move) #makes move
                                 if vmov.piece_type == 3:
-                                    vmov.knight_special_attack == True #indicator that if knight attacks after moving, dice roll is decreased by one
+                                    vmov.knight_special_attack = True #indicator that if knight attacks after moving, dice roll is decreased by one
                             elif vmov.isLegalAttack(playerClicks[1][0], playerClicks[1][1]) == True: #checks if legal attack
-                                if 1==1: #replace this with dice roll to determine attack success
-                                    print(move.getChessNotation()) #prints move log entry
-                                    gs.makeMove(move) #makes move
+                                roll = random.randint(1,6)
+                                if vmov.knight_special_attack == True and vmov.piece_type == 3:
+                                    roll = roll - 1
+                                    vmov.knight_special_attack = False
+                                if gs.validate_capture(vmov.piece_type, gs.getPiece(playerClicks[1][0],playerClicks[1][1]), roll):
+                                    if vmov.piece_type != 2:
+                                        print(move.getChessNotation()) #prints move log entry
+                                        gs.makeMove(move) #makes move
+                                    else:
+                                        gs.board[playerClicks[1][0]][playerClicks[1][1]] = "--"
                             else:
                                 print("ERROR: Move Not Legal") #error message for illegal moves
 

@@ -77,8 +77,7 @@ class GameState():
         return color
     
     #function for die roll, returns true if defending piece is captured
-     def dieroll(self, attacker, defender):
-        roll = random.randint(1, 6)
+    def validate_capture(self, attacker, defender, roll):
         capture = False
 
         if roll == 6:
@@ -102,7 +101,11 @@ class GameState():
         if roll == 2:
             if defender == 1 and (attacker >= 5 or attacker == 3):
                 capture = True
-
+        
+        if capture == True:
+            print("Capture Successful")
+        else:
+            print("Capture Failed")
         return capture
 
 #used to express information about a move
