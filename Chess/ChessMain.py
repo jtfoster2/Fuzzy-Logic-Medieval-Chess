@@ -18,7 +18,7 @@ from Backend import ChessEngine #facilitates piece movement
 from Backend import LegalMoveGen #generates legal moves
 
 #set game properties
-WIDTH = HEIGHT = 1600 #size of window
+WIDTH = HEIGHT = 600 #size of window
 DIMENSION = 8 
 SQ_SIZE = HEIGHT // DIMENSION
 MAX_FPS = 15 #frames per second
@@ -34,6 +34,8 @@ def loadImages():
 
 #main function
 def main():
+    attack_array = []
+    valid_array = []
     #initialize pygame and window infomration
     p.init()
     p.display.set_caption('Python Chess Game')
@@ -47,7 +49,7 @@ def main():
     gs = ChessEngine.GameState()
     mov = LegalMoveGen.LegalMoveGen(gs)
     vmov = LegalMoveGen.VariantLegalMoveGen(gs)
-    is_normal_chess = False  #indicates whether normal chess or midieval corps chess will be played 
+    is_normal_chess = False  #indicates whether normal chess or midieval corps chess will be played
     loadImages()  # only do this once, before while loop
     running = True
 
@@ -107,7 +109,10 @@ def main():
                         playerClicks = []  # clear player clicks
                     else:
                         sqSelected = (row, col)
-                        playerClicks.append(sqSelected)  # append for both 1st and 2nd clicks
+                        playerClicks.append(sqSelected)  # append for both 1st and 2nd clicks vmov.generate(sqSelected)
+                        vmov.generate(row, col)
+                        attack_array = vmov.legal_attacks
+                        valid_array = vmov.legal_moves
                     if len(playerClicks) == 2:  # after second click
                         move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
                         if gs.getPiece(playerClicks[0][0], playerClicks[0][1])!=0: #makes sure an empty square is not set to be moved
@@ -131,20 +136,21 @@ def main():
                             else:
                                 print("ERROR: Move Not Legal") #error message for illegal moves
 
-                        vmov.clearGenerated() #clear generated legal moves
                         sqSelected = ()  #reset user clicks
                         playerClicks = []#clear player clicks
+                        vmov.clearGenerated()  # clear generated legal moves
         
         #draw board
-        drawGameState(screen, gs)
+        drawGameState(screen, gs, valid_array, attack_array, sqSelected)
         clock.tick(MAX_FPS)
         p.display.flip()
 
 
 #function for drawing board
-def drawGameState(screen, gs):
+def drawGameState(screen, gs, validMoves, attackMoves, sqSelected):
     drawBoard(screen)  # draw squares on the board
     # add in piece highlighting or move suggestions (later)
+    highlightedMoves(screen, gs, validMoves, attackMoves, sqSelected)
     drawPieces(screen, gs.board)  # draw pieces on top of those squares
 
 
@@ -163,6 +169,32 @@ def drawPieces(screen, board):
             piece = board[r][c]
             if piece != "--":  # not an empty square
                 screen.blit(IMAGES[piece], p.Rect(c*SQ_SIZE, r*SQ_SIZE, SQ_SIZE, SQ_SIZE))
+
+def highlightedMoves(screen, gs, validMoves, attackMoves, sqSelected):
+    #validMoves = [(1,6),(2,6)]
+    # print("Valid moves : " + str(validMoves))
+    #print("sqSelected : " + str(sqSelected))
+    pass
+
+    if sqSelected != ():
+        r, c = sqSelected
+        s = p.Surface((SQ_SIZE, SQ_SIZE))   # Created a square with the dimensions provided
+        s.set_alpha(30)     # The method is responsible for adding transparency effect
+        s.fill(p.Color('green'))    # Responsible for highlighting the current square as transparent green
+        screen.blit(s, (c*SQ_SIZE, r*SQ_SIZE))
+        highlight(screen, gs, validMoves, "yellow")
+        highlight(screen, gs, attackMoves, "red")
+
+
+def highlight(screen, gs, moves, color):
+    if moves !=[]:
+        a = p.Surface((SQ_SIZE, SQ_SIZE))
+        a.set_alpha(80)
+        a.fill(p.Color(color))
+        for item in moves:  # Loops through the array to highlight the valid moves provided as an array
+            row, column = item
+            screen.blit(a, (column * SQ_SIZE, row * SQ_SIZE))
+
 
 
 if __name__ == "__main__":
