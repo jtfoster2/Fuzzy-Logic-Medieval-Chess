@@ -18,11 +18,24 @@ from Backend import ChessEngine #facilitates piece movement
 from Backend import LegalMoveGen #generates legal moves
 
 #set game properties
-WIDTH = HEIGHT = 600 #size of window
+WIDTH = 1000
+HEIGHT = 600 #size of window
 DIMENSION = 8 
 SQ_SIZE = HEIGHT // DIMENSION
 MAX_FPS = 15 #frames per second
 IMAGES = {}
+black = (0,0,0)
+grey = (200,200,200)
+dark_grey = (130,130,130)
+
+#initialize game
+p.init()
+p.display.set_caption('Python Chess Game')
+screen = p.display.set_mode((int(WIDTH), HEIGHT))
+
+#set clock and fill screen
+clock = p.time.Clock()
+screen.fill(p.Color("white"))
 
 #loads images for use on board
 def loadImages():
@@ -34,119 +47,211 @@ def loadImages():
 
 #main function
 def main():
+    menuScreen()
+
+#button function
+def button(msg,x,y,w,h,ic,ac,action=None):
+    mouse = p.mouse.get_pos()
+    click = p.mouse.get_pressed()
+
+    if x+w > mouse[0] > x and y+h > mouse[1] > y:
+        p.draw.rect(screen, ac,(x,y,w,h))
+
+        if click[0] == 1 and action != None:
+            action()
+    else:
+        p.draw.rect(screen, ic,(x,y,w,h))
+
+    smallText = p.font.SysFont('Backend/fonts/8-BIT WONDER.ttf', 20)
+    textSurf, textRect = text_objects(msg, smallText)
+    textRect.center = ( int(x+(w/2)), int(y+(h/2)) )
+    screen.blit(textSurf, textRect)
+
+#menu function
+def menuScreen():
+
+    menu = True
+
+    while menu:
+        for e in p.event.get():
+            if e.type == p.QUIT:
+                p.quit()
+                quit()
+
+        screen.fill(p.Color("white"))
+
+        image1 = p.image.load('Backend/images/bK.png')
+        image2 = p.image.load('Backend/images/bQ.png')
+        screen.blit(image1, (int(WIDTH / 2 - 200),50))
+        screen.blit(image2, (int(WIDTH / 2 ),50))
+
+        largeText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 55)
+        TextSurf, TextRect = text_objects("Chess AI", largeText)
+        TextRect.center = (int(WIDTH / 2), int(HEIGHT / 2 + 30))
+        screen.blit(TextSurf, TextRect)
+
+        button("PLAY",int(WIDTH/2 - 150),450,100,50,dark_grey,grey,chessGame)
+        button("RULES",int(WIDTH/2 + 50),450,100,50,dark_grey,grey,infoScreen)
+
+        clock.tick(MAX_FPS)
+        p.display.flip()
+
+
+#displays rules in the game
+def infoScreen():
+
+    info = True
+
+    while info:
+        for e in p.event.get():
+            #print(e)
+            if e.type == p.QUIT:
+                p.quit()
+                quit()
+
+        screen.fill(p.Color("white"))
+        largeText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 55)
+        smallText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 15)
+
+        TextSurf, TextRect = text_objects("RULES", largeText)
+        TextRect.center = (int(WIDTH / 2), 100)
+        screen.blit(TextSurf, TextRect)
+
+        TextSurf, TextRect = text_objects("Will add rules here soon", smallText)
+        TextRect.center = (int(WIDTH / 2 ), 200)
+        screen.blit(TextSurf, TextRect)
+
+        TextSurf, TextRect = text_objects("--------------------------------------------", smallText)
+        TextRect.center = (int(WIDTH / 2 ), 160)
+        screen.blit(TextSurf, TextRect)
+
+
+        button("PLAY",int(WIDTH/2 - 150),500,100,50,dark_grey,grey,chessGame)
+        button("MENU",int(WIDTH/2 + 50),500,100,50,dark_grey,grey,menuScreen)
+
+        p.display.flip()
+
+
+#initialize backend (10/12/2020 edit: moved outside of chessGame function to save gamesstate when leaving mid game)
+gs = ChessEngine.GameState()
+mov = LegalMoveGen.LegalMoveGen(gs)
+vmov = LegalMoveGen.VariantLegalMoveGen(gs)
+
+#game play function
+def chessGame():
     attack_array = []
     valid_array = []
-    #initialize pygame and window infomration
-    p.init()
-    p.display.set_caption('Python Chess Game')
-    screen = p.display.set_mode((WIDTH, HEIGHT))
 
-    #set clock and fill screen
-    clock = p.time.Clock() 
-    screen.fill(p.Color("white"))
-
-    #initialize backend
-    gs = ChessEngine.GameState()
-    mov = LegalMoveGen.LegalMoveGen(gs)
-    vmov = LegalMoveGen.VariantLegalMoveGen(gs)
-    is_normal_chess = False  #indicates whether normal chess or midieval corps chess will be played
-    loadImages()  # only do this once, before while loop
-    running = True
+    # initialize backend (moved up)
+    #gs = ChessEngine.GameState()
+    #mov = LegalMoveGen.LegalMoveGen(gs)
+    #vmov = LegalMoveGen.VariantLegalMoveGen(gs)
 
     #initialize variables used to log clicks
     sqSelected = ()  # no square is selected initially, keeps track of last click of user ( tuple:(row, col))
     playerClicks = []  # keeps track of player clicks( two tuples: [(x,y), (x,y)])
-    while running: 
+
+
+    is_normal_chess = False  #indicates whether normal chess or midieval corps chess will be played
+    loadImages()  # only do this once, before while loop
+    running = True
+
+
+
+    while running == True:
         if is_normal_chess == True:
-            #handles clicks
+            # handles clicks
             for e in p.event.get():
                 if e.type == p.QUIT:
-                    running = False
+                    p.quit()
+                    quit()
                 elif e.type == p.MOUSEBUTTONDOWN:
                     location = p.mouse.get_pos()  # (x,y) location of mouse
-                    col = location[0]//SQ_SIZE
-                    row = location[1]//SQ_SIZE
+                    col = location[0] // SQ_SIZE
+                    row = location[1] // SQ_SIZE
                     if sqSelected == (row, col):  # the user clicked same square twice
                         sqSelected = ()  # deselect
-                        mov.clearGenerated() #clear generated legal moves
+                        mov.clearGenerated()  # clear generated legal moves
                         playerClicks = []  # clear player clicks
                     else:
                         sqSelected = (row, col)
                         playerClicks.append(sqSelected)  # append for both 1st and 2nd clicks
                     if len(playerClicks) == 2:  # after second click
                         move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
-                        if gs.getPiece(playerClicks[0][0], playerClicks[0][1])!=0: #makes sure an empty square is not set to be moved
-                            mov.generate(playerClicks[0][0], playerClicks[0][1]) #generates legal moves
-                            if  mov.isLegal(playerClicks[1][0],playerClicks[1][1]) == True: #disallows illegal moves
-                                print(move.getChessNotation()) #prints move log entry
-                                gs.makeMove(move) #makes move
+                        if gs.getPiece(playerClicks[0][0], playerClicks[0][
+                            1]) != 0:  # makes sure an empty square is not set to be moved
+                            mov.generate(playerClicks[0][0], playerClicks[0][1])  # generates legal moves
+                            if mov.isLegal(playerClicks[1][0],
+                                           playerClicks[1][1]) == True:  # disallows illegal moves
+                                print(move.getChessNotation())  # prints move log entry
+                                gs.makeMove(move)  # makes move
 
-                                #handles piece removal during en passant capture
-                                if mov.diagonal_is_en_passant == 1 and playerClicks[1][1] == playerClicks[0][1]+1:
+                                # handles piece removal during en passant capture
+                                if mov.diagonal_is_en_passant == 1 and playerClicks[1][1] == playerClicks[0][1] + 1:
                                     gs.board[playerClicks[0][0]][playerClicks[1][1]] = "--"
-                                if mov.diagonal_is_en_passant == 0 and playerClicks[1][1] == playerClicks[0][1]-1:
+                                if mov.diagonal_is_en_passant == 0 and playerClicks[1][1] == playerClicks[0][1] - 1:
                                     gs.board[playerClicks[0][0]][playerClicks[1][1]] = "--"
 
                             else:
-                                print("ERROR: Move Not Legal") #error message for illegal moves
-                        mov.clearGenerated() #clear generated legal moves
-                        sqSelected = ()  #reset user clicks
-                        playerClicks = []#clear player clicks
+                                print("ERROR: Move Not Legal")  # error message for illegal moves
+                        mov.clearGenerated()  # clear generated legal moves
+                        sqSelected = ()  # reset user clicks
+                        playerClicks = []  # clear player clicks
 
         if is_normal_chess == False:
-            
-            #handles clicks
+
+            # handles clicks
             for e in p.event.get():
                 if e.type == p.QUIT:
-                    running = False
+                    p.quit()
+                    quit()
                 elif e.type == p.MOUSEBUTTONDOWN:
                     location = p.mouse.get_pos()  # (x,y) location of mouse
                     col = location[0]//SQ_SIZE
                     row = location[1]//SQ_SIZE
-                    if sqSelected == (row, col):  # the user clicked same square twice
+                    if sqSelected == (row, col) or location > (600,600):  # the user clicked same square twice
                         sqSelected = ()  # deselect
-                        vmov.clearGenerated() #clear generated legal moves
+                        vmov.clearGenerated()  # clear generated legal moves
                         playerClicks = []  # clear player clicks
                     else:
                         sqSelected = (row, col)
-                        playerClicks.append(sqSelected)  # append for both 1st and 2nd clicks                        vmov.generate(sqSelected)
+                        playerClicks.append(sqSelected)  # append for both 1st and 2nd clicks  #vmov.generate(sqSelected)
                         vmov.generate(row, col)
                         attack_array = vmov.legal_attacks
                         valid_array = vmov.legal_moves
                         print("The new legal :" + str(valid_array))
-
                     if len(playerClicks) == 2:  # after second click
                         move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
-                        if gs.getPiece(playerClicks[0][0], playerClicks[0][1])!=0: #makes sure an empty square is not set to be moved
-                            vmov.generate(playerClicks[0][0], playerClicks[0][1]) #generates legal moves
-                            if  vmov.isLegalMove(playerClicks[1][0],playerClicks[1][1]) == True: #checks if legal move
-                                print(move.getChessNotation()) #prints move log entry
-                                gs.makeMove(move) #makes move
+                        if gs.getPiece(playerClicks[0][0], playerClicks[0][
+                            1]) != 0:  # makes sure an empty square is not set to be moved
+                            vmov.generate(playerClicks[0][0], playerClicks[0][1])  # generates legal moves
+                            if vmov.isLegalMove(playerClicks[1][0], playerClicks[1][1]) == True:  # checks if legal move
+                                print(move.getChessNotation())  # prints move log entry
+                                gs.makeMove(move)  # makes move
                                 if vmov.piece_type == 3:
-                                    vmov.knight_special_attack = True #indicator that if knight attacks after moving, dice roll is decreased by one
-                            elif vmov.isLegalAttack(playerClicks[1][0], playerClicks[1][1]) == True: #checks if legal attack
-                                roll = random.randint(1,6)
+                                    vmov.knight_special_attack = True  # indicator that if knight attacks after moving, dice roll is decreased by one
+                            elif vmov.isLegalAttack(playerClicks[1][0], playerClicks[1][1]) == True:  # checks if legal attack
+                                roll = random.randint(1, 6)
                                 if vmov.knight_special_attack == True and vmov.piece_type == 3:
                                     roll = roll - 1
                                     vmov.knight_special_attack = False
-                                if gs.validate_capture(vmov.piece_type, gs.getPiece(playerClicks[1][0],playerClicks[1][1]), roll):
+                                if gs.validate_capture(vmov.piece_type, gs.getPiece(playerClicks[1][0], playerClicks[1][1]), roll):
                                     if vmov.piece_type != 2:
-                                        print(move.getChessNotation()) #prints move log entry
-                                        gs.makeMove(move) #makes move
+                                        print(move.getChessNotation())  # prints move log entry
+                                        gs.makeMove(move)  # makes move
                                     else:
                                         gs.board[playerClicks[1][0]][playerClicks[1][1]] = "--"
                             else:
-                                print("ERROR: Move Not Legal") #error message for illegal moves
+                                print("ERROR: Move Not Legal")  # error message for illegal moves
 
-                        sqSelected = ()  #reset user clicks
-                        playerClicks = []#clear player clicks
+                        sqSelected = ()  # reset user clicks
+                        playerClicks = []  # clear player clicks
                         vmov.clearGenerated()  # clear generated legal moves
-        
-        #draw board
-        drawGameState(screen, gs, valid_array, attack_array, sqSelected)
-        clock.tick(MAX_FPS)
-        p.display.flip()
 
+        # draw board
+        drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+
+        p.display.flip()
 
 #function for drawing board
 def drawGameState(screen, gs, validMoves, attackMoves, sqSelected):
@@ -154,10 +259,65 @@ def drawGameState(screen, gs, validMoves, attackMoves, sqSelected):
     # add in piece highlighting or move suggestions (later)
     highlightedMoves(screen, gs, validMoves, attackMoves, sqSelected)
     drawPieces(screen, gs.board)  # draw pieces on top of those squares
+    drawHud(screen)
+
+#handles UI screen located right of the board
+def drawHud(screen):
+    #init area and bg color
+    hudSize = p.Rect(600,0,400,600)
+    p.draw.rect(screen, p.Color("gainsboro"),hudSize)
+
+    #handle display of captured pieces
+    screen.blit(p.transform.scale(IMAGES['bK'], (50, 50)), (600, 10))
+    screen.blit(p.transform.scale(IMAGES['bQ'], (50, 50)), (600, 60))
+    screen.blit(p.transform.scale(IMAGES['bR'], (50, 50)), (600, 110))
+    screen.blit(p.transform.scale(IMAGES['bR'], (50, 50)), (600, 160))
+    screen.blit(p.transform.scale(IMAGES['bN'], (50, 50)), (600, 210))
+    screen.blit(p.transform.scale(IMAGES['bN'], (50, 50)), (600, 260))
+    screen.blit(p.transform.scale(IMAGES['bB'], (50, 50)), (600, 310))
+    screen.blit(p.transform.scale(IMAGES['bB'], (50, 50)), (600, 360))
+    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 10))
+    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 60))
+    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 110))
+    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 160))
+    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 210))
+    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 260))
+    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 310))
+    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 360))
+    screen.blit(p.transform.scale(IMAGES['wK'], (50, 50)), (680, 10))
+    screen.blit(p.transform.scale(IMAGES['wQ'], (50, 50)), (680, 60))
+    screen.blit(p.transform.scale(IMAGES['wR'], (50, 50)), (680, 110))
+    screen.blit(p.transform.scale(IMAGES['wR'], (50, 50)), (680, 160))
+    screen.blit(p.transform.scale(IMAGES['wN'], (50, 50)), (680, 210))
+    screen.blit(p.transform.scale(IMAGES['wN'], (50, 50)), (680, 260))
+    screen.blit(p.transform.scale(IMAGES['wB'], (50, 50)), (680, 310))
+    screen.blit(p.transform.scale(IMAGES['wB'], (50, 50)), (680, 360))
+    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 10))
+    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 60))
+    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 110))
+    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 160))
+    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 210))
+    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 260))
+    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 310))
+    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 360))
+
+    #buttons
+    button("MENU", 890, 10, 100, 50, dark_grey, grey, menuScreen)
+    button("RULES", 890, 70, 100, 50, dark_grey, grey, infoScreen)
+
+    #turn indicator
+    p.draw.rect(screen, p.Color("black"), (610, 440, 380, 150), 4)
+    smallText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 12)
+    TextSurf, TextRect = text_objects("To show  how many moves are left", smallText)
+    TextRect.center = (800, 460)
+    screen.blit(TextSurf, TextRect)
+
+    #visual dice being rolled ?
 
 
 #function for drawing grid on board
 def drawBoard(screen):
+    screen.fill(p.Color("white"))
     colors = [p.Color("white"), p.Color("dark grey")]
     for r in range(DIMENSION):
         for c in range(DIMENSION):
@@ -175,7 +335,7 @@ def drawPieces(screen, board):
 def highlightedMoves(screen, gs, validMoves, attackMoves, sqSelected):
     #validMoves = [(1,6),(2,6)]
     # print("Valid moves : " + str(validMoves))
-    print("sqSelected : " + str(sqSelected))
+    # print("sqSelected : " + str(sqSelected))
 
     if sqSelected != ():
         r, c = sqSelected
@@ -196,6 +356,10 @@ def highlight(screen, gs, moves, color):
             row, column = item
             screen.blit(a, (column * SQ_SIZE, row * SQ_SIZE))
 
+
+def text_objects(text, font):
+    textSurface = font.render(text, True, p.Color("black"))
+    return textSurface, textSurface.get_rect()
 
 
 if __name__ == "__main__":

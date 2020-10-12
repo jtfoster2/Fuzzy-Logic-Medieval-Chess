@@ -692,9 +692,9 @@ class VariantLegalMoveGen():
             
             if self.parent.getPiece(row-1,col+1)==0:
                     self.legal_moves.append((row-1,col+1))
-            
-            if self.parent.getPiece(row-1,col+1)==0:
-                    self.legal_moves.append((row-1,col+1))
+
+            if self.parent.getPiece(row-1,col-1)==0:
+                    self.legal_moves.append((row-1,col-1))
             
             if self.parent.getPiece(row+1,col+1)==0:
                     self.legal_moves.append((row+1,col+1))
@@ -732,4 +732,5 @@ class VariantLegalMoveGen():
         self.piece_type = -1
         self.piece_color = -1
         self.knight_special_attack = False
+
 
