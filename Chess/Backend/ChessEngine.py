@@ -39,6 +39,15 @@ class GameState():
         if move.pieceMoved not in self.movedPieces:
             self.movedPieces.append(move.pieceMoved)
         self.whiteToMove = not self.whiteToMove  # swap players
+
+    #undo move function
+    def undoMove(self):
+        if len(self.moveLog) != 0:
+            move = self.moveLog.pop()
+            self.board[move.startRow][move.startCol] = move.pieceMoved
+            self.board[move.endRow][move.endCol] = move.pieceCaptured
+            self.whiteToMove = not self.whiteToMove
+
         
     #returns an integer representing the piece in a given space
     def getPiece(self, row, col):
