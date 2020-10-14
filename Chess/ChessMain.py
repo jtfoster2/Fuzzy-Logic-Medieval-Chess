@@ -16,7 +16,6 @@ import random
 #import backend files
 from Backend import ChessEngine #facilitates piece movement
 from Backend import LegalMoveGen #generates legal moves
-
 #set game properties
 WIDTH = 1000
 HEIGHT = 600 #size of window
@@ -268,7 +267,7 @@ def drawHud(screen):
     button("MENU", 890, 10, 100, 50, dark_grey, grey, menuScreen)
     button("RULES", 890, 70, 100, 50, dark_grey, grey, infoScreen)
     button("QUIT", 890, 130, 100, 50, dark_grey, grey, quit)
-    button("END TURN", 775, 360, 200, 50, p.Color("lightgreen"), p.Color("brown1"), gs.turnSwap)
+    button("END TURN", 775, 360, 200, 50, p.Color("lightgreen"), p.Color("brown1"), gs.treg.turnSwap)
 
     #capture failed/ succeeded
     p.draw.rect(screen, p.Color("black"), (610, 440, 380, 75), 4)

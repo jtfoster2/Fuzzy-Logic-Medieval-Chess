@@ -11,6 +11,7 @@ Project Area: Back End
 File Description: This file is responsible for storing all the information about current state of chess game. It also contains code for the move log and utility functions for gathering information about a piece ata given location.
 """
 
+from Backend import TurnRegulator
 #Expresses state of game
 #global turn variable
 currentTurn = 0 # 0=white, 1=black
@@ -32,96 +33,15 @@ class GameState():
             ["wP1", "wP2", "wP3", "wP4", "wP5", "wP6", "wP7", "wP8"],
             ["wR1", "wN1", "wB1",  "wQ",  "wK", "wB2", "wN2", "wR2"]]
 
-        self.whiteToMove = True
+        self.treg = TurnRegulator.TurnRegulator()
         self.moveLog = []
         self.movedPieces = []
-        
-        #TURN REGULATION
-        #separate pieces into corps, make flags for each's movement per turn
-        self.whiteCorpL = ["wB1", "wN1", "wP1", "wP2", "wP3"]
-        self.whiteLeftMoveFlag = False
-        self.whiteCorpC = ["wK", "wQ", "wR1", "wR2", "wP4", "wP5"]
-        self.whiteCenterMoveFlag = False
-        self.whiteCorpR = ["wB2", "wN2", "wP6", "wP7", "wP8"]
-        self.whiteRightMoveFlag = False
-
-
-        self.blackCorpL = ["bB1", "bN1", "bP1", "bP2", "bP3"]
-        self.blackLeftMoveFlag = False
-        self.blackCorpC = ["bK", "bQ", "bR1", "bR2", "bP4", "bP5"]
-        self.blackCenterMoveFlag = False
-        self.blackCorpR = ["bB2", "bN2", "bP6", "bP7", "bP8"]
-        self.blackRightMoveFlag = False
-
-    #returns amount of corps that have used their moves for the turn
-    def turnMoveCount(self):
-        global currentTurn
-        count = 0
-
-        if currentTurn == 0:
-            if self.whiteLeftMoveFlag == True:
-                count += 1
-            if self.whiteCenterMoveFlag == True:
-                count+= 1
-            if self.whiteRightMoveFlag == True:
-                count+= 1
-        if currentTurn == 1:
-            if self.blackLeftMoveFlag == True:
-                count += 1
-            if self.blackCenterMoveFlag == True:
-                count += 1
-            if self.blackRightMoveFlag == True:
-                count += 1
-        return count
-    
-    #Switches the turn
-    def turnSwap(self):
-        global currentTurn
-        self.whiteToMove = not self.whiteToMove
-
-        if currentTurn == 0:
-            self.whiteLeftMoveFlag = False
-            self.whiteCenterMoveFlag = False
-            self.whiteRightMoveFlag = False
-            currentTurn = 1
-            print("current turn (in method): ", currentTurn)
-        elif currentTurn == 1:
-            self.blackLeftMoveFlag = False
-            self.blackCenterMoveFlag = False
-            self.blackRightMoveFlag = False
-            currentTurn = 0
-            print("current turn (in method): ", currentTurn)
-        print("turn complete, swapping sides")
-
-
     #moves pieces and logs moves
     def makeMove(self, move):
-        global currentTurn
-
         self.movecomplete = False
 
-        #limit each corp to one move per turn (aside from knights)
-        if (move.pieceMoved in self.whiteCorpL) and (self.whiteLeftMoveFlag == True) and (move.pieceMoved[0:2] != "wN"):
-            print("Error: White left Corp has already moved this turn")
-            return
-        if (move.pieceMoved in self.whiteCorpC) and (self.whiteCenterMoveFlag == True) and (move.pieceMoved[0:2] != "wN"):
-            print("Error: White center Corp has already moved this turn")
-            return
-        if (move.pieceMoved in self.whiteCorpR) and (self.whiteRightMoveFlag == True) and (move.pieceMoved[0:2] != "wN"):
-            print("Error: White right Corp has already moved this turn")
-            return
-        if (move.pieceMoved in self.blackCorpL) and (self.blackLeftMoveFlag == True) and (move.pieceMoved[0:2] != "bN"):
-            print("Error: Black left Corp has already moved this turn")
-            return
-        if (move.pieceMoved in self.blackCorpC) and (self.blackCenterMoveFlag == True) and (move.pieceMoved[0:2] != "bN"):
-            print("Error: Black center Corp has already moved this turn")
-            return
-        if (move.pieceMoved in self.blackCorpR) and (self.blackRightMoveFlag == True) and (move.pieceMoved[0:2] != "bN"):
-            print("Error: Black right Corp has already moved this turn")
-            return
-
         #complete move
-        elif (currentTurn == 0 and move.pieceMoved[0] == "w") or (currentTurn == 1 and move.pieceMoved[0] == "b"):
+        if ((self.treg.currentTurn == 0 and move.pieceMoved[0] == "w") or (self.treg.currentTurn == 1 and move.pieceMoved[0] == "b")) and self.treg.Movable(move.pieceMoved) == True:
             if self.getPiece(move.startRow, move.startCol) !=2 or self.getPiece(move.endRow, move.endCol) == 0:
                 move.moveCompleted = True 
                 self.board[move.startRow][move.startCol] = "---"
@@ -139,27 +59,27 @@ class GameState():
             #Update Corps Move Flags
             if move.pieceMoved[1:2] != "N":    #exclude knights
 
-                if move.pieceMoved in self.whiteCorpL:
-                    self.whiteLeftMoveFlag = True
-                if move.pieceMoved in self.whiteCorpC:
-                    self.whiteCenterMoveFlag = True
-                if move.pieceMoved in self.whiteCorpR:
-                    self.whiteRightMoveFlag = True
-                if move.pieceMoved in self.blackCorpL:
-                    self.blackLeftMoveFlag = True
-                if move.pieceMoved in self.blackCorpC:
-                    self.blackCenterMoveFlag = True
-                if move.pieceMoved in self.blackCorpR:
-                    self.blackRightMoveFlag = True
-
-            if self.turnMoveCount() == 3:
+                if move.pieceMoved in self.treg.whiteCorpL:
+                    self.treg.whiteLeftMoveFlag = True
+                if move.pieceMoved in self.treg.whiteCorpC:
+                    self.treg.whiteCenterMoveFlag = True
+                if move.pieceMoved in self.treg.whiteCorpR:
+                    self.treg.whiteRightMoveFlag = True
+                if move.pieceMoved in self.treg.blackCorpL:
+                    self.treg.blackLeftMoveFlag = True
+                if move.pieceMoved in self.treg.blackCorpC:
+                    self.treg.blackCenterMoveFlag = True
+                if move.pieceMoved in self.treg.blackCorpR:
+                    self.treg.blackRightMoveFlag = True
+            if self.treg.currentTurn == 0:
+                leaders = self.treg.leadersW
+            else:
+                leaders = self.treg.leadersB
+            if self.treg.turnMoveCount() == leaders:
                 print("Move limit reached, End turn")
-                self.turnSwap()
-                print("New Turn: ", currentTurn )
+                self.treg.turnSwap()
+                print("New Turn: ", self.treg.currentTurn )
                 
-        elif (currentTurn == 0 and move.pieceMoved[0] == "b") or (currentTurn == 1 and move.pieceMoved[0] == "w"):
-            print("Error: Move made on opponent's turn")
-        
     #returns an integer representing the piece in a given space
     def getPiece(self, row, col):
         if row > 7 or row < 0 or col > 7 or col < 0:
