@@ -213,8 +213,6 @@ def chessGame():
                             if move.moveCompleted == True:
                                 movesMade += 1  # add 1 move
                                 print("Move number:" + str(movesMade))
-
-                        elif (vmov.isLegalMove(playerClicks[1][0], playerClicks[1][1]) == False) and (gs.getTurnstate() != vmov.piece_color):
                         else:
                             print("ERROR: Move Not Legal")  # error message for illegal moves
 
