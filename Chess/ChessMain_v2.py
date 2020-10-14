@@ -20,7 +20,7 @@ from Backend import LegalMoveGen #generates legal moves
 #set game properties
 WIDTH = 1000
 HEIGHT = 600 #size of window
-DIMENSION = 8 
+DIMENSION = 8
 SQ_SIZE = HEIGHT // DIMENSION
 MAX_FPS = 15 #frames per second
 IMAGES = {}
@@ -185,14 +185,16 @@ def chessGame():
                     if gs.getPiece(playerClicks[0][0], playerClicks[0][1]) != 0:  # makes sure an empty square is not set to be moved
                         vmov.generate(playerClicks[0][0], playerClicks[0][1])  # generates legal moves
                         if vmov.isLegalMove(playerClicks[1][0], playerClicks[1][1]) == True:  # checks if legal move
-                            print(move.getChessNotation())  # prints move log entry
                             gs.makeMove(move)  # makes move
+                            if move.moveCompleted == True: #if move is successful
+                                print(move.getChessNotation())  # prints move log entry
                             if vmov.piece_type == 3:
                                 vmov.knight_special_attack = True  # indicator that if knight attacks after moving, dice roll is decreased by one
 
                             # tracks number of moves made after move piece
-                            movesMade += 1 # add 1 move
-                            print("Move number:" + str(movesMade))
+                            if move.moveCompleted == True:
+                                movesMade += 1 # add 1 move
+                                print("Move number:" + str(movesMade))
 
                         elif vmov.isLegalAttack(playerClicks[1][0], playerClicks[1][1]) == True:  # checks if legal attack
                             roll = random.randint(1, 6)
@@ -201,15 +203,21 @@ def chessGame():
                                 vmov.knight_special_attack = False
                             if gs.validate_capture(vmov.piece_type, gs.getPiece(playerClicks[1][0], playerClicks[1][1]), roll):
                                 if vmov.piece_type != 2:
-                                    print(move.getChessNotation())  # prints move log entry
+                                    if move.moveCompleted == True: #if move is successful
+                                        print(move.getChessNotation())  # prints move log entry
                                     gs.makeMove(move)  # makes move
                                 else:
                                     gs.board[playerClicks[1][0]][playerClicks[1][1]] = "--"
 
                             # tracks number of moves made after attack
-                            movesMade += 1  # add 1 move
-                            print("Move number:" + str(movesMade))
+                            if move.moveCompleted == True:
+                                movesMade += 1  # add 1 move
+                                print("Move number:" + str(movesMade))
 
+                        elif (vmov.isLegalMove(playerClicks[1][0], playerClicks[1][1]) == False) and (vmov.current_turn != vmov.piece_color):
+                            print("ERROR: Attempted move on incorrect turn")
+                        elif (vmov.isLegalAttack(playerClicks[1][0], playerClicks[1][1]) == False) and (vmov.current_turn != vmov.piece_color):
+                            print("ERROR: Attempted move on incorrect turn")
                         else:
                             print("ERROR: Move Not Legal")  # error message for illegal moves
 
@@ -340,8 +348,8 @@ def drawPieces(screen, board):
     for r in range(DIMENSION):
         for c in range(DIMENSION):
             piece = board[r][c]
-            if piece != "--":  # not an empty square
-                screen.blit(IMAGES[piece], p.Rect(c*SQ_SIZE, r*SQ_SIZE, SQ_SIZE, SQ_SIZE))
+            if piece != "---":  # not an empty square
+                screen.blit(IMAGES[piece[0:2]], p.Rect(c*SQ_SIZE, r*SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
 def highlightedMoves(screen, gs, validMoves, attackMoves, sqSelected):
     #validMoves = [(1,6),(2,6)]
