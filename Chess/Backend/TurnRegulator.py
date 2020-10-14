@@ -27,14 +27,15 @@ class TurnRegulator():
     blackCorpR = ["bB2", "bN2", "bP6", "bP7", "bP8"]
     blackRightMoveFlag = False
     
-    wN1Flag =False
-    wN2Flag = False
-    bN1Flag = False
-    bN2Flag = False
+    wN1Flag =True
+    wN2Flag = True
+    bN1Flag = True
+    bN2Flag = True
     currentTurn = 0
     leadersW = 3
     leadersB = 3
-    
+    attack = 0
+
     #returns amount of corps that have used their moves for the turn
     def turnMoveCount(self):
         count = 0
@@ -108,12 +109,23 @@ class TurnRegulator():
         
         if corp in available:
             return True
+        elif piece == "wN1" and self.wN1Flag == False:
+            self.wN1Flag = True
+            if self.attack == 1:
+                return True
+        elif piece == "wN2" and self.wN2Flag == False:
+            self.wN2Flag = True
+            if self.attack == 1:
+                return True
+        elif piece == "bN1" and self.bN1Flag == False:
+            self.bN1Flag = True
+            if self.attack == 1:
+                return True
+        elif piece == "bN2" and self.bN2Flag == False:
+            self.bN2Flag = True
+            if self.attack == 1:
+                return True
         else:
             return False
-
-
-
-
-
-
+    
 

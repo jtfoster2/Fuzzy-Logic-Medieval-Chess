@@ -46,7 +46,7 @@ class GameState():
         #complete move
         if ((self.treg.currentTurn == 0 and move.pieceMoved[0] == "w") or (self.treg.currentTurn == 1 and move.pieceMoved[0] == "b")) and self.treg.Movable(move.pieceMoved) == True:
             if self.getPiece(move.startRow, move.startCol) !=2 or self.getPiece(move.endRow, move.endCol) == 0:
-                print(self.treg.getCorps(move.pieceMoved))
+
                 move.moveCompleted = True 
                 self.board[move.startRow][move.startCol] = "---"
                 if self.board[move.endRow][move.endCol] != "---":
@@ -64,20 +64,28 @@ class GameState():
                     self.movedPieces.append(move.pieceMoved)
             self.regroup()
             #Update Corps Move Flags
-            if move.pieceMoved[1:2] != "N":    #exclude knights
+            if move.pieceMoved in self.treg.whiteCorpL:
+                self.treg.whiteLeftMoveFlag = True
+            if move.pieceMoved in self.treg.whiteCorpC:
+                self.treg.whiteCenterMoveFlag = True
+            if move.pieceMoved in self.treg.whiteCorpR:
+                self.treg.whiteRightMoveFlag = True
+            if move.pieceMoved in self.treg.blackCorpL:
+                self.treg.blackLeftMoveFlag = True
+            if move.pieceMoved in self.treg.blackCorpC:
+                self.treg.blackCenterMoveFlag = True
+            if move.pieceMoved in self.treg.blackCorpR:
+                self.treg.blackRightMoveFlag = True
+            
+            if move.pieceMoved == "wN1" and self.treg.attack == 0:
+                self.treg.wN1Flag = False
+            if move.pieceMoved == "wN2" and self.treg.attack == 0:
+                self.treg.wN2Flag = False
+            if move.pieceMoved == "bN1" and self.treg.attack == 0:
+                self.treg.bN1Flag = False
+            if move.pieceMoved == "bN2" and self.treg.attack == 0:
+                self.treg.bN2Flag = False
 
-                if move.pieceMoved in self.treg.whiteCorpL:
-                    self.treg.whiteLeftMoveFlag = True
-                if move.pieceMoved in self.treg.whiteCorpC:
-                    self.treg.whiteCenterMoveFlag = True
-                if move.pieceMoved in self.treg.whiteCorpR:
-                    self.treg.whiteRightMoveFlag = True
-                if move.pieceMoved in self.treg.blackCorpL:
-                    self.treg.blackLeftMoveFlag = True
-                if move.pieceMoved in self.treg.blackCorpC:
-                    self.treg.blackCenterMoveFlag = True
-                if move.pieceMoved in self.treg.blackCorpR:
-                    self.treg.blackRightMoveFlag = True
 
             if self.treg.currentTurn == 0:
                 leaders = self.treg.leadersW

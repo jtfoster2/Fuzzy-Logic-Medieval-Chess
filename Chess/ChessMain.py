@@ -179,12 +179,14 @@ def chessGame():
                     if gs.getPiece(playerClicks[0][0], playerClicks[0][1]) != 0:  # makes sure an empty square is not set to be moved
                         vmov.generate(playerClicks[0][0], playerClicks[0][1])  # generates legal moves
                         if vmov.isLegalMove(playerClicks[1][0], playerClicks[1][1]) == True:  # checks if legal move
+                            gs.treg.attack = 0
                             gs.makeMove(move)  # makes move
                             if move.moveCompleted == True: #if move is successful
                                 print(move.getChessNotation())  # prints move log entry
                             if vmov.piece_type == 3:
                                 vmov.knight_special_attack = True  # indicator that if knight attacks after moving, dice roll is decreased by one
-                        elif vmov.isLegalAttack(playerClicks[1][0], playerClicks[1][1]) == True:  # checks if legal attack
+                        elif vmov.isLegalAttack(playerClicks[1][0], playerClicks[1][1]) == True:# checks if legal attack
+                            gs.treg.attack = 1
                             roll = random.randint(1, 6)
                             if vmov.knight_special_attack == True and vmov.piece_type == 3:
                                 roll = roll - 1
