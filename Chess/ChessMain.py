@@ -57,8 +57,8 @@ def button(msg,x,y,w,h,ic,ac,action=None):
 
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         p.draw.rect(screen, ac,(x,y,w,h))
-
-        if click[0] == 1 and action != None:
+        event = p.event.wait()
+        if event.type == p.MOUSEBUTTONDOWN:
             action()
     else:
         p.draw.rect(screen, ic,(x,y,w,h))
