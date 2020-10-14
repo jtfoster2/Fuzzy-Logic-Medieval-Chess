@@ -269,11 +269,20 @@ def drawHud(screen):
     button("QUIT", 890, 130, 100, 50, dark_grey, grey, quit)
     button("END TURN", 775, 360, 200, 50, p.Color("lightgreen"), p.Color("brown1"), gs.treg.turnSwap)
 
-    #capture failed/ succeeded
+    # whose turn
     p.draw.rect(screen, p.Color("black"), (610, 440, 380, 75), 4)
-    TextSurf, TextRect = text_objects("Your Turn", medText)
-    TextRect.center = (800, 480)
-    screen.blit(TextSurf, TextRect)
+    if gs.treg.currentTurn == 0:
+        medText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 20)
+        TextSurf, TextRect = text_objects("White Turn", medText)
+        TextRect.center = (800, 480)
+        screen.blit(TextSurf, TextRect)
+    if gs.treg.currentTurn == 1:
+        medText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 20)
+        TextSurf, TextRect = text_objects("Black Turn", medText)
+        TextRect.center = (800, 480)
+        screen.blit(TextSurf, TextRect)
+
+    #capture fail / succeed
     #TextSurf, TextRect = text_objects("Capture Failed", medText)
     #TextRect.center = (800, 480)
     #screen.blit(TextSurf, TextRect)
@@ -297,9 +306,13 @@ def drawHud(screen):
     screen.blit(TextSurf, TextRect)
 
     #cross out turn indicator
-    #p.draw.rect(screen, p.Color("red"), (625, 570, 110, 2))
-    p.draw.rect(screen, p.Color("red"), (750, 570, 110, 2))
-    #p.draw.rect(screen, p.Color("red"), (875, 570, 110, 2))
+    # cross out turn indicator
+    if gs.treg.whiteLeftMoveFlag == True:
+        p.draw.rect(screen, p.Color("red"), (625, 570, 110, 2))
+    if  gs.treg.whiteCenterMoveFlag == True:
+        p.draw.rect(screen, p.Color("red"), (750, 570, 110, 2))
+    if gs.treg.whiteRightMoveFlag == True:
+        p.draw.rect(screen, p.Color("red"), (875, 570, 110, 2))
 
     #visual dice being rolled ?
 
