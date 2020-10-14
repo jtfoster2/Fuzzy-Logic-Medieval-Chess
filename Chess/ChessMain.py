@@ -307,11 +307,11 @@ def drawHud(screen):
 
     #cross out turn indicator
     # cross out turn indicator
-    if gs.treg.whiteLeftMoveFlag == True:
+    if gs.treg.whiteLeftMoveFlag == True or "wB1" in gs.taken_pieces:
         p.draw.rect(screen, p.Color("red"), (625, 570, 110, 2))
     if  gs.treg.whiteCenterMoveFlag == True:
         p.draw.rect(screen, p.Color("red"), (750, 570, 110, 2))
-    if gs.treg.whiteRightMoveFlag == True:
+    if gs.treg.whiteRightMoveFlag == True or "wB2" in gs.taken_pieces:
         p.draw.rect(screen, p.Color("red"), (875, 570, 110, 2))
 
     #visual dice being rolled ?
