@@ -271,7 +271,7 @@ def drawHud(screen):
     button("MENU", 890, 10, 100, 50, dark_grey, grey, menuScreen)
     button("RULES", 890, 70, 100, 50, dark_grey, grey, infoScreen)
     button("QUIT", 890, 130, 100, 50, dark_grey, grey, quit)
-    button("END TURN", 775, 360, 200, 50, p.Color("lightgreen"), p.Color("brown1"), main)
+    button("END TURN", 775, 360, 200, 50, p.Color("lightgreen"), p.Color("brown1"), gs.turnSwap)
 
     #capture failed/ succeeded
     p.draw.rect(screen, p.Color("black"), (610, 440, 380, 75), 4)
