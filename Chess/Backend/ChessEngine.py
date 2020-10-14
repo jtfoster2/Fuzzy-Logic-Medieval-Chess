@@ -150,7 +150,9 @@ class GameState():
                 print("Move limit reached, End turn")
                 self.turnSwap()
                 print("New Turn: ", currentTurn )
-
+                
+        elif (currentTurn == 0 and move.pieceMoved[0] == "b") or (currentTurn == 1 and move.pieceMoved[0] == "w"):
+            print("Error: Move made on opponent's turn")
         
     #returns an integer representing the piece in a given space
     def getPiece(self, row, col):
