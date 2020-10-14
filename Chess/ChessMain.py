@@ -197,7 +197,7 @@ def chessGame():
                                         print(move.getChessNotation())  # prints move log entry
                                     gs.makeMove(move)  # makes move
                                 else:
-                                    gs.board[playerClicks[1][0]][playerClicks[1][1]] = "--"
+                                    gs.board[playerClicks[1][0]][playerClicks[1][1]] = "---"
                         else:
                             print("ERROR: Move Not Legal")  # error message for illegal moves
                     sqSelected = ()  # reset user clicks
