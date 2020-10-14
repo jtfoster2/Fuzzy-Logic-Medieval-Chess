@@ -138,14 +138,10 @@ gs = ChessEngine.GameState()
 mov = LegalMoveGen.LegalMoveGen(gs)
 vmov = LegalMoveGen.VariantLegalMoveGen(gs)
 
-global movesMade
-
 #game play function
 def chessGame():
     attack_array = []
     valid_array = []
-
-    movesMade = 0
 
     # initialize backend (moved up)
     #gs = ChessEngine.GameState()
@@ -190,12 +186,6 @@ def chessGame():
                                 print(move.getChessNotation())  # prints move log entry
                             if vmov.piece_type == 3:
                                 vmov.knight_special_attack = True  # indicator that if knight attacks after moving, dice roll is decreased by one
-
-                            # tracks number of moves made after move piece
-                            if move.moveCompleted == True:
-                                movesMade += 1 # add 1 move
-                                print("Move number:" + str(movesMade))
-
                         elif vmov.isLegalAttack(playerClicks[1][0], playerClicks[1][1]) == True:  # checks if legal attack
                             roll = random.randint(1, 6)
                             if vmov.knight_special_attack == True and vmov.piece_type == 3:
@@ -208,26 +198,13 @@ def chessGame():
                                     gs.makeMove(move)  # makes move
                                 else:
                                     gs.board[playerClicks[1][0]][playerClicks[1][1]] = "--"
-
-                            # tracks number of moves made after attack
-                            if move.moveCompleted == True:
-                                movesMade += 1  # add 1 move
-                                print("Move number:" + str(movesMade))
                         else:
                             print("ERROR: Move Not Legal")  # error message for illegal moves
-
                     sqSelected = ()  # reset user clicks
                     playerClicks = []  # clear player clicks
                     vmov.clearGenerated()  # clear generated legal moves
-            elif e.type == p.KEYDOWN:
-                if e.key == p.K_u: #undo move if 'u' is pressed
-                    gs.undoMove()
-                    movesMade -= 1
-
-
         # draw board
         drawGameState(screen, gs, valid_array, attack_array, sqSelected)
-
         p.display.flip()
 
 
@@ -298,9 +275,12 @@ def drawHud(screen):
 
     #capture failed/ succeeded
     p.draw.rect(screen, p.Color("black"), (610, 440, 380, 75), 4)
-    TextSurf, TextRect = text_objects("Capture Failed", medText)
+    TextSurf, TextRect = text_objects("Your Turn", medText)
     TextRect.center = (800, 480)
     screen.blit(TextSurf, TextRect)
+    #TextSurf, TextRect = text_objects("Capture Failed", medText)
+    #TextRect.center = (800, 480)
+    #screen.blit(TextSurf, TextRect)
     #TextSurf, TextRect = text_objects("Capture Succeeded", medText)
     #TextRect.center = (800, 480)
     #screen.blit(TextSurf, TextRect)
