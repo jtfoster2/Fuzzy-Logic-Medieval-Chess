@@ -214,10 +214,7 @@ def chessGame():
                                 movesMade += 1  # add 1 move
                                 print("Move number:" + str(movesMade))
 
-                        elif (vmov.isLegalMove(playerClicks[1][0], playerClicks[1][1]) == False) and (vmov.current_turn != vmov.piece_color):
-                            print("ERROR: Attempted move on incorrect turn")
-                        elif (vmov.isLegalAttack(playerClicks[1][0], playerClicks[1][1]) == False) and (vmov.current_turn != vmov.piece_color):
-                            print("ERROR: Attempted move on incorrect turn")
+                        elif (vmov.isLegalMove(playerClicks[1][0], playerClicks[1][1]) == False) and (gs.getTurnstate() != vmov.piece_color):
                         else:
                             print("ERROR: Move Not Legal")  # error message for illegal moves
 
