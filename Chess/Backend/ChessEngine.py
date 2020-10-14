@@ -36,6 +36,9 @@ class GameState():
         self.treg = TurnRegulator.TurnRegulator()
         self.moveLog = []
         self.movedPieces = []
+        self.taken_pieces =[]
+        self.alive_white_leaders = ["wB1", "wK", "wB2"]
+        self.alive_black_leaders = ["bB1", "bK", "bB2"]
     #moves pieces and logs moves
     def makeMove(self, move):
         self.movecomplete = False
@@ -43,19 +46,23 @@ class GameState():
         #complete move
         if ((self.treg.currentTurn == 0 and move.pieceMoved[0] == "w") or (self.treg.currentTurn == 1 and move.pieceMoved[0] == "b")) and self.treg.Movable(move.pieceMoved) == True:
             if self.getPiece(move.startRow, move.startCol) !=2 or self.getPiece(move.endRow, move.endCol) == 0:
+                print(self.treg.getCorps(move.pieceMoved))
                 move.moveCompleted = True 
                 self.board[move.startRow][move.startCol] = "---"
+                if self.board[move.endRow][move.endCol] != "---":
+                    self.taken_pieces.append(self.board[move.endRow][move.endCol])
                 self.board[move.endRow][move.endCol] = move.pieceMoved
                 self.moveLog.append(move)  # log the move to potentially display it later
                 if move.pieceMoved not in self.movedPieces:
                     self.movedPieces.append(move.pieceMoved)
             else:
                 move.moveCompleted = True
+                self.taken_pieces.append(self.board[move.endRow][move.endCol])
                 self.board[move.endRow][move.endCol] = "---"
                 self.board[move.startRow][move.startCol] = move.pieceMoved
                 if move.pieceMoved not in self.movedPieces:
                     self.movedPieces.append(move.pieceMoved)
-
+            self.regroup()
             #Update Corps Move Flags
             if move.pieceMoved[1:2] != "N":    #exclude knights
 
@@ -71,6 +78,7 @@ class GameState():
                     self.treg.blackCenterMoveFlag = True
                 if move.pieceMoved in self.treg.blackCorpR:
                     self.treg.blackRightMoveFlag = True
+
             if self.treg.currentTurn == 0:
                 leaders = self.treg.leadersW
             else:
@@ -79,7 +87,34 @@ class GameState():
                 print("Move limit reached, End turn")
                 self.treg.turnSwap()
                 print("New Turn: ", self.treg.currentTurn )
-                
+    
+    def regroup(self):
+        for piece in self.taken_pieces:
+            if piece in self.alive_white_leaders:
+                self.alive_white_leaders.remove(piece)
+            if piece in self.alive_black_leaders:
+                self.alive_black_leaders.remove(piece)
+
+        self.treg.leadersW = len(self.alive_white_leaders)
+        self.treg.leadersB = len(self.alive_black_leaders)
+        
+        if "wB1" in self.taken_pieces and len(self.treg.whiteCorpL) != 0:
+            for piece in self.treg.whiteCorpL:
+                self.treg.whiteCorpC.append(piece)
+            self.treg.whiteCorpL.clear()
+        if "wB2" in self.taken_pieces and len(self.treg.whiteCorpR) != 0:
+            for piece in self.treg.whiteCorpR:
+                self.treg.whiteCorpC.append(piece)
+            self.treg.whiteCorpR.clear()
+        if "bB1" in self.taken_pieces and len(self.treg.blackCorpL) != 0:
+            for piece in self.treg.blackCorpL:
+                self.treg.blackCorpC.append(piece)
+            self.treg.blackCorpL.clear()
+        if "bB2" in self.taken_pieces and len(self.treg.blackCorpR) != 0:
+            for piece in self.treg.blackCorpR:
+                self.treg.blackCorpC.append(piece)
+            self.treg.blackCorpR.clear()
+
     #returns an integer representing the piece in a given space
     def getPiece(self, row, col):
         if row > 7 or row < 0 or col > 7 or col < 0:
