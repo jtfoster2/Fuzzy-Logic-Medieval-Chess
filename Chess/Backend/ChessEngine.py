@@ -15,7 +15,7 @@ File Description: This file is responsible for storing all the information about
 #global turn variable
 currentTurn = 0 # 0=white, 1=black
 class GameState():
-
+    
     def __init__(self):
         # board is 8x8 2d list, each element of list has 2 characters.
         # the first character represents the color of the piece, 'b' or 'w'
@@ -73,26 +73,25 @@ class GameState():
             if self.blackRightMoveFlag == True:
                 count += 1
         return count
-
+    
     #Switches the turn
     def turnSwap(self):
         global currentTurn
         self.whiteToMove = not self.whiteToMove
 
         if currentTurn == 0:
-            currentTurn = 1
-            print("current turn (in method): ", currentTurn)
             self.whiteLeftMoveFlag = False
             self.whiteCenterMoveFlag = False
             self.whiteRightMoveFlag = False
+            currentTurn = 1
+            print("current turn (in method): ", currentTurn)
         elif currentTurn == 1:
-            currentTurn = 0
             self.blackLeftMoveFlag = False
             self.blackCenterMoveFlag = False
             self.blackRightMoveFlag = False
-
+            currentTurn = 0
+            print("current turn (in method): ", currentTurn)
         print("turn complete, swapping sides")
-        return currentTurn
 
 
     #moves pieces and logs moves
@@ -123,12 +122,19 @@ class GameState():
 
         #complete move
         elif (currentTurn == 0 and move.pieceMoved[0] == "w") or (currentTurn == 1 and move.pieceMoved[0] == "b"):
-            move.moveCompleted = True
-            self.board[move.startRow][move.startCol] = "---"
-            self.board[move.endRow][move.endCol] = move.pieceMoved
-            self.moveLog.append(move)  # log the move to potentially display it later
-            if move.pieceMoved not in self.movedPieces:
-                self.movedPieces.append(move.pieceMoved)
+            if self.getPiece(move.startRow, move.startCol) !=2 or self.getPiece(move.endRow, move.endCol) == 0:
+                move.moveCompleted = True 
+                self.board[move.startRow][move.startCol] = "---"
+                self.board[move.endRow][move.endCol] = move.pieceMoved
+                self.moveLog.append(move)  # log the move to potentially display it later
+                if move.pieceMoved not in self.movedPieces:
+                    self.movedPieces.append(move.pieceMoved)
+            else:
+                move.moveCompleted = True
+                self.board[move.endRow][move.endCol] = "---"
+                self.board[move.startRow][move.startCol] = move.pieceMoved
+                if move.pieceMoved not in self.movedPieces:
+                    self.movedPieces.append(move.pieceMoved)
 
             #Update Corps Move Flags
             if move.pieceMoved[1:2] != "N":    #exclude knights

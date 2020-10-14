@@ -175,7 +175,6 @@ def chessGame():
                     vmov.generate(row, col)
                     attack_array = vmov.legal_attacks
                     valid_array = vmov.legal_moves
-                    print("The new legal :" + str(valid_array))
                 if len(playerClicks) == 2:  # after second click
                     move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
                     if gs.getPiece(playerClicks[0][0], playerClicks[0][1]) != 0:  # makes sure an empty square is not set to be moved
@@ -192,12 +191,10 @@ def chessGame():
                                 roll = roll - 1
                                 vmov.knight_special_attack = False
                             if gs.validate_capture(vmov.piece_type, gs.getPiece(playerClicks[1][0], playerClicks[1][1]), roll):
-                                if vmov.piece_type != 2:
-                                    if move.moveCompleted == True: #if move is successful
-                                        print(move.getChessNotation())  # prints move log entry
-                                    gs.makeMove(move)  # makes move
-                                else:
-                                    gs.board[playerClicks[1][0]][playerClicks[1][1]] = "---"
+                            
+                                if move.moveCompleted == True: #if move is successful
+                                    print(move.getChessNotation())  # prints move log entry
+                                gs.makeMove(move)  # makes move
                         else:
                             print("ERROR: Move Not Legal")  # error message for illegal moves
                     sqSelected = ()  # reset user clicks
