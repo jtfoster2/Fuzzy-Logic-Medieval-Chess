@@ -61,7 +61,10 @@ class TurnRegulator():
 
     #Switches the turn
     def turnSwap(self):
-
+        self.wN1Flag = True
+        self.wN2Flag = True
+        self.bN1Flag = True
+        self.bN2Flag = True
         if self.currentTurn == 0:
             self.whiteLeftMoveFlag = False
             self.whiteCenterMoveFlag = False
