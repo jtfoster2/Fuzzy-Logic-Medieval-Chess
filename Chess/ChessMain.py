@@ -360,13 +360,13 @@ def drawHud(screen):
         screen.blit(TextSurf, TextRect)
     if gs.treg.hudCapture == 3:
         p.draw.rect(screen, p.Color("black"), (775, 260, 200, 30), 4)
-        p.draw.rect(screen, p.Color("red"), (775, 260, 200, 30))
+        p.draw.rect(screen, p.Color("yellow"), (775, 260, 200, 30))
         TextSurf, TextRect = text_objects("Corp Moved", smallText)
         TextRect.center = (880, 275)
         screen.blit(TextSurf, TextRect)
     if gs.treg.hudCapture == 4:
         p.draw.rect(screen, p.Color("black"), (775, 260, 200, 30), 4)
-        p.draw.rect(screen, p.Color("red"), (775, 260, 200, 30))
+        p.draw.rect(screen, p.Color("orange"), (775, 260, 200, 30))
         TextSurf, TextRect = text_objects("Illegal Move", smallText)
         TextRect.center = (880, 275)
         screen.blit(TextSurf, TextRect)
