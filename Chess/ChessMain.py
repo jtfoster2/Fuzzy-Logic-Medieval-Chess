@@ -195,7 +195,23 @@ def chessGame():
                             if move.moveCompleted == True: #if move is successful
                                 print(move.getChessNotation())  # prints move log entry
                             gs.makeMove(move)  # makes move
-                        elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "wN1" and gs.treg.wN1Flag == False:
+                        else:
+                            piece = gs.board[playerClicks[0][0]][playerClicks[0][1]]
+
+                            if piece in gs.treg.whiteCorpL:
+                                gs.treg.whiteLeftMoveFlag = True
+                            if piece in gs.treg.whiteCorpC:
+                                gs.treg.whiteCenterMoveFlag = True
+                            if piece in gs.treg.whiteCorpR:
+                                gs.treg.whiteRightMoveFlag = True
+                            if piece in gs.treg.blackCorpL:
+                                gs.treg.blackLeftMoveFlag = True
+                            if piece in gs.treg.blackCorpC:
+                                gs.treg.blackCenterMoveFlag = True
+                            if piece in gs.treg.blackCorpR:
+                                gs.treg.blackRightMoveFlag = True
+
+                        if gs.board[playerClicks[0][0]][playerClicks[0][1]] == "wN1" and gs.treg.wN1Flag == False:
                             gs.treg.wN1Flag = True
                         elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "wN2" and gs.treg.wN2Flag == False:
                             gs.treg.wN2Flag = True
