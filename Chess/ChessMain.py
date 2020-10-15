@@ -228,7 +228,7 @@ def chessGame():
                         gs.treg.hudCapture = 3
                     else:
                         print("ERROR: Move Not Legal")  # error message for illegal moves
-                        
+                        gs.treg.hudCapture = 4
                     sqSelected = ()  # reset user clicks
                     playerClicks = []  # clear player clicks
                     vmov.clearGenerated()  # clear generated legal moves
@@ -358,6 +358,20 @@ def drawHud(screen):
         TextSurf, TextRect = text_objects("Capture Failed", smallText)
         TextRect.center = (880, 275)
         screen.blit(TextSurf, TextRect)
+    if gs.treg.hudCapture == 3:
+        p.draw.rect(screen, p.Color("black"), (775, 260, 200, 30), 4)
+        p.draw.rect(screen, p.Color("red"), (775, 260, 200, 30))
+        TextSurf, TextRect = text_objects("Corp Moved", smallText)
+        TextRect.center = (880, 275)
+        screen.blit(TextSurf, TextRect)
+    if gs.treg.hudCapture == 4:
+        p.draw.rect(screen, p.Color("black"), (775, 260, 200, 30), 4)
+        p.draw.rect(screen, p.Color("red"), (775, 260, 200, 30))
+        TextSurf, TextRect = text_objects("Illegal Move", smallText)
+        TextRect.center = (880, 275)
+        screen.blit(TextSurf, TextRect)
+
+
 
     #moves left indicator
     p.draw.rect(screen, p.Color("gray3"), (610, 420, 380, 175))
