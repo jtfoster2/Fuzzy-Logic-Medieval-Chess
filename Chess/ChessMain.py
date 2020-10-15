@@ -176,31 +176,29 @@ def chessGame():
                     valid_array = vmov.legal_moves
                 if len(playerClicks) == 2:  # after second click
                     move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
-                    if gs.getPiece(playerClicks[0][0], playerClicks[0][1]) != 0:  # makes sure an empty square is not set to be moved
-                        if gs.treg.Movable(gs.board[playerClicks[0][0]][playerClicks[0][1]])==True:
-                            vmov.generate(playerClicks[0][0], playerClicks[0][1])  # generates legal moves
-                            if vmov.isLegalMove(playerClicks[1][0], playerClicks[1][1]) == True:  # checks if legal move
-                                gs.treg.attack = 0
-                                gs.makeMove(move)  # makes move
+                    if gs.treg.Movable(gs.board[playerClicks[0][0]][playerClicks[0][1]])==True or gs.getPiece(playerClicks[0][0], playerClicks[0][1]) == 3:
+                        vmov.generate(playerClicks[0][0], playerClicks[0][1])  # generates legal moves
+                        if vmov.isLegalMove(playerClicks[1][0], playerClicks[1][1]) == True:  # checks if legal move
+                            gs.treg.attack = 0
+                            gs.makeMove(move)  # makes move
+                            if move.moveCompleted == True: #if move is successful
+                                print(move.getChessNotation())  # prints move log entry
+                            if vmov.piece_type == 3:
+                                vmov.knight_special_attack = True  # indicator that if knight attacks after moving, dice roll is decreased by one
+                        elif vmov.isLegalAttack(playerClicks[1][0], playerClicks[1][1]) == True:# checks if legal attack
+                            gs.treg.attack = 1
+                            roll = random.randint(1, 6)
+                            if vmov.knight_special_attack == True and vmov.piece_type == 3:
+                                roll = roll - 1
+                                vmov.knight_special_attack = False
+                            if gs.validate_capture(vmov.piece_type, gs.getPiece(playerClicks[1][0], playerClicks[1][1]), roll):
+                            
                                 if move.moveCompleted == True: #if move is successful
                                     print(move.getChessNotation())  # prints move log entry
-                                if vmov.piece_type == 3:
-                                    vmov.knight_special_attack = True  # indicator that if knight attacks after moving, dice roll is decreased by one
-                            elif vmov.isLegalAttack(playerClicks[1][0], playerClicks[1][1]) == True:# checks if legal attack
-                                gs.treg.attack = 1
-                                roll = random.randint(1, 6)
-                                if vmov.knight_special_attack == True and vmov.piece_type == 3:
-                                    roll = roll - 1
-                                    vmov.knight_special_attack = False
-                                if gs.validate_capture(vmov.piece_type, gs.getPiece(playerClicks[1][0], playerClicks[1][1]), roll):
-                            
-                                    if move.moveCompleted == True: #if move is successful
-                                        print(move.getChessNotation())  # prints move log entry
-                                    gs.makeMove(move)  # makes move
-                            else:
-                                print("ERROR: Move Not Legal")  # error message for illegal moves
+                                gs.makeMove(move)  # makes move
                         else:
-                            print("Error: Corps Already Moved")
+                            print("ERROR: Move Not Legal")  # error message for illegal moves
+                        
                     sqSelected = ()  # reset user clicks
                     playerClicks = []  # clear player clicks
                     vmov.clearGenerated()  # clear generated legal moves
