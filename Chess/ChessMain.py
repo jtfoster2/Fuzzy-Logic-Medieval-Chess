@@ -223,6 +223,9 @@ def chessGame():
 
 
                         
+                    elif gs.treg.Movable(gs.board[playerClicks[0][0]][playerClicks[0][1]]) == False:
+                        print("Error: Corp Already Moved")
+                        gs.treg.hudCapture = 3
                     else:
                         print("ERROR: Move Not Legal")  # error message for illegal moves
                         
