@@ -191,10 +191,20 @@ def chessGame():
                             roll = roll - 1
                             vmov.knight_special_attack = False
                         if gs.validate_capture(vmov.piece_type, gs.getPiece(playerClicks[1][0], playerClicks[1][1]), roll):
-                            
+                                                    
                             if move.moveCompleted == True: #if move is successful
                                 print(move.getChessNotation())  # prints move log entry
                             gs.makeMove(move)  # makes move
+                        elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "wN1" and gs.treg.wN1Flag == False:
+                            gs.treg.wN1Flag = True
+                        elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "wN2" and gs.treg.wN2Flag == False:
+                            gs.treg.wN2Flag = True
+                        elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "bN1" and gs.treg.bN1Flag == False:
+                            gs.treg.bN1Flag = True
+                        elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "bN2" and gs.treg.bN2Flag == False:
+                            gs.treg.bN2Flag = True
+
+                        
                     else:
                         print("ERROR: Move Not Legal")  # error message for illegal moves
                         
