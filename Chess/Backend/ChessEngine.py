@@ -44,7 +44,7 @@ class GameState():
         self.movecomplete = False
 
         #complete move
-        if ((self.treg.currentTurn == 0 and move.pieceMoved[0] == "w") or (self.treg.currentTurn == 1 and move.pieceMoved[0] == "b")) and self.treg.Movable(move.pieceMoved) == True:
+        if ((self.treg.currentTurn == 0 and move.pieceMoved[0] == "w") or (self.treg.currentTurn == 1 and move.pieceMoved[0] == "b")):
             if self.getPiece(move.startRow, move.startCol) !=2 or self.getPiece(move.endRow, move.endCol) == 0:
 
                 move.moveCompleted = True 
@@ -169,41 +169,46 @@ class GameState():
         return turn
 
     # function for die roll, returns true if defending piece is captured
-    def validate_capture(self, attacker, defender, roll):
-        capture = False
-        self.treg.hudDice = roll
-
-        if roll == 6:
-            capture = True
-
-        if roll == 5:
-            if (attacker >= 4) or (attacker == 3 and defender < 5) or (attacker == 2 and defender != 2) or (
-                    attacker == 1 and (defender == 4 or defender == 1)):
-                capture = True
-
-        if roll == 4:
-            if (attacker >= 5 and defender != 2) or (attacker == 4 and (defender == 4 or defender == 1)) or (
-                    attacker == 3 and defender <= 4 and defender != 2) or (attacker == 2 and defender >= 5) or (
-                    attacker == 1 and defender == 1):
-                capture = True
-
-        if roll == 3:
-            if defender == 1 and attacker >= 3:
-                capture = True
-
-        if roll == 2:
-            if defender == 1 and (attacker >= 5 or attacker == 3):
-                capture = True
-
-        if capture == True:
-            print("Capture Successful")
-            # UI hud capture
-            self.treg.hudCapture = 1
+    def validate_capture(self, attacker, defender, roll, move_valid):
+        if move_valid == False:
+            print("Corp Already Moved")
+            self.treg.hudCapture = 3
+            return False
         else:
-            print("Capture Failed")
-            # UI hud capture
-            self.treg.hudCapture = 2
-        return capture
+            capture = False
+            self.treg.hudDice = roll
+
+            if roll == 6:
+                capture = True
+
+            if roll == 5:
+                if (attacker >= 4) or (attacker == 3 and defender < 5) or (attacker == 2 and defender != 2) or (attacker == 1 and (defender == 4 or defender == 1)):
+                    capture = True
+
+            if roll == 4:
+                if (attacker >= 5 and defender != 2) or (attacker == 4 and (defender == 4 or defender == 1)) or (
+                        attacker == 3 and defender <= 4 and defender != 2) or (attacker == 2 and defender >= 5) or (
+                        attacker == 1 and defender == 1):
+                    capture = True
+
+            if roll == 3:
+                if defender == 1 and attacker >= 3:
+                    capture = True
+
+            if roll == 2:
+                if defender == 1 and (attacker >= 5 or attacker == 3):
+                    capture = True
+
+
+            if capture == True:
+                print("Capture Successful")
+                # UI hud capture
+                self.treg.hudCapture = 1
+            else:
+                print("Capture Failed")
+                # UI hud capture
+                self.treg.hudCapture = 2
+            return capture
 
 #used to express information about a move
 class Move():

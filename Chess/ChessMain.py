@@ -164,6 +164,7 @@ def chessGame():
                 location = p.mouse.get_pos()  # (x,y) location of mouse
                 col = location[0]//SQ_SIZE
                 row = location[1]//SQ_SIZE
+                gs.treg.hudCapture = 0
                 if sqSelected == (row, col) or location > (600,600): #or movesMade >= 3:  # the user clicked same square twice / or is outside te board/  (or is out of turns)
                     sqSelected = ()  # deselect
                     vmov.clearGenerated()  # clear generated legal moves
@@ -177,7 +178,7 @@ def chessGame():
                 if len(playerClicks) == 2:  # after second click
                     move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
                     vmov.generate(playerClicks[0][0], playerClicks[0][1])  # generates legal moves
-                    if vmov.isLegalMove(playerClicks[1][0], playerClicks[1][1]) == True:  # checks if legal move
+                    if vmov.isLegalMove(playerClicks[1][0], playerClicks[1][1]) == True and gs.treg.Movable(gs.board[playerClicks[0][0]][playerClicks[0][1]]):  # checks if legal move
                         gs.treg.attack = 0
                         gs.makeMove(move)  # makes move
                         if move.moveCompleted == True: #if move is successful
@@ -190,11 +191,20 @@ def chessGame():
                         if vmov.knight_special_attack == True and vmov.piece_type == 3:
                             roll = roll - 1
                             vmov.knight_special_attack = False
-                        if gs.validate_capture(vmov.piece_type, gs.getPiece(playerClicks[1][0], playerClicks[1][1]), roll):
+                        if gs.validate_capture(vmov.piece_type, gs.getPiece(playerClicks[1][0], playerClicks[1][1]), roll, gs.treg.Movable(gs.board[playerClicks[0][0]][playerClicks[0][1]])):
                                                     
                             if move.moveCompleted == True: #if move is successful
                                 print(move.getChessNotation())  # prints move log entry
                             gs.makeMove(move)  # makes move
+                        
+                        elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "wN1" and gs.treg.wN1Flag == False:
+                            gs.treg.wN1Flag = True
+                        elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "wN2" and gs.treg.wN2Flag == False:
+                            gs.treg.wN2Flag = True
+                        elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "bN1" and gs.treg.bN1Flag == False:
+                            gs.treg.bN1Flag = True
+                        elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "bN2" and gs.treg.bN2Flag == False:
+                            gs.treg.bN2Flag = True
                         else:
                             piece = gs.board[playerClicks[0][0]][playerClicks[0][1]]
 
@@ -211,14 +221,6 @@ def chessGame():
                             if piece in gs.treg.blackCorpR:
                                 gs.treg.blackRightMoveFlag = True
 
-                        if gs.board[playerClicks[0][0]][playerClicks[0][1]] == "wN1" and gs.treg.wN1Flag == False:
-                            gs.treg.wN1Flag = True
-                        elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "wN2" and gs.treg.wN2Flag == False:
-                            gs.treg.wN2Flag = True
-                        elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "bN1" and gs.treg.bN1Flag == False:
-                            gs.treg.bN1Flag = True
-                        elif gs.board[playerClicks[0][0]][playerClicks[0][1]] == "bN2" and gs.treg.bN2Flag == False:
-                            gs.treg.bN2Flag = True
 
                         
                     else:
