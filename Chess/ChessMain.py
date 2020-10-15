@@ -231,46 +231,79 @@ def drawHud(screen):
     hudSize = p.Rect(600,0,400,600)
     p.draw.rect(screen, p.Color("gainsboro"),hudSize)
 
+    largeText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 30)
     medText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 18)
     med_smallText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 15)
     smallText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 12)
 
-    #handle display of captured pieces
-    screen.blit(p.transform.scale(IMAGES['bK'], (50, 50)), (600, 10))
-    screen.blit(p.transform.scale(IMAGES['bQ'], (50, 50)), (600, 60))
-    screen.blit(p.transform.scale(IMAGES['bR'], (50, 50)), (600, 110))
-    screen.blit(p.transform.scale(IMAGES['bR'], (50, 50)), (600, 160))
-    screen.blit(p.transform.scale(IMAGES['bN'], (50, 50)), (600, 210))
-    screen.blit(p.transform.scale(IMAGES['bN'], (50, 50)), (600, 260))
-    screen.blit(p.transform.scale(IMAGES['bB'], (50, 50)), (600, 310))
-    screen.blit(p.transform.scale(IMAGES['bB'], (50, 50)), (600, 360))
+    #displays each taken piece
+    if "bK" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bK'], (50, 50)), (600, 10))
+    if "bQ" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bQ'], (50, 50)), (600, 60))
+    if "bR1" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bR'], (50, 50)), (600, 110))
+    if "bR2" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bR'], (50, 50)), (600, 160))
+    if "bN1" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bN'], (50, 50)), (600, 210))
+    if "bN2" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bN'], (50, 50)), (600, 260))
+    if "bB1" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bB'], (50, 50)), (600, 310))
+    if "bB2" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bB'], (50, 50)), (600, 360))
 
-    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 10))
-    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 60))
-    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 110))
-    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 160))
-    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 210))
-    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 260))
-    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 310))
-    screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 360))
+    if "bP1" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 10))
+    if "bP2" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 60))
+    if "bP3" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 110))
+    if "bP4" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 160))
+    if "bP5" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 210))
+    if "bP6" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 260))
+    if "bP7" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 310))
+    if "bP8" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['bP'], (50, 50)), (640, 360))
 
-    screen.blit(p.transform.scale(IMAGES['wK'], (50, 50)), (680, 10))
-    screen.blit(p.transform.scale(IMAGES['wQ'], (50, 50)), (680, 60))
-    screen.blit(p.transform.scale(IMAGES['wR'], (50, 50)), (680, 110))
-    screen.blit(p.transform.scale(IMAGES['wR'], (50, 50)), (680, 160))
-    screen.blit(p.transform.scale(IMAGES['wN'], (50, 50)), (680, 210))
-    screen.blit(p.transform.scale(IMAGES['wN'], (50, 50)), (680, 260))
-    screen.blit(p.transform.scale(IMAGES['wB'], (50, 50)), (680, 310))
-    screen.blit(p.transform.scale(IMAGES['wB'], (50, 50)), (680, 360))
+    if "wK" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wK'], (50, 50)), (680, 10))
+    if "wQ" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wQ'], (50, 50)), (680, 60))
+    if "wR1" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wR'], (50, 50)), (680, 110))
+    if "wR2" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wR'], (50, 50)), (680, 160))
+    if "wN1" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wN'], (50, 50)), (680, 210))
+    if "wN2" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wN'], (50, 50)), (680, 260))
+    if "wB1" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wB'], (50, 50)), (680, 310))
+    if "wB2" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wB'], (50, 50)), (680, 360))
 
-    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 10))
-    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 60))
-    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 110))
-    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 160))
-    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 210))
-    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 260))
-    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 310))
-    screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 360))
+    if "wP1" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 10))
+    if "wP2" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 60))
+    if "wP3" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 110))
+    if "wP4" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 160))
+    if "wP5" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 210))
+    if "wP6" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 260))
+    if "wP7" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 310))
+    if "wP8" in gs.taken_pieces:
+        screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 360))
 
     #buttons
     button("MENU", 890, 10, 100, 50, p.Color("white"), grey, menuScreen)
@@ -280,12 +313,12 @@ def drawHud(screen):
 
 
     #whose turn
-    if gs.treg.currentTurn == 0:
+    if gs.treg.currentTurn == 0: #white turn
         p.draw.rect(screen, p.Color("white"), (775, 300, 200, 50))
         TextSurf, TextRect = text_objects("White Turn", medText)
         TextRect.center = (880, 325)
         screen.blit(TextSurf, TextRect)
-    if gs.treg.currentTurn == 1:
+    if gs.treg.currentTurn == 1: #black turn
         p.draw.rect(screen, p.Color("black"), (775, 300, 200, 50))
         TextSurf, TextRect = text_objects_white("Black Turn", medText)
         TextRect.center = (880, 325)
@@ -344,7 +377,18 @@ def drawHud(screen):
 
     #visual dice being rolled ?
     # handle display of dice roll
-    screen.blit(p.transform.scale(IMAGES['d1'], (75, 75)), (785, 15))
+    if gs.treg.hudDice == 1:
+        screen.blit(p.transform.scale(IMAGES['d1'], (75, 75)), (785, 15))
+    if gs.treg.hudDice == 2:
+        screen.blit(p.transform.scale(IMAGES['d2'], (75, 75)), (785, 15))
+    if gs.treg.hudDice == 3:
+        screen.blit(p.transform.scale(IMAGES['d3'], (75, 75)), (785, 15))
+    if gs.treg.hudDice == 4:
+        screen.blit(p.transform.scale(IMAGES['d4'], (75, 75)), (785, 15))
+    if gs.treg.hudDice == 5:
+        screen.blit(p.transform.scale(IMAGES['d5'], (75, 75)), (785, 15))
+    if gs.treg.hudDice == 6:
+        screen.blit(p.transform.scale(IMAGES['d6'], (75, 75)), (785, 15))
 
 
 

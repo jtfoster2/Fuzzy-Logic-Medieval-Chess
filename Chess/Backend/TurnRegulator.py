@@ -37,6 +37,7 @@ class TurnRegulator():
     attack = 0
 
     hudCapture = 0
+    hudDice = 0
 
     #returns amount of corps that have used their moves for the turn
     def turnMoveCount(self):

@@ -167,10 +167,11 @@ class GameState():
         if currentTurn == 1:
             turn = 1
         return turn
-    
-    #function for die roll, returns true if defending piece is captured
+
+    # function for die roll, returns true if defending piece is captured
     def validate_capture(self, attacker, defender, roll):
         capture = False
+        self.treg.hudDice = roll
 
         if roll == 6:
             capture = True
@@ -193,13 +194,15 @@ class GameState():
         if roll == 2:
             if defender == 1 and (attacker >= 5 or attacker == 3):
                 capture = True
-        
+
         if capture == True:
             print("Capture Successful")
-            self.treg.hudCapture = 1 #1 is captured
+            # UI hud capture
+            self.treg.hudCapture = 1
         else:
             print("Capture Failed")
-            self.treg.hudCapture = 2 #2 is failed capture
+            # UI hud capture
+            self.treg.hudCapture = 2
         return capture
 
 #used to express information about a move
