@@ -221,7 +221,8 @@ def drawHud(screen):
     hudSize = p.Rect(600,0,400,600)
     p.draw.rect(screen, p.Color("gainsboro"),hudSize)
 
-    medText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 20)
+    medText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 18)
+    med_smallText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 15)
     smallText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 12)
 
     #handle display of captured pieces
@@ -261,62 +262,79 @@ def drawHud(screen):
     screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 310))
     screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 360))
 
-    # handle display of dice roll
-    screen.blit(p.transform.scale(IMAGES['d1'], (75, 75)), (785, 15))
-
-
     #buttons
-    button("MENU", 890, 10, 100, 50, dark_grey, grey, menuScreen)
-    button("RULES", 890, 70, 100, 50, dark_grey, grey, infoScreen)
-    button("QUIT", 890, 130, 100, 50, dark_grey, grey, quit)
+    button("MENU", 890, 10, 100, 50, p.Color("white"), grey, menuScreen)
+    button("RULES", 890, 70, 100, 50, p.Color("white"), grey, infoScreen)
+    button("QUIT", 890, 130, 100, 50, p.Color("white"), grey, quit)
     button("END TURN", 775, 360, 200, 50, p.Color("lightgreen"), p.Color("brown1"), gs.treg.turnSwap)
 
-    # whose turn
-    p.draw.rect(screen, p.Color("black"), (610, 440, 380, 75), 4)
+
+    #whose turn
     if gs.treg.currentTurn == 0:
-        medText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 20)
+        p.draw.rect(screen, p.Color("white"), (775, 300, 200, 50))
         TextSurf, TextRect = text_objects("White Turn", medText)
-        TextRect.center = (800, 480)
+        TextRect.center = (880, 325)
         screen.blit(TextSurf, TextRect)
     if gs.treg.currentTurn == 1:
-        medText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 20)
-        TextSurf, TextRect = text_objects("Black Turn", medText)
-        TextRect.center = (800, 480)
+        p.draw.rect(screen, p.Color("black"), (775, 300, 200, 50))
+        TextSurf, TextRect = text_objects_white("Black Turn", medText)
+        TextRect.center = (880, 325)
         screen.blit(TextSurf, TextRect)
 
     #capture fail / succeed
-    #TextSurf, TextRect = text_objects("Capture Failed", medText)
-    #TextRect.center = (800, 480)
-    #screen.blit(TextSurf, TextRect)
-    #TextSurf, TextRect = text_objects("Capture Succeeded", medText)
-    #TextRect.center = (800, 480)
-    #screen.blit(TextSurf, TextRect)
+    if gs.treg.hudCapture == 1:
+        p.draw.rect(screen, p.Color("black"), (775, 260, 200, 30), 4)
+        p.draw.rect(screen, p.Color("green"), (775, 260, 200, 30))
+        TextSurf, TextRect = text_objects("Capture Succeed", smallText)
+        TextRect.center = (880, 275)
+        screen.blit(TextSurf, TextRect)
+    if gs.treg.hudCapture == 2:
+        p.draw.rect(screen, p.Color("black"), (775, 260, 200, 30), 4)
+        p.draw.rect(screen, p.Color("red"), (775, 260, 200, 30))
+        TextSurf, TextRect = text_objects("Capture Failed", smallText)
+        TextRect.center = (880, 275)
+        screen.blit(TextSurf, TextRect)
 
-    #turn indicator
-    p.draw.rect(screen, p.Color("black"), (610, 515, 380, 75), 4)
-    TextSurf, TextRect = text_objects("Turns Left", medText)
-    TextRect.center = (800, 540)
+    #moves left indicator
+    p.draw.rect(screen, p.Color("gray3"), (610, 420, 380, 175))
+    TextSurf, TextRect = text_objects_white("Moves Left", medText)
+    TextRect.center = (800, 450)
     screen.blit(TextSurf, TextRect)
-    TextSurf, TextRect = text_objects("Left Corp", smallText)
-    TextRect.center = (680, 570)
+    TextSurf, TextRect = text_objects_white("Left Corp", smallText)
+    TextRect.center = (680, 480)
     screen.blit(TextSurf, TextRect)
-    TextSurf, TextRect = text_objects("King Corp", smallText)
-    TextRect.center = (805, 570)
+    TextSurf, TextRect = text_objects_white("King Corp", smallText)
+    TextRect.center = (805, 480)
     screen.blit(TextSurf, TextRect)
-    TextSurf, TextRect = text_objects("Right Corp", smallText)
-    TextRect.center = (930, 570)
+    TextSurf, TextRect = text_objects_white("Right Corp", smallText)
+    TextRect.center = (930, 480)
     screen.blit(TextSurf, TextRect)
-
     #cross out turn indicator
-    # cross out turn indicator
     if gs.treg.whiteLeftMoveFlag == True or "wB1" in gs.taken_pieces:
-        p.draw.rect(screen, p.Color("red"), (625, 570, 110, 2))
+        p.draw.rect(screen, p.Color("red"), (625, 480, 110, 2))
     if  gs.treg.whiteCenterMoveFlag == True:
-        p.draw.rect(screen, p.Color("red"), (750, 570, 110, 2))
+        p.draw.rect(screen, p.Color("red"), (750, 480, 110, 2))
     if gs.treg.whiteRightMoveFlag == True or "wB2" in gs.taken_pieces:
-        p.draw.rect(screen, p.Color("red"), (875, 570, 110, 2))
+        p.draw.rect(screen, p.Color("red"), (875, 480, 110, 2))
+    #knight special extra move
+    TextSurf, TextRect = text_objects_white("Knight Special", med_smallText)
+    TextRect.center = (800, 520)
+    screen.blit(TextSurf, TextRect)
+    TextSurf, TextRect = text_objects_white("Left Knight", smallText)
+    TextRect.center = (720, 545)
+    screen.blit(TextSurf, TextRect)
+    TextSurf, TextRect = text_objects_white("Right Knight", smallText)
+    TextRect.center = (870, 545)
+    screen.blit(TextSurf, TextRect)
+    #cross out turn indicator
+    if gs.treg.wN1Flag == True:
+        p.draw.rect(screen, p.Color("red"), (655, 545, 130, 2))
+    if gs.treg.wN2Flag == True:
+        p.draw.rect(screen, p.Color("red"), (800, 545, 135, 2))
 
     #visual dice being rolled ?
+    # handle display of dice roll
+    screen.blit(p.transform.scale(IMAGES['d1'], (75, 75)), (785, 15))
 
 
 
@@ -361,9 +379,13 @@ def highlight(screen, gs, moves, color):
             row, column = item
             screen.blit(a, (column * SQ_SIZE, row * SQ_SIZE))
 
-
+#renders standard black text
 def text_objects(text, font):
     textSurface = font.render(text, True, p.Color("black"))
+    return textSurface, textSurface.get_rect()
+#renders white text
+def text_objects_white(text, font):
+    textSurface = font.render(text, True, p.Color("white"))
     return textSurface, textSurface.get_rect()
 
 

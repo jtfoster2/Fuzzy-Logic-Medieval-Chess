@@ -196,8 +196,10 @@ class GameState():
         
         if capture == True:
             print("Capture Successful")
+            self.treg.hudCapture = 1 #1 is captured
         else:
             print("Capture Failed")
+            self.treg.hudCapture = 2 #2 is failed capture
         return capture
 
 #used to express information about a move

@@ -27,7 +27,7 @@ class TurnRegulator():
     blackCorpR = ["bB2", "bN2", "bP6", "bP7", "bP8"]
     blackRightMoveFlag = False
     
-    wN1Flag =True
+    wN1Flag = True
     wN2Flag = True
     bN1Flag = True
     bN2Flag = True
@@ -35,6 +35,8 @@ class TurnRegulator():
     leadersW = 3
     leadersB = 3
     attack = 0
+
+    hudCapture = 0
 
     #returns amount of corps that have used their moves for the turn
     def turnMoveCount(self):
@@ -64,12 +66,14 @@ class TurnRegulator():
             self.whiteCenterMoveFlag = False
             self.whiteRightMoveFlag = False
             self.currentTurn = 1
+            self.hudCapture = 0
             print("current turn (in method): ", self.currentTurn)
         elif self.currentTurn == 1:
             self.blackLeftMoveFlag = False
             self.blackCenterMoveFlag = False
             self.blackRightMoveFlag = False
             self.currentTurn = 0
+            self.hudCapture = 0
             print("current turn (in method): ", self.currentTurn)
         print("turn complete, swapping sides")
     
