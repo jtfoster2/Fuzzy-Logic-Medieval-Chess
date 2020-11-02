@@ -22,12 +22,44 @@ class Corp():
     opposing = []
     best_capture = 0
     best_move = 0
+    corp = -1
 
-    def __init__(self, gs, color, corp_list):
+    def __init__(self, gs, color, corp):
         self.color = color
         self.gs = gs
         vmov = LegalMoveGen.VariantLegalMoveGen(gs)
-        self.pieces = corps_list
+        self.corp = corp
+        if self.color == 0:
+            if self.corp == 0:
+                self.pieces = gs.treg.blackCorpL
+            elif self.corp == 1:
+                self.pieces = gs.treg.blackCorpC
+            else:
+                self.pieces = gs.treg.blackCorpR
+
+            for piece in gs.treg.whiteCorpL:
+                self.opposing.append(piece)
+            for piece in gs.treg.whiteCorpC:
+                self.opposing.append(piece)
+            for piece in gs.treg.whiteCorpR:
+                self.opposing.append(piece)
+
+
+        else:
+            if self.corp == 0:
+                self.pieces = gs.treg.whiteCorpL
+            elif self.corp == 1:
+                self.pieces = gs.treg.whiteCorpC
+            else:
+                self.pieces = gs.treg.whiteCorpR
+
+            for piece in gs.treg.blackCorpL:
+                self.opposing.append(piece)
+            for piece in gs.treg.blackCorpC:
+                self.opposing.append(piece)
+            for piece in gs.treg.blackCorpR:
+                self.opposing.append(piece)
+
     
     #absorbs another corp
     def absorb(self, corp):
@@ -109,6 +141,39 @@ class Corp():
 
     #changes mode
     def strategize(self): #attack means focus on captures. Advance means an equal focus on captures and advancing pieces forwards. Retreat means a focus on archer captures and moving pieces backwards
+        #updates pieces
+        if self.color == 0:
+            if self.corp == 0:
+                self.pieces = gs.treg.blackCorpL
+            elif self.corp == 1:
+                self.pieces = gs.treg.blackCorpC
+            else:
+                self.pieces = gs.treg.blackCorpR
+
+            for piece in gs.treg.whiteCorpL:
+                self.opposing.append(piece)
+            for piece in gs.treg.whiteCorpC:
+                self.opposing.append(piece)
+            for piece in gs.treg.whiteCorpR:
+                self.opposing.append(piece)
+
+
+        else:
+            if self.corp == 0:
+                self.pieces = gs.treg.whiteCorpL
+            elif self.corp == 1:
+                self.pieces = gs.treg.whiteCorpC
+            else:
+                self.pieces = gs.treg.whiteCorpR
+
+            for piece in gs.treg.blackCorpL:
+                self.opposing.append(piece)
+            for piece in gs.treg.blackCorpC:
+                self.opposing.append(piece)
+            for piece in gs.treg.blackCorpR:
+                self.opposing.append(piece)
+
+        #changes mode
         num_of_white_dead = 0
         num_of_black_dead = 0
         for piece in gs.taken_pieces:
@@ -139,19 +204,63 @@ class Corp():
         if self.mode == 'attack':
             if percentage <=70 and self.best_capture != 0:
                 gs.makeMove(best_capture)
-            if percentage >70 and self.best_move !=0:
-                gs.makeMove(best_move)
-        if self.mode == 'advance':
+            elif percentage >70 and self.best_move !=0:
+                gs.makeMove(best_move) 
+            elif self.color == 0:
+                if self.corp == 0:
+                    gs.treg.whiteLeftMoveFlag = True
+                elif self.corp == 1:
+                    gs.treg.whiteCenterMoveFlag = True
+                else:
+                    gs.treg.whiteRightMoveFlag = True
+            elif self.color == 1:
+                if self.corp == 0:
+                    gs.treg.blackLeftMoveFlag = True
+                elif self.corp == 1:
+                    gs.treg.blackCenterMoveFlag = True
+                else:
+                    gs.treg.blackRightMoveFlag = True
+
+        elif self.mode == 'advance':
             if percentage <=40 and self.best_capture != 0:
                 gs.makeMove(best_capture)
-            if percentage >40 and self.best_move !=0:
+            elif percentage >40 and self.best_move !=0:
                 gs.makeMove(best_move)
-        if self.mode == 'retreat':
+            elif self.color == 0:
+                if self.corp == 0:
+                    gs.treg.whiteLeftMoveFlag = True
+                elif self.corp == 1:
+                    gs.treg.whiteCenterMoveFlag = True
+                else:
+                    gs.treg.whiteRightMoveFlag = True
+            elif self.color == 1:
+                if self.corp == 0:
+                    gs.treg.blackLeftMoveFlag = True
+                elif self.corp == 1:
+                    gs.treg.blackCenterMoveFlag = True
+                else:
+                    gs.treg.blackRightMoveFlag = True
+
+
+        elif self.mode == 'retreat':
             if percentage <=20 and self.best_capture != 0:
                 gs.makeMove(best_capture)
-            if percentage >20 and self.best_move !=0:
+            elif percentage >20 and self.best_move !=0:
                 gs.makeMove(best_move)
-
+            elif self.color == 0:
+                if self.corp == 0:
+                    gs.treg.whiteLeftMoveFlag = True
+                elif self.corp == 1:
+                    gs.treg.whiteCenterMoveFlag = True
+                else:
+                    gs.treg.whiteRightMoveFlag = True
+            elif self.color == 1:
+                if self.corp == 0:
+                    gs.treg.blackLeftMoveFlag = True
+                elif self.corp == 1:
+                    gs.treg.blackCenterMoveFlag = True
+                else:
+                    gs.treg.blackRightMoveFlag = True
 
     #clears 
     def clear(self):
@@ -159,6 +268,7 @@ class Corp():
         self.captures = []
         self.vulnerable = []
         self.best_capture = 0
+        self.best_move = 0
 
     def step(self):
         self.strategize()
