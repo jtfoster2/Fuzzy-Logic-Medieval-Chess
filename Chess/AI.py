@@ -2,14 +2,14 @@
 """
 Group: 4A
 Topic: Distributed Chess AI
-Group Members: John Foster, Jordan Gibbons, Ian Gregoire, Mina Hanna, Leonel Hernandez, John Hurd, and Raf
-ael Quarles
+Group Members: John Foster, Jordan Gibbons, Ian Gregoire, Mina Hanna, Leonel Hernandez, John Hurd, and Rafael Quarles
 File Name: AI.py
 Project Area: AI
-File Description: This file contains a superclass used to define classes representative of the AI "corps."Development of those classes will begin shortly
+File Description: This file contains a class used to define objects representative of the AI "corps."Development of those classes will begin shortly
 """
 from Backend import LegalMoveGen
 from Backend import ChessEngine
+import random
 class Corp():
     mode = 'advance' #sets whether AI will advance, attack, or retreat
     gs = 0
@@ -19,7 +19,9 @@ class Corp():
     moves = []
     captures = []
     vulnerable = []
+    opposing = []
     best_capture = 0
+    best_move = 0
 
     def __init__(self, gs, color, corp_list):
         self.color = color
@@ -75,7 +77,7 @@ class Corp():
     def bestCapture(self):
         best = ('ZZZ', 'YYY')
         best_ranked = (5, 0)
-        best_diff = -5
+        best_diff = -6
         for pair in self.vulnerable:
             pair_ranked = (self.evaluate(pair[0]), self.evaluate(pair[1]))
             diff = pair_ranked[1] - pair_ranked[0]
@@ -91,9 +93,11 @@ class Corp():
                     best = pair
                     best_ranked = pair_ranked
                     best_diff = diff
-        move = ChessEngine.Move(self.locate(best[0]), self.locate(best[1]))
-        self.best_capture = move
-
+        if best_diff != -6:
+            move = ChessEngine.Move(self.locate(best[0]), self.locate(best[1]))
+            self.best_capture = move
+        else:
+            self.best_capture = 0
     #chooses best non-capture move
     def bestMove(self):
         if self.mode=='attack':
@@ -129,6 +133,24 @@ class Corp():
                 self.mode == "advance"
             if diff > 0:
                 self.mode == "attack"
+    
+    def move(self):
+        percentage = random.randint(0,100)
+        if self.mode == 'attack':
+            if percentage <=70 and self.best_capture != 0:
+                gs.makeMove(best_capture)
+            if percentage >70 and self.best_move !=0:
+                gs.makeMove(best_move)
+        if self.mode == 'advance':
+            if percentage <=40 and self.best_capture != 0:
+                gs.makeMove(best_capture)
+            if percentage >40 and self.best_move !=0:
+                gs.makeMove(best_move)
+        if self.mode == 'retreat':
+            if percentage <=20 and self.best_capture != 0:
+                gs.makeMove(best_capture)
+            if percentage >20 and self.best_move !=0:
+                gs.makeMove(best_move)
 
 
     #clears 
@@ -137,5 +159,13 @@ class Corp():
         self.captures = []
         self.vulnerable = []
         self.best_capture = 0
+
+    def step(self):
+        self.strategize()
+        self.allMoves()
+        self.bestMove()
+        self.bestCapture()
+        self.move()
+        self.clear()
 
 
