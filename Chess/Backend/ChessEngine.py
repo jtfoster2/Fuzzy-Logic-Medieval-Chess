@@ -159,14 +159,14 @@ class GameState():
             color = 1
         return color
     #returns an integer representing the current active player.
-    def getTurnstate(self):
-        global currentTurn
-        turn = -1 # 0:White, 1:Black
-        if currentTurn == 0:
-            turn = 0
-        if currentTurn == 1:
-            turn = 1
-        return turn
+    #def getTurnstate(self):
+     #   global currentTurn
+      #  turn = -1 # 0:White, 1:Black
+       # if currentTurn == 0:
+        #    turn = 0
+       # if currentTurn == 1:
+        #    turn = 1
+       # return turn
 
     # function for die roll, returns true if defending piece is captured
     def validate_capture(self, attacker, defender, roll, move_valid):

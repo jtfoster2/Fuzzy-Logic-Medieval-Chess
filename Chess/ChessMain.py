@@ -16,6 +16,9 @@ import random
 #import backend files
 from Backend import ChessEngine #facilitates piece movement
 from Backend import LegalMoveGen #generates legal moves
+
+#import AI
+import AI
 #set game properties
 WIDTH = 1000
 HEIGHT = 600 #size of window
@@ -136,7 +139,9 @@ def infoScreen():
 gs = ChessEngine.GameState()
 mov = LegalMoveGen.LegalMoveGen(gs)
 vmov = LegalMoveGen.VariantLegalMoveGen(gs)
-
+bL = AI.Corp(gs,1,0)
+bC = AI.Corp(gs,1,1)
+bR = AI.Corp(gs,1,2)
 #game play function
 def chessGame():
     attack_array = []
@@ -155,7 +160,11 @@ def chessGame():
     running = True
 
     while running == True:
-        # handles clicks
+        if gs.treg.currentTurn == 1:
+            for i in range(0,2):
+                bL.step()
+                bC.step()
+                bR.step()
         for e in p.event.get():
             if e.type == p.QUIT:
                 p.quit()

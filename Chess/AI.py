@@ -27,37 +27,37 @@ class Corp():
     def __init__(self, gs, color, corp):
         self.color = color
         self.gs = gs
-        vmov = LegalMoveGen.VariantLegalMoveGen(gs)
+        self.vmov = LegalMoveGen.VariantLegalMoveGen(gs)
         self.corp = corp
         if self.color == 0:
             if self.corp == 0:
-                self.pieces = gs.treg.blackCorpL
+                self.pieces = self.gs.treg.blackCorpL
             elif self.corp == 1:
-                self.pieces = gs.treg.blackCorpC
+                self.pieces = self.gs.treg.blackCorpC
             else:
-                self.pieces = gs.treg.blackCorpR
+                self.pieces = self.gs.treg.blackCorpR
 
-            for piece in gs.treg.whiteCorpL:
+            for piece in self.gs.treg.whiteCorpL:
                 self.opposing.append(piece)
-            for piece in gs.treg.whiteCorpC:
+            for piece in self.gs.treg.whiteCorpC:
                 self.opposing.append(piece)
-            for piece in gs.treg.whiteCorpR:
+            for piece in self.gs.treg.whiteCorpR:
                 self.opposing.append(piece)
 
 
         else:
             if self.corp == 0:
-                self.pieces = gs.treg.whiteCorpL
+                self.pieces = self.gs.treg.whiteCorpL
             elif self.corp == 1:
-                self.pieces = gs.treg.whiteCorpC
+                self.pieces = self.gs.treg.whiteCorpC
             else:
-                self.pieces = gs.treg.whiteCorpR
+                self.pieces = self.gs.treg.whiteCorpR
 
-            for piece in gs.treg.blackCorpL:
+            for piece in self.gs.treg.blackCorpL:
                 self.opposing.append(piece)
-            for piece in gs.treg.blackCorpC:
+            for piece in self.gs.treg.blackCorpC:
                 self.opposing.append(piece)
-            for piece in gs.treg.blackCorpR:
+            for piece in self.gs.treg.blackCorpR:
                 self.opposing.append(piece)
 
     
@@ -70,26 +70,31 @@ class Corp():
     #returns the row and column of piece in the corp
     def locate(self, piece):
         if piece in self.pieces:
-            for i in gs.board:
-                for j in gs.board[i]:
+            icount = 0
+            jcount = 0
+            for i in self.gs.board:
+                for j in i:
                     if j == piece:
-                        return (i, j)
+                        return (icount, jcount)
+                    jcount = jcount + 1
+                icount = icount + 1
 
     #returns a piece at a location
-    def identify(self, (row,col)):
-        return gs.board[row][col]
+    def identify(self, tup):
+        return self.gs.board[tup[0]][tup[1]]
 
     #returns a list of all possible moves, captures, and attacker-defender pairs
     def allMoves(self):
         for piece in self.pieces:
-            vmov.generate(self.locate(piece))
-            for move in vmov.legal_moves:
+            self.vmov.generate(self.locate(piece)[0],self.locate(piece)[1])
+            for move in self.vmov.legal_moves:
                 self.moves.append(move)
-            for attack in vmov.legal_attacks:
+            for attack in self.vmov.legal_attacks:
                 self.captures.append(attack)
             for location in self.captures:
-                self.vulnerable.append((piece,identify(location)))
-    
+                self.vulnerable.append((piece,self.identify(location)))
+        print(self.captures) 
+
     #returns a priority number for pieces (how important the piece is)
     def evaluate(self, piece):
         if piece[1] == "K":
@@ -126,7 +131,7 @@ class Corp():
                     best_ranked = pair_ranked
                     best_diff = diff
         if best_diff != -6:
-            move = ChessEngine.Move(self.locate(best[0]), self.locate(best[1]))
+            move = ChessEngine.Move(self.locate(best[0]), self.locate(best[1]),self.gs.board)
             self.best_capture = move
         else:
             self.best_capture = 0
@@ -144,57 +149,57 @@ class Corp():
         #updates pieces
         if self.color == 0:
             if self.corp == 0:
-                self.pieces = gs.treg.blackCorpL
+                self.pieces = self.gs.treg.blackCorpL
             elif self.corp == 1:
-                self.pieces = gs.treg.blackCorpC
+                self.pieces = self.gs.treg.blackCorpC
             else:
-                self.pieces = gs.treg.blackCorpR
+                self.pieces = self.gs.treg.blackCorpR
 
-            for piece in gs.treg.whiteCorpL:
+            for piece in self.gs.treg.whiteCorpL:
                 self.opposing.append(piece)
-            for piece in gs.treg.whiteCorpC:
+            for piece in self.gs.treg.whiteCorpC:
                 self.opposing.append(piece)
-            for piece in gs.treg.whiteCorpR:
+            for piece in self.gs.treg.whiteCorpR:
                 self.opposing.append(piece)
 
 
         else:
             if self.corp == 0:
-                self.pieces = gs.treg.whiteCorpL
+                self.pieces = self.gs.treg.whiteCorpL
             elif self.corp == 1:
-                self.pieces = gs.treg.whiteCorpC
+                self.pieces = self.gs.treg.whiteCorpC
             else:
-                self.pieces = gs.treg.whiteCorpR
+                self.pieces = self.gs.treg.whiteCorpR
 
-            for piece in gs.treg.blackCorpL:
+            for piece in self.gs.treg.blackCorpL:
                 self.opposing.append(piece)
-            for piece in gs.treg.blackCorpC:
+            for piece in self.gs.treg.blackCorpC:
                 self.opposing.append(piece)
-            for piece in gs.treg.blackCorpR:
+            for piece in self.gs.treg.blackCorpR:
                 self.opposing.append(piece)
 
         #changes mode
         num_of_white_dead = 0
         num_of_black_dead = 0
-        for piece in gs.taken_pieces:
+        for piece in self.gs.taken_pieces:
             if piece[0] == "w":
                 num_of_white_dead = num_of_white_dead + 1
             if piece[0] == "b":
                 num_of_black_dead = num_of_black_dead + 1
         diff = num_of_white_dead - num_of_black_dead
 
-        if self.color = 0:
+        if self.color == 0:
             if diff >2:
                 self.mode =="retreat"
-            if diff <= 2 and diff >= 0 or ("wR1" in gs.taken_pieces and "wR2" in gs.taken_pieces):
+            if diff <= 2 and diff >= 0 or ("wR1" in self.gs.taken_pieces and "wR2" in self.gs.taken_pieces):
                 self.mode == "advance"
             if diff < 0:
                 self.mode == "attack"
         
-        if self.color = 1:
+        if self.color == 1:
             if diff <-2:
                 self.mode =="retreat"
-            if diff >= -2 and diff <= 0 or ("bR1" in gs.taken_pieces and "bR2" in gs.taken_pieces):
+            if diff >= -2 and diff <= 0 or ("bR1" in self.gs.taken_pieces and "bR2" in self.gs.taken_pieces):
                 self.mode == "advance"
             if diff > 0:
                 self.mode == "attack"
@@ -203,75 +208,104 @@ class Corp():
         percentage = random.randint(0,100)
         if self.mode == 'attack':
             if percentage <=70 and self.best_capture != 0:
-                gs.makeMove(best_capture)
-            elif percentage >70 and self.best_move !=0:
-                gs.makeMove(best_move) 
+                self.gs.makeMove(best_capture)
+            elif self.best_move !=0:
+                self.gs.makeMove(best_move) 
             elif self.color == 0:
                 if self.corp == 0:
-                    gs.treg.whiteLeftMoveFlag = True
+                    self.gs.treg.whiteLeftMoveFlag = True
                 elif self.corp == 1:
-                    gs.treg.whiteCenterMoveFlag = True
+                    self.gs.treg.whiteCenterMoveFlag = True
                 else:
-                    gs.treg.whiteRightMoveFlag = True
+                    self.gs.treg.whiteRightMoveFlag = True
             elif self.color == 1:
                 if self.corp == 0:
-                    gs.treg.blackLeftMoveFlag = True
+                    self.gs.treg.blackLeftMoveFlag = True
                 elif self.corp == 1:
-                    gs.treg.blackCenterMoveFlag = True
+                    self.gs.treg.blackCenterMoveFlag = True
                 else:
-                    gs.treg.blackRightMoveFlag = True
+                    self.gs.treg.blackRightMoveFlag = True
+
+            if self.gs.treg.currentTurn == 0:
+                leaders = self.gs.treg.leadersW
+            else:
+                leaders = self.gs.treg.leadersB
+            if self.gs.treg.turnMoveCount() == leaders:
+                print("Move limit reached, End turn")
+                self.gs.treg.turnSwap()
+                print("New Turn: ", self.gs.treg.currentTurn )
+
 
         elif self.mode == 'advance':
-            if percentage <=40 and self.best_capture != 0:
-                gs.makeMove(best_capture)
-            elif percentage >40 and self.best_move !=0:
-                gs.makeMove(best_move)
+            if percentage <= 50 and self.best_capture != 0:
+                self.gs.makeMove(best_capture)
+            elif self.best_move !=0:
+                self.gs.makeMove(best_move)
             elif self.color == 0:
                 if self.corp == 0:
-                    gs.treg.whiteLeftMoveFlag = True
+                    self.gs.treg.whiteLeftMoveFlag = True
                 elif self.corp == 1:
-                    gs.treg.whiteCenterMoveFlag = True
+                    self.gs.treg.whiteCenterMoveFlag = True
                 else:
-                    gs.treg.whiteRightMoveFlag = True
+                    self.gs.treg.whiteRightMoveFlag = True
             elif self.color == 1:
                 if self.corp == 0:
-                    gs.treg.blackLeftMoveFlag = True
+                    self.gs.treg.blackLeftMoveFlag = True
                 elif self.corp == 1:
-                    gs.treg.blackCenterMoveFlag = True
+                    self.gs.treg.blackCenterMoveFlag = True
                 else:
-                    gs.treg.blackRightMoveFlag = True
+                    self.gs.treg.blackRightMoveFlag = True
+            if self.gs.treg.currentTurn == 0:
+                leaders = self.gs.treg.leadersW
+            else:
+                leaders = self.gs.treg.leadersB
+            if self.gs.treg.turnMoveCount() == leaders:
+                print("Move limit reached, End turn")
+                self.gs.treg.turnSwap()
+                print("New Turn: ", self.gs.treg.currentTurn )
 
 
         elif self.mode == 'retreat':
             if percentage <=20 and self.best_capture != 0:
-                gs.makeMove(best_capture)
-            elif percentage >20 and self.best_move !=0:
-                gs.makeMove(best_move)
+                self.gs.makeMove(best_capture)
+            elif self.best_move !=0:
+                self.gs.makeMove(best_move)
             elif self.color == 0:
                 if self.corp == 0:
-                    gs.treg.whiteLeftMoveFlag = True
+                    self.gs.treg.whiteLeftMoveFlag = True
                 elif self.corp == 1:
-                    gs.treg.whiteCenterMoveFlag = True
+                    self.gs.treg.whiteCenterMoveFlag = True
                 else:
-                    gs.treg.whiteRightMoveFlag = True
+                    self.gs.treg.whiteRightMoveFlag = True
             elif self.color == 1:
                 if self.corp == 0:
-                    gs.treg.blackLeftMoveFlag = True
+                    self.gs.treg.blackLeftMoveFlag = True
                 elif self.corp == 1:
-                    gs.treg.blackCenterMoveFlag = True
+                    self.gs.treg.blackCenterMoveFlag = True
                 else:
-                    gs.treg.blackRightMoveFlag = True
+                    self.gs.treg.blackRightMoveFlag = True
+
+            if self.gs.treg.currentTurn == 0:
+                    leaders = self.gs.treg.leadersW
+            else:
+                    leaders = self.gs.treg.leadersB
+            if self.gs.treg.turnMoveCount() == leaders:
+                print("Move limit reached, End turn")
+                self.gs.treg.turnSwap()
+                print("New Turn: ", self.gs.treg.currentTurn )
+
 
     #clears 
     def clear(self):
         self.moves = []
         self.captures = []
         self.vulnerable = []
+        self.opposing = []
         self.best_capture = 0
         self.best_move = 0
 
-    def step(self):
-        self.strategize()
+    def step(self,gs):
+        self.strategize(gs)
         self.allMoves()
         self.bestMove()
         self.bestCapture()
