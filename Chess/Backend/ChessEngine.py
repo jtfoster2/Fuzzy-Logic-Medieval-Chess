@@ -198,7 +198,11 @@ class GameState():
             if roll == 2:
                 if defender == 1 and (attacker >= 5 or attacker == 3):
                     capture = True
-
+            if roll == 1:
+                if attacker == 6 and defender == 1:
+                    capture = True
+                else:
+                    capture = False
 
             if capture == True:
                 print("Capture Successful")
