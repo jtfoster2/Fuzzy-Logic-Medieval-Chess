@@ -161,10 +161,10 @@ def chessGame():
 
     while running == True:
         if gs.treg.currentTurn == 1:
-            for i in range(0,2):
-                bL.step()
-                bC.step()
-                bR.step()
+            bL.step()
+            bC.step()
+            bR.step()
+      
         for e in p.event.get():
             if e.type == p.QUIT:
                 p.quit()
