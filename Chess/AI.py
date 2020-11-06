@@ -18,7 +18,7 @@ class Corp():
     pieces = []
     moves = []
     captures = []
-    vulnerable = []
+    op_caps = []
     opposing = []
     best_capture = 0
     best_move = 0
@@ -78,16 +78,11 @@ class Corp():
         for piece in self.pieces:
             self.vmov.generate(self.locate(piece)[0],self.locate(piece)[1])
             for move in self.vmov.legal_moves:
-                self.moves.append(move)
-            for attack in self.vmov.legal_attacks:
-                self.captures.append(attack)
+                self.moves.append((self.locate(piece),move))
             for location in self.vmov.legal_attacks:
-                self.vulnerable.append((piece,self.identify(location)))
+                self.captures.append((piece,self.identify(location)))
             self.vmov.clearGenerated()
-            print(piece)
-            print(self.moves)
-            print(self.captures)
-            print(self.vulnerable)
+
     #returns a priority number for pieces (how important the piece is)
     def evaluate(self, piece):
         if piece[1] == "K":
@@ -108,8 +103,8 @@ class Corp():
         best = ('ZZZ', 'YYY')
         best_ranked = (5, 0)
         best_diff = -6
-        if len(self.vulnerable)>0:
-            for pair in self.vulnerable:
+        if len(self.captures)>0:
+            for pair in self.captures:
                 pair_ranked = (self.evaluate(pair[0]), self.evaluate(pair[1]))
                 diff = pair_ranked[1] - pair_ranked[0]
                 if diff >= best_diff:
@@ -139,8 +134,120 @@ class Corp():
         if self.mode == 'advance':
             pass #replace this with a heuristic calculation for the furthest forward move that does not place the piece in range of an attack other than one by an archer. prioritize moves by less important piecesother than archers.
         if self.mode =='retreat':
-            pass #replace this with a heuristic calculation for the furthest backward move that does not place the piece in range of attacks. Prioritize moves that escape vunerability
+            #compute currently vunerable pieces
+            for piece in self.opposing:
+            self.vmov.generate(self.locate(piece)[0],self.locate(piece)[1])
+            for location in self.vmov.legal_attacks:
+                self.op_caps.append((piece,self.identify(location)))
+            self.vmov.clearGenerated()
 
+            #execute if pieces are vulnerable
+            if len(self.op_caps) > 0:
+
+                #find opponent's best capture
+                for pair in self.op_caps:
+                    pair_ranked = (self.evaluate(pair[0]), self.evaluate(pair[1]))
+                    diff = pair_ranked[1] - pair_ranked[0]
+                    if diff >= best_diff:
+                        best = pair
+                        best_ranked = pair_ranked
+                        best_diff = diff
+
+                #locate most vulnerable piece
+                piece_loc = self.locate(best[1])
+
+                #handling for black team
+                if self.color == 1:
+                    #compute furthest backward movement of most vulnerable piece
+                    move_loc = (-1,8)
+                    for move in self.moves:
+                        if move[1][1] <= move_loc[1] and move[0] == piece_loc:
+                            move_loc = move[1]
+                    if move_loc[0] != -1:
+                        move = ChessEngine.Move(piece_loc, move_loc,self.gs.board)
+                        self.best_move = move
+                    else:
+                        self.best_move = 0
+                
+                #handling for white team
+                if self.color == 0:
+                    #compute furthest backward movement of most vulnerable piece
+                    move_loc = (-1,-1)
+                    for move in self.moves:
+                        if move[1][1] >= move_loc[1] and move[0] = piece_loc:
+                            move_loc = move[1]
+                    if move_loc[0] != -1:
+                        move = ChessEngine.Move(piece_loc, move_loc,self.gs.board)
+                        self.best_move = move
+                    else:
+                        self.best_move = 0
+
+            if len(self.op_caps) ==0:
+
+                #find highest level piece in highest rank
+
+                #handling for black team
+                if self.color == 1:
+                    #find highest rank
+                    rank = 0
+                    for i in range(0,8):
+                        for j in range(0,8:
+                            if self.gs.board[i][j][0] == 'b' and j >= rank:
+                                rank = j
+                    
+                    #find highest piece in rank
+                    value = -1
+                    piece_loc = 0
+                    for i in range(0,8):
+                        if self.evaluate(self.gs.board[i][rank]) >= value:
+                            piece_loc = (i,rank)
+
+                #handling for white team
+                if self.color == 0:
+                    #find highest rank
+                    rank = 8
+                    for i in range(0,8):
+                        for j in range(0,8):
+                            if self.gs.board[i][j][0] == 'w' and j <=rank:
+                                rank = j
+
+                    #find highest piece in rank
+                    value = -1
+                    piece_loc = 0
+                    for i in range(0,8):
+                        if self.evaluate(self.gs.board[i][rank]) >= value:
+                            piece_loc = (i,rank)
+
+                
+                #handling for black team
+                if self.color == 1:
+                    #compute furthest backward movement of most vulnerable piece
+                    move_loc = (-1,8)
+                    for move in self.moves:
+                        if move[1][1] <= move_loc[1] and move[0] == piece_loc:
+                            move_loc = move[1]
+                    if move_loc[0] != -1:
+                        move = ChessEngine.Move(piece_loc, move_loc,self.gs.board)
+                        self.best_move = move
+                    else:
+                        self.best_move = 0
+
+                #handling for white team
+                if self.color == 0:
+                    #compute furthest backward movement of most vulnerable piece
+                    move_loc = (-1,-1)
+                    for move in self.moves:
+                        if move[1][1] >= move_loc[1] and move[0] = piece_loc:
+                            move_loc = move[1]
+                    if move_loc[0] != -1:
+                        move = ChessEngine.Move(piece_loc, move_loc,self.gs.board)
+                        self.best_move = move
+                    else:
+                        self.best_move = 0
+
+
+ 
+                        
     
 
 
@@ -214,10 +321,10 @@ class Corp():
              
             #move handling
             if percentage <=70 and self.best_capture != 0:
-                pass
+                pass #replace with capture logic from main
                 
             elif self.best_move !=0:
-                pass
+                pass #replace with move logic from main
 
             #flag setting
             if self.color == 0:
@@ -322,8 +429,8 @@ class Corp():
     def clear(self):
         self.moves = []
         self.captures = []
-        self.vulnerable = []
         self.opposing = []
+        self.op_caps = []
         self.best_capture = 0
         self.best_move = 0
 
