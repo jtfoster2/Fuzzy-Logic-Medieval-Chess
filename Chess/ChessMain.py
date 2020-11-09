@@ -11,7 +11,10 @@ File Description: This file draws the board and integrates the chess engine to t
 
 #import pygame
 import pygame as p
+
+#extra utils
 import random
+import time
 
 #import backend files
 from Backend import ChessEngine #facilitates piece movement
@@ -142,6 +145,10 @@ vmov = LegalMoveGen.VariantLegalMoveGen(gs)
 bL = AI.Corp(gs,1,0)
 bC = AI.Corp(gs,1,1)
 bR = AI.Corp(gs,1,2)
+wL = AI.Corp(gs,0,0)
+wC = AI.Corp(gs,0,1)
+wR = AI.Corp(gs,0,2)
+whiteAI = False
 #game play function
 def chessGame():
     attack_array = []
@@ -160,15 +167,27 @@ def chessGame():
     running = True
 
     while running == True:
-        if gs.treg.currentTurn == 1:
-            bL.step()
-            bC.step()
-            bR.step()
-      
+    
+       # if gs.treg.currentTurn == 1:
+        #    bL.step()
+         #   time.sleep(3)
+          #  bC.step()
+         #   time.sleep(3)
+          #  bR.step()  
         for e in p.event.get():
             if e.type == p.QUIT:
                 p.quit()
                 quit()
+            if gs.treg.currentTurn == 1:
+                time.sleep(3)
+                bL.step()
+                time.sleep(3)
+                bC.step()
+                time.sleep(3)
+                bR.step()
+            if gs.treg.currentTurn == 0 and whiteAI == True:
+                pass # MINA replace this with Corp.step() and time.sleep() methods like above
+
             elif e.type == p.MOUSEBUTTONDOWN:
                 location = p.mouse.get_pos()  # (x,y) location of mouse
                 col = location[0]//SQ_SIZE

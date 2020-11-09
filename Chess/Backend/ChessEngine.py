@@ -122,7 +122,20 @@ class GameState():
             for piece in self.treg.blackCorpR:
                 self.treg.blackCorpC.append(piece)
             self.treg.blackCorpR.clear()
-
+        
+        for piece in self.taken_pieces:
+            if piece in self.treg.blackCorpL:
+                self.treg.blackCorpL.remove(piece)
+            if piece in self.treg.blackCorpC:
+                self.treg.blackCorpC.remove(piece)
+            if piece in self.treg.blackCorpR:
+                self.treg.blackCorpR.remove(piece)
+            if piece in self.treg.whiteCorpL:
+                self.treg.whiteCorpL.remove(piece)
+            if piece in self.treg.whiteCorpC:
+                self.treg.whiteCorpC.remove(piece)
+            if piece in self.treg.whiteCorpR:
+                self.treg.whiteCorpR.remove(piece)
     #returns an integer representing the piece in a given space
     def getPiece(self, row, col):
         if row > 7 or row < 0 or col > 7 or col < 0:

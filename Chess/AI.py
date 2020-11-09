@@ -59,6 +59,17 @@ class Corp():
                 self.opposing.append(piece)
             for piece in self.gs.treg.blackCorpR:
                 self.opposing.append(piece)
+
+        for piece in self.pieces:
+            if piece not in self.gs.taken_pieces:
+                self.vmov.generate(self.locate(piece)[0],self.locate(piece)[1])
+                for move in self.vmov.legal_moves:
+                    self.moves.append((self.locate(piece),move))
+                for location in self.vmov.legal_attacks:
+                    self.captures.append((piece,self.identify(location)))
+            self.vmov.clearGenerated()
+
+        self.clear()
  
     #returns the row and column of piece
     def locate(self, piece):
@@ -76,13 +87,18 @@ class Corp():
     #returns a list of all possible moves, captures, and attacker-defender pairs
     def allMoves(self):
         for piece in self.pieces:
-            self.vmov.generate(self.locate(piece)[0],self.locate(piece)[1])
-            for move in self.vmov.legal_moves:
-                self.moves.append((self.locate(piece),move))
-            for location in self.vmov.legal_attacks:
-                self.captures.append((piece,self.identify(location)))
+            if piece not in self.gs.taken_pieces:
+                self.vmov.generate(self.locate(piece)[0],self.locate(piece)[1])
+                for move in self.vmov.legal_moves:
+                    self.moves.append((self.locate(piece),move))
+                for location in self.vmov.legal_attacks:
+                    self.captures.append((piece,self.identify(location)))
             self.vmov.clearGenerated()
-
+        for move in self.moves:
+            print("Move: " + self.identify(move[0]) + " to " + str(move[1]))
+        for move in self.captures:
+            print("Capture: " +str(move[0]) + " takes " + str(move[1]))
+    
     #returns a priority number for pieces (how important the piece is)
     def evaluate(self, piece):
         if piece[1] == "K":
@@ -142,222 +158,34 @@ class Corp():
     #chooses best non-capture move
     def bestMove(self):
         
-        #finds furthest forward move of most powerful piece excluding leaders 60 percent of the time and including leaders 40
+        #finds furthest forward move of most powerful piece excluding leaders 70 percent of the time and including bishops 30 percent of the time
         if self.mode=='attack':
-            if len(self.moves)>0:
-                percentage = random.randint(0,100)
-
-                if percentage <= 60:
-                    #finds most powerful movable piece other than leaders
-                    pwr_piece = 0
-                    for move in self.moves:
-                        if self.evaluate(self.identify(move[0])) >= pwr_piece and self.evaluate(self.identify(move[0])) < 4:
-                            pwr_piece = self.evaluate(self.identify(move[0]))
-
-                else:
-                        #finds most powerful movable piece
-                        pwr_piece = 0
-                        for move in self.moves:
-                            if self.evaluate(self.identify(move[0])) >= pwr_piece:
-                                pwr_piece = self.evaluate(self.identify(move[0]))
-
-
-                #creates list of moves using that type of piece
-                possible_moves = []
-                for move in self.moves:
-                    if self.evaluate(self.identify(move[0])) == pwr_piece:
-                        possible_moves.append(move)
-
-                #finds furthest forward move out of the possible moves
-                if len(possible_moves)>0:
-                    if self.color == 1:
-                        max_diff = 0
-                        move = 0
-                        for possible in possible_moves:
-                            diff = possible[1][0] - possible[0][0]
-                            if diff >= max_diff:
-                                max_diff = diff
-                                move = possible
-                        if move != 0:
-                            self.best_move = ChessEngine.Move(move[0],move[1],self.gs.board)
-    
-                    if self.color == 0:
-                        max_diff = 0
-                        move = 0
-                        for possible in possible_moves:
-                            diff = possible[0][0] - possible[1][0]
-                            if diff >= max_diff:
-                                max_diff = diff
-                                move = possible
-                        if move != 0:
-                            self.best_move = ChessEngine.Move(move[0],move[1],self.gs.board)
-
-
-        #finds furthest forward move 40 percent of the time and furthest safe move 60 percent of the time (math favors pawns and knights in the beginning)
-        #40 60 rule also enable 2 AIs to actually attack each other. Otherwise, the AIs would never go into vulnerable places.
+            pass
+        #finds furthest forward move 30 percent of the time and furthest safe move 70 percent of the time. Does not allow unsafe moves by leaders
+        #70 30 rule also enables 2 AIs to actually attack each other. Otherwise, the AIs would never go into vulnerable places.
         if self.mode == 'advance':
-            percentage = random.randint(0,100)
-
-            if percentage <=60:
-                possible_moves = []
-
-                #find all moves with no adjacent opposing pieces
-                if len(self.moves) >0:
-                    for move in self.moves:
-                        empty_count = 0 #if this ends up at 8, the space has no adjacent opposing pieces
-                        end = move[1]
-                        for i in range(-1,2):
-                            for j in range(-1,2):
-                                location = (i,j)
-                                if location != (0,0):
-                                    if self.color == 1:
-                                        if self.identify(location)[0] != 'w':
-                                            empty_count = empty_count + 1
-                                    if self.color == 0:
-                                        if self.identify(location)[0] != 'b':
-                                            empty_count = empty_count + 1
-                        if empty_count == 8:
-                            possible_moves.append(move)
-            
-            else:
-                possible_moves = self.moves
-            #find move with biggest row difference
-            if len(possible_moves)>0:
-                if self.color == 1:
-                    max_diff = 0
-                    move = 0
-                    for possible in possible_moves:
-                        diff = possible[1][0] - possible[0][0]
-                        if diff >= max_diff:
-                            max_diff = diff
-                            move = possible
-                    if move != 0:
-                        self.best_move = ChessEngine.Move(move[0],move[1],self.gs.board)
-
-                if self.color == 0:
-                    max_diff = 0
-                    move = 0
-                    for possible in possible_moves:
-                        diff = possible[0][0] - possible[1][0]
-                        if diff >= max_diff:
-                            max_diff = diff
-                            move = possible
-                    if move != 0:
-                        self.best_move = ChessEngine.Move(move[0],move[1],self.gs.board)
-
+            pass
         #finds either the furthest backward movement or the furthest backward movement of the most vulnerable piece
         if self.mode =='retreat':
-
+            pass
             #compute currently vunerable pieces
             for piece in self.opposing:
                 self.vmov.generate(self.locate(piece)[0],self.locate(piece)[1])
+                for location in self.vmov.legal_attacks:
+                    self.op_caps.append((piece,self.identify(location)))
+                self.vmov.clearGenerated()
+
+        #always have king escape vunerability by pieces more powerful th an archers
+        #find vunerable pieces
+        for piece in self.opposing:
+            self.vmov.generate(self.locate(piece)[0],self.locate(piece)[1])
             for location in self.vmov.legal_attacks:
                 self.op_caps.append((piece,self.identify(location)))
             self.vmov.clearGenerated()
-
-            #execute if pieces are vulnerable
-            if len(self.op_caps) > 0:
-
-                #find opponent's best capture
-                for pair in self.op_caps:
-                    pair_ranked = (self.evaluate(pair[0]), self.evaluate(pair[1]))
-                    diff = pair_ranked[1] - pair_ranked[0]
-                    if diff >= best_diff:
-                        best = pair
-                        best_ranked = pair_ranked
-                        best_diff = diff
-
-                #locate most vulnerable piece
-                piece_loc = self.locate(best[1])
-
-                #handling for black team
-                if self.color == 1:
-                    #compute furthest backward movement of most vulnerable piece
-                    move_loc = (8,-1)
-                    for move in self.moves:
-                        if move[1][0] <= move_loc[0] and move[0] == piece_loc:
-                            move_loc = move[1]
-                    if move_loc[1] != -1:
-                        move = ChessEngine.Move(piece_loc, move_loc,self.gs.board)
-                        self.best_move = move
-                    else:
-                        self.best_move = 0
-                
-                #handling for white team
-                if self.color == 0:
-                    #compute furthest backward movement of most vulnerable piece
-                    move_loc = (-1,-1)
-                    for move in self.moves:
-                        if move[1][0] >= move_loc[0] and move[0] == piece_loc:
-                            move_loc = move[1]
-                    if move_loc[1] != -1:
-                        move = ChessEngine.Move(piece_loc, move_loc,self.gs.board)
-                        self.best_move = move
-                    else:
-                        self.best_move = 0
-
-            if len(self.op_caps) ==0:
-
-                #find highest level piece in highest rank
-
-                #handling for black team
-                if self.color == 1:
-                    #find highest rank
-                    rank = 0
-                    for i in range(0,8):
-                        for j in range(0,8):
-                            if self.gs.board[i][j][0] == 'b' and j >= rank:
-                                rank = j
-                    
-                    #find highest piece in rank
-                    value = -1
-                    piece_loc = 0
-                    for i in range(0,8):
-                        if self.evaluate(self.gs.board[i][rank]) >= value:
-                            piece_loc = (i,rank)
-
-                #handling for white team
-                if self.color == 0:
-                    #find highest rank
-                    rank = 8
-                    for i in range(0,8):
-                        for j in range(0,8):
-                            if self.gs.board[i][j][0] == 'w' and j <=rank:
-                                rank = j
-
-                    #find highest piece in rank
-                    value = -1
-                    piece_loc = 0
-                    for i in range(0,8):
-                        if self.evaluate(self.gs.board[i][rank]) >= value:
-                            piece_loc = (i,rank)
-
-                
-                #handling for black team
-                if self.color == 1:
-                    #compute furthest backward movement of most vulnerable piece
-                    move_loc = (-1,8)
-                    for move in self.moves:
-                        if move[1][1] <= move_loc[1] and move[0] == piece_loc:
-                            move_loc = move[1]
-                    if move_loc[0] != -1:
-                        move = ChessEngine.Move(piece_loc, move_loc,self.gs.board)
-                        self.best_move = move
-                    else:
-                        self.best_move = 0
-
-                #handling for white team
-                if self.color == 0:
-                    #compute furthest backward movement of most vulnerable piece
-                    move_loc = (-1,-1)
-                    for move in self.moves:
-                        if move[1][1] >= move_loc[1] and move[0] == piece_loc:
-                            move_loc = move[1]
-                    if move_loc[0] != -1:
-                        move = ChessEngine.Move(piece_loc, move_loc,self.gs.board)
-                        self.best_move = move
-                    else:
-                        self.best_move = 0
+        
+        for pair in self.op_caps:
+            if pair[1][1] == 'K' and self.evaluate(pair[0]) > 1:
+                pass #make king run away
 
     #updates pieces on the board and changes mode accordingly
     def strategize(self): #attack means focus on captures. Advance means an equal focus on captures and advancing pieces forwards. Retreat means a focus on archer captures and moving pieces backwards
@@ -405,22 +233,25 @@ class Corp():
 
         #if AI is white
         if self.color == 0:
-            if diff >2:
+            if diff >1:
                 self.mode ="retreat"
-            if diff <= 2 and diff >= 0 or ("wR1" in self.gs.taken_pieces and "wR2" in self.gs.taken_pieces):
+            if diff <= 1 and diff >= -1 or ("wR1" in self.gs.taken_pieces and "wR2" in self.gs.taken_pieces):
                 self.mode = "advance"
-            if diff < 0:
+            if diff < -1:
                 self.mode = "attack"
 
         #if AI is black
         if self.color == 1:
-            if diff <-2:
+            if diff <-1:
                 self.mode ="retreat"
-            if diff >= -2 and diff <= 0 or ("bR1" in self.gs.taken_pieces and "bR2" in self.gs.taken_pieces):
+            if diff >= -1 and diff <= 1 or ("bR1" in self.gs.taken_pieces and "bR2" in self.gs.taken_pieces):
                 self.mode = "advance"
-            if diff > 0:
+            if diff > 1:
                 self.mode = "attack"
 
+        print("Current Corps: " + str(self.corp))
+        print("Pieces: " + str(self.pieces))
+        print("Current Mode: " + self.mode)
     def move(self):
         #sets percentage variable
         percentage = random.randint(0,100)
@@ -430,10 +261,34 @@ class Corp():
              
             #move handling
             if percentage <=70 and self.best_capture != 0:
-                pass #replace with capture logic from main
+                self.gs.treg.attack = 1
+                roll = random.randint(1, 6)
+                if self.vmov.knight_special_attack == True and self.evaluate(self.best_capture.pieceMoved) == 2:
+                    roll = roll - 1
+                    self.vmov.knight_special_attack = False
+                if self.gs.validate_capture(self.gs.getPiece(self.best_capture.startRow, self.best_capture.startCol), self.gs.getPiece(self.best_capture.endRow, self.best_capture.endCol), roll, self.gs.treg.Movable(self.best_capture.pieceMoved)):
+
+                    if self.best_capture.moveCompleted == True: #if move is successful
+                        print(self.best_capture.getChessNotation())  # prints move log entry
+                    self.gs.makeMove(self.best_capture)  # makes move
+
+                elif self.best_capture.pieceMoved == "wN1" and self.gs.treg.wN1Flag == False:
+                    self.gs.treg.wN1Flag = True
+                elif self.best_capture.pieceMoved == "wN2" and self.gs.treg.wN2Flag == False:
+                    self.gs.treg.wN2Flag = True
+                elif self.best_capture.pieceMoved == "bN1" and self.gs.treg.bN1Flag == False:
+                    self.gs.treg.bN1Flag = True
+                elif self.best_capture.pieceMoved == "bN2" and self.gs.treg.bN2Flag == False:
+                    self.gs.treg.bN2Flag = True
                 
             elif self.best_move !=0:
-                pass #replace with move logic from main
+                self.gs.treg.attack = 0
+                self.gs.makeMove(self.best_move)  # makes move
+                if self.best_move.moveCompleted == True: #if move is successful
+                    print(self.best_move.getChessNotation())  # prints move log entry
+                if self.evaluate(self.best_move.pieceMoved) == 2:
+                    self.vmov.knight_special_attack = True  # indicator that if knight attacks after moving, dice roll is decreased by one
+
 
             #flag setting
             if self.color == 0:
@@ -465,11 +320,36 @@ class Corp():
         elif self.mode == 'advance':
 
             #move handling
-            if percentage <= 50 and self.best_capture != 0:
-                pass
+            if percentage <= 80 and self.best_capture != 0:
+                self.gs.treg.attack = 1
+                roll = random.randint(1, 6)
+                if self.vmov.knight_special_attack == True and self.evaluate(self.best_capture.pieceMoved) == 2:
+                    roll = roll - 1
+                    self.vmov.knight_special_attack = False
+                if self.gs.validate_capture(self.gs.getPiece(self.best_capture.startRow, self.best_capture.startCol), self.gs.getPiece(self.best_capture.endRow, self.best_capture.endCol), roll, self.gs.treg.Movable(self.best_capture.pieceMoved)):
+    
+                    if self.best_capture.moveCompleted == True: #if move is successful
+                        print(self.best_capture.getChessNotation())  # prints move log entry
+                    self.gs.makeMove(self.best_capture)  # makes move
+    
+                elif self.best_capture.pieceMoved == "wN1" and self.gs.treg.wN1Flag == False:
+                    self.gs.treg.wN1Flag = True
+                elif self.best_capture.pieceMoved == "wN2" and self.gs.treg.wN2Flag == False:
+                    self.gs.treg.wN2Flag = True
+                elif self.best_capture.pieceMoved == "bN1" and self.gs.treg.bN1Flag == False:
+                    self.gs.treg.bN1Flag = True
+                elif self.best_capture.pieceMoved == "bN2" and self.gs.treg.bN2Flag == False:
+                    self.gs.treg.bN2Flag = True
+
 
             elif self.best_move !=0:
-                pass
+                self.gs.treg.attack = 0
+                self.gs.makeMove(self.best_move)  # makes move
+                if self.best_move.moveCompleted == True: #if move is successful
+                    print(self.best_move.getChessNotation())  # prints move log entry
+                if self.evaluate(self.best_move.pieceMoved) == 2:
+                    self.vmov.knight_special_attack = True  # indicator that if knight attacks after moving, dice roll is decreased by one
+
 
             #flag setting
             if self.color == 0:
@@ -502,10 +382,36 @@ class Corp():
 
             #move handling
             if percentage <=20 and self.best_capture != 0:
-                pass
+                self.gs.treg.attack = 1
+                roll = random.randint(1, 6)
+                if self.vmov.knight_special_attack == True and self.evaluate(self.best_capture.pieceMoved) == 2:
+                    roll = roll - 1
+                    self.vmov.knight_special_attack = False
+                if self.gs.validate_capture(self.gs.getPiece(self.best_capture.startRow, self.best_capture.startCol), self.gs.getPiece(self.best_capture.endRow, self.best_capture.endCol), roll, self.gs.treg.Movable(self.best_capture.pieceMoved)):
+
+                    if self.best_capture.moveCompleted == True: #if move is successful
+                        print(self.best_capture.getChessNotation())  # prints move log entry
+                    self.gs.makeMove(self.best_capture)  # makes move
+
+                elif self.best_capture.pieceMoved == "wN1" and self.gs.treg.wN1Flag == False:
+                    self.gs.treg.wN1Flag = True
+                elif self.best_capture.pieceMoved == "wN2" and self.gs.treg.wN2Flag == False:
+                    self.gs.treg.wN2Flag = True
+                elif self.best_capture.pieceMoved == "bN1" and self.gs.treg.bN1Flag == False:
+                    self.gs.treg.bN1Flag = True
+                elif self.best_capture.pieceMoved == "bN2" and self.gs.treg.bN2Flag == False:
+                    self.gs.treg.bN2Flag = True
+
+
 
             elif self.best_move !=0:
-                pass
+                self.gs.treg.attack = 0
+                self.gs.makeMove(self.best_move)  # makes move
+                if self.best_move.moveCompleted == True: #if move is successful
+                    print(self.best_move.getChessNotation())  # prints move log entry
+                if self.evaluate(self.best_move.pieceMoved) == 2:
+                    self.vmov.knight_special_attack = True  # indicator that if knight attacks after moving, dice roll is decreased by one
+
         
             #flag setting
             if self.color == 0:
@@ -545,11 +451,15 @@ class Corp():
 
     #executes method sequence required to make a move
     def step(self):
-        self.strategize()
-        self.allMoves()
-        self.bestMove()
-        self.bestCapture()
-        self.move()
-        self.clear()
+        if len(self.pieces)>0:
+            self.strategize()
+            self.allMoves()
+            self.bestMove()
+            self.bestCapture()
+            self.move()
+            self.clear()
+        else:
+            self.strategize()
+            self.move()
 
 
