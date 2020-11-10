@@ -299,7 +299,7 @@ class Corp():
 
 
 
-        #finds either the furthest safe backward movement or the a safe movement of the highest ranking vulnerable piece
+        #finds either the a random safe movement or the a safe movement of the highest ranking vulnerable piece
         if self.mode =='retreat':
             
             vuln_list = []
@@ -343,28 +343,6 @@ class Corp():
                 for move in self.moves:
                     if self.identify(move[0]) != high or self.identify(move[0]) not in vuln_list:
                         remove_list.append(move)
-                self.listRemove(remove_list,self.moves)
-
-            #finds maximum backward distance
-            else:
-                max_diff = 0
-                for move in self.moves:
-                    if self.color == 1:
-                        diff = move[0][0] - move[1][0]
-                    else:
-                        diff = move[1][0] - move[0][0]
-                    if diff > max_diff:
-                        max_diff = diff
-
-                #removes all moves with less distance than max_diff
-                for move in self.moves:
-                    if self.color == 1:
-                        diff = move[0][0] - move[1][0]
-                    else:
-                        diff = move[1][0] - move[0][0]
-                    if diff < max_diff:
-                        remove_list.append(move)
-                
                 self.listRemove(remove_list,self.moves)
 
             #picks random move from remaining moves

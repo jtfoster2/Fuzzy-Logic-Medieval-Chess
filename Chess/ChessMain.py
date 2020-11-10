@@ -168,12 +168,6 @@ def chessGame():
 
     while running == True:
     
-       # if gs.treg.currentTurn == 1:
-        #    bL.step()
-         #   time.sleep(3)
-          #  bC.step()
-         #   time.sleep(3)
-          #  bR.step()  
         for e in p.event.get():
             if e.type == p.QUIT:
                 p.quit()
