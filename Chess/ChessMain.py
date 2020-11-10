@@ -32,7 +32,7 @@ IMAGES = {}
 black = (0,0,0)
 grey = (200,200,200)
 dark_grey = (130,130,130)
-tableOpen = 0 # dice table toggle
+tableOpen = 0
 
 #initialize game
 p.init()
@@ -49,6 +49,8 @@ def loadImages():
     for img in imgs:
         IMAGES[img] = p.transform.scale(p.image.load("Backend/images/" + img + ".png"), (SQ_SIZE, SQ_SIZE))
     # Note: we can access an image by saying 'IMAGES['wP']'
+
+
 
 #main function
 def main():
@@ -98,8 +100,47 @@ def menuScreen():
         button("PLAY",int(WIDTH/2 - 150),450,100,50,dark_grey,grey,chessGame)
         button("RULES",int(WIDTH/2 + 50),450,100,50,dark_grey,grey,infoScreen)
 
+        clock.tick(MAX_FPS)
         p.display.flip()
 
+#displays rules in the game
+def endScreen():
+
+    end = True
+
+    while end:
+        for e in p.event.get():
+            if e.type == p.QUIT:
+                p.quit()
+                quit()
+
+        screen.fill(p.Color("white"))
+        largeText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 55)
+        smallText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 15)
+            
+        if 'wK' in gs.taken_pieces:
+            TextSurf, TextRect = text_objects("Black Wins", largeText)
+        elif 'bK' in gs.taken_pieces:
+            TextSurf, TextRect = text_objects("White Wins", largeText)
+        else:
+            TextSurf, TextRect = text_objects("Game Over", largeText)
+
+        TextRect.center = (int(WIDTH / 2), 100)
+        screen.blit(TextSurf, TextRect)
+
+        TextSurf, TextRect = text_objects("Credits", smallText)
+        TextRect.center = (int(WIDTH / 2 ), 200)
+        screen.blit(TextSurf, TextRect)
+
+        TextSurf, TextRect = text_objects("--------------------------------------------", smallText)
+        TextRect.center = (int(WIDTH / 2 ), 160)
+        screen.blit(TextSurf, TextRect)
+
+
+        button("PLAY AGAIN",int(WIDTH/2 - 150),500,100,50,dark_grey,grey,restart)
+        button("EXIT",int(WIDTH/2 + 50),500,100,50,dark_grey,grey,quit)
+
+        p.display.flip()
 
 #displays rules in the game
 def infoScreen():
@@ -108,6 +149,7 @@ def infoScreen():
 
     while info:
         for e in p.event.get():
+            #print(e)
             if e.type == p.QUIT:
                 p.quit()
                 quit()
@@ -131,39 +173,6 @@ def infoScreen():
 
         button("PLAY",int(WIDTH/2 - 150),500,100,50,dark_grey,grey,chessGame)
         button("MENU",int(WIDTH/2 + 50),500,100,50,dark_grey,grey,menuScreen)
-
-        p.display.flip()
-
-#displays rules in the game
-def endScreen():
-
-    end = True
-
-    while end:
-        for e in p.event.get():
-            if e.type == p.QUIT:
-                p.quit()
-                quit()
-
-        screen.fill(p.Color("white"))
-        largeText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 55)
-        smallText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 15)
-
-        TextSurf, TextRect = text_objects("Game Over", largeText)
-        TextRect.center = (int(WIDTH / 2), 100)
-        screen.blit(TextSurf, TextRect)
-
-        TextSurf, TextRect = text_objects("Credits", smallText)
-        TextRect.center = (int(WIDTH / 2 ), 200)
-        screen.blit(TextSurf, TextRect)
-
-        TextSurf, TextRect = text_objects("--------------------------------------------", smallText)
-        TextRect.center = (int(WIDTH / 2 ), 160)
-        screen.blit(TextSurf, TextRect)
-
-
-        button("PLAY AGAIN",int(WIDTH/2 - 150),500,100,50,dark_grey,grey,restart)
-        button("EXIT",int(WIDTH/2 + 50),500,100,50,dark_grey,grey,quit)
 
         p.display.flip()
 
@@ -202,10 +211,17 @@ def chessGame():
     running = True
 
     while running == True:
+    
         for e in p.event.get():
             if e.type == p.QUIT:
                 p.quit()
                 quit()
+
+            if "bK" in gs.taken_pieces: #endscreen on black King capture
+                endScreen()
+            if "wK" in gs.taken_pieces: #endscreen on white King capture
+                endScreen()
+
             if gs.treg.currentTurn == 1:
                 time.sleep(1)
                 bL.step()
@@ -222,12 +238,7 @@ def chessGame():
 
             if gs.treg.currentTurn == 0 and whiteAI == True:
                 pass # MINA replace this with Corp.step() and time.sleep() methods like above
-
-            if "bK" in gs.taken_pieces: #endscreen on black King capture
-                endScreen()
-            if "wK" in gs.taken_pieces: #endscreen on white King capture
-                endScreen()
-
+            
             elif e.type == p.MOUSEBUTTONDOWN:
                 location = p.mouse.get_pos()  # (x,y) location of mouse
                 col = location[0]//SQ_SIZE
@@ -288,6 +299,14 @@ def chessGame():
                                 gs.treg.blackCenterMoveFlag = True
                             if piece in gs.treg.blackCorpR:
                                 gs.treg.blackRightMoveFlag = True
+                            
+                            if gs.treg.currentTurn == 0 and whiteAI == False:
+                                leaders = gs.treg.leadersW
+                                if gs.treg.turnMoveCount() == leaders:
+                                    print("Move limit reached, End turn")
+                                    gs.treg.turnSwap()
+                                    print("New Turn: ", gs.treg.currentTurn)
+
                         
                     elif gs.treg.Movable(gs.board[playerClicks[0][0]][playerClicks[0][1]]) == False:
                         print("Error: Corp Already Moved")
@@ -396,11 +415,10 @@ def drawHud(screen):
     button("MENU", 890, 10, 100, 50, p.Color("white"), grey, menuScreen)
     button("RULES", 890, 70, 100, 50, p.Color("white"), grey, infoScreen)
     button("DICE TABLE", 780, 100, 100, 50, p.Color("white"), grey, captureTableScreen)
+    button("RETIRE", 780, 160, 100, 50, p.Color("white"), grey, endScreen)
     button("QUIT", 890, 130, 100, 50, p.Color("white"), grey, quit)
     button("END TURN", 775, 360, 200, 50, p.Color("lightgreen"), p.Color("brown1"), gs.treg.turnSwap)
 
-    #temp add until fully functional
-    button("end game screen test", 780, 160, 100, 50, p.Color("white"), grey, endScreen)
 
     #whose turn
     if gs.treg.currentTurn == 0: #white turn
@@ -493,9 +511,7 @@ def drawHud(screen):
         screen.blit(p.transform.scale(IMAGES['d5'], (75, 75)), (785, 15))
     if gs.treg.hudDice == 6:
         screen.blit(p.transform.scale(IMAGES['d6'], (75, 75)), (785, 15))
-    else:
-        screen.blit(p.transform.scale(IMAGES['d3'], (75, 75)), (785, 15))
-
+    
     #dice capture table
     if tableOpen == 1:
         p.draw.rect(screen, p.Color("lightgreen"), (100, 100, 400, 400))
@@ -509,6 +525,7 @@ def captureTableScreen(): #toggles capture table screen
         tableOpen = 1
     else:
         tableOpen = 0
+
 
 #function for drawing grid on board
 def drawBoard(screen):

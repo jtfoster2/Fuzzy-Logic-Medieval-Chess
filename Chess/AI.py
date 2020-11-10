@@ -320,7 +320,6 @@ class Corp():
                                                 remove_list.append(move)
             self.listRemove(remove_list,self.moves)
 
-
             #compute currently vunerable pieces
             for piece in self.opposing:
                 self.vmov.generate(self.locate(piece)[0],self.locate(piece)[1])
@@ -341,7 +340,7 @@ class Corp():
             #remove moves involving invunerable pieces and moves involving less high ranking vulnerable pieces
             if len(vuln_list) >0:
                 for move in self.moves:
-                    if self.identify(move[0]) != high or self.identify(move[0]) not in vuln_list:
+                    if self.evaluate(self.identify(move[0])) != high or self.identify(move[0]) not in vuln_list:
                         remove_list.append(move)
                 self.listRemove(remove_list,self.moves)
 
@@ -402,18 +401,18 @@ class Corp():
 
         #if AI is white
         if self.color == 0:
-            if diff >2:
+            if diff >1:
                 self.mode ="retreat"
-            if diff <= 2 and diff >= -1 or ("wR1" in self.gs.taken_pieces and "wR2" in self.gs.taken_pieces):
+            if diff <= 1 and diff >= -1 or ("wR1" in self.gs.taken_pieces and "wR2" in self.gs.taken_pieces):
                 self.mode = "advance"
             if diff < -1:
                 self.mode = "attack"
 
         #if AI is black
         if self.color == 1:
-            if diff <-2:
+            if diff <-1:
                 self.mode ="retreat"
-            if diff >= -2 and diff <= 1 or ("bR1" in self.gs.taken_pieces and "bR2" in self.gs.taken_pieces):
+            if diff >= -1 and diff <= 1 or ("bR1" in self.gs.taken_pieces and "bR2" in self.gs.taken_pieces):
                 self.mode = "advance"
             if diff > 1:
                 self.mode = "attack"
@@ -429,7 +428,7 @@ class Corp():
         if self.mode == 'attack':
              
             #move handling
-            if percentage <=70 and self.best_capture != 0:
+            if percentage <=80 and self.best_capture != 0:
                 self.gs.treg.attack = 1
                 roll = random.randint(1, 6)
                 if self.vmov.knight_special_attack == True and self.evaluate(self.best_capture.pieceMoved) == 2:
@@ -520,7 +519,7 @@ class Corp():
         elif self.mode == 'advance':
 
             #move handling
-            if percentage <= 60 and self.best_capture != 0:
+            if percentage <= 70 and self.best_capture != 0:
                 self.gs.treg.attack = 1
                 roll = random.randint(1, 6)
                 if self.vmov.knight_special_attack == True and self.evaluate(self.best_capture.pieceMoved) == 2:
@@ -613,7 +612,7 @@ class Corp():
         elif self.mode == 'retreat':
 
             #move handling
-            if percentage <=30 and self.best_capture != 0:
+            if percentage <=40 and self.best_capture != 0:
                 self.gs.treg.attack = 1
                 roll = random.randint(1, 6)
                 if self.vmov.knight_special_attack == True and self.evaluate(self.best_capture.pieceMoved) == 2:
