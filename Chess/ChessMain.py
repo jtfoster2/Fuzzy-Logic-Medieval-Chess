@@ -192,7 +192,7 @@ bR = AI.Corp(gs,1,2)
 wL = AI.Corp(gs,0,0)
 wC = AI.Corp(gs,0,1)
 wR = AI.Corp(gs,0,2)
-whiteAI = False
+whiteAI = True
 #game play function
 def chessGame():
     attack_array = []
@@ -237,7 +237,19 @@ def chessGame():
                 p.display.flip()
 
             if gs.treg.currentTurn == 0 and whiteAI == True:
-                pass # MINA replace this with Corp.step() and time.sleep() methods like above
+                #pass  MINA replace this with Corp.step() and time.sleep() methods like above
+                time.sleep(1)
+                wL.step()
+                drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+                p.display.flip()
+                time.sleep(2)
+                wC.step()
+                drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+                p.display.flip()
+                time.sleep(2)
+                wR.step()
+                drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+                p.display.flip()
             
             elif e.type == p.MOUSEBUTTONDOWN:
                 location = p.mouse.get_pos()  # (x,y) location of mouse
