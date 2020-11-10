@@ -131,12 +131,10 @@ class Corp():
                 if self.mode != "attack":
                     if diff >= best_diff:
                         if self.mode == "retreat":
-                            if pair[0][1] == "R" or pair[0][1] == 'P': #only archers and pawns (the sacrificial kind) attack while retreating
+                            if pair[0][1] == "R" or pair[0][1] == 'P': #prioritize archers and pawns (the sacrificial kind) to attack while retreating
                                 best = pair
                                 best_ranked = pair_ranked
                                 best_diff = diff
-                            else:
-                                pass
                         else:    
                             best = pair
                             best_ranked = pair_ranked
@@ -322,10 +320,11 @@ class Corp():
 
             #compute currently vunerable pieces
             for piece in self.opposing:
-                self.vmov.generate(self.locate(piece)[0],self.locate(piece)[1])
-                for location in self.vmov.legal_attacks:
-                    self.op_caps.append((piece,self.identify(location)))
-                self.vmov.clearGenerated()
+                if piece[1] != 'R':
+                    self.vmov.generate(self.locate(piece)[0],self.locate(piece)[1])
+                    for location in self.vmov.legal_attacks:
+                        self.op_caps.append((piece,self.identify(location)))
+                    self.vmov.clearGenerated()
 
             #fill vunerable list
             for capture in self.op_caps:
@@ -401,18 +400,18 @@ class Corp():
 
         #if AI is white
         if self.color == 0:
-            if diff >1:
+            if diff >3:
                 self.mode ="retreat"
-            if diff <= 1 and diff >= -1 or ("wR1" in self.gs.taken_pieces and "wR2" in self.gs.taken_pieces):
+            if diff <= 3 and diff >= -1 or ("wR1" in self.gs.taken_pieces and "wR2" in self.gs.taken_pieces):
                 self.mode = "advance"
             if diff < -1:
                 self.mode = "attack"
 
         #if AI is black
         if self.color == 1:
-            if diff <-1:
+            if diff <-3:
                 self.mode ="retreat"
-            if diff >= -1 and diff <= 1 or ("bR1" in self.gs.taken_pieces and "bR2" in self.gs.taken_pieces):
+            if diff >= -3 and diff <= 1 or ("bR1" in self.gs.taken_pieces and "bR2" in self.gs.taken_pieces):
                 self.mode = "advance"
             if diff > 1:
                 self.mode = "attack"
@@ -428,7 +427,7 @@ class Corp():
         if self.mode == 'attack':
              
             #move handling
-            if percentage <=80 and self.best_capture != 0:
+            if percentage <=70 and self.best_capture != 0:
                 self.gs.treg.attack = 1
                 roll = random.randint(1, 6)
                 if self.vmov.knight_special_attack == True and self.evaluate(self.best_capture.pieceMoved) == 2:
@@ -519,7 +518,7 @@ class Corp():
         elif self.mode == 'advance':
 
             #move handling
-            if percentage <= 70 and self.best_capture != 0:
+            if percentage <= 60 and self.best_capture != 0:
                 self.gs.treg.attack = 1
                 roll = random.randint(1, 6)
                 if self.vmov.knight_special_attack == True and self.evaluate(self.best_capture.pieceMoved) == 2:
@@ -612,7 +611,7 @@ class Corp():
         elif self.mode == 'retreat':
 
             #move handling
-            if percentage <=40 and self.best_capture != 0:
+            if percentage <=30 and self.best_capture != 0:
                 self.gs.treg.attack = 1
                 roll = random.randint(1, 6)
                 if self.vmov.knight_special_attack == True and self.evaluate(self.best_capture.pieceMoved) == 2:
