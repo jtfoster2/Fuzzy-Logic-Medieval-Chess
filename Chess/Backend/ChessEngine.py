@@ -95,7 +95,7 @@ class GameState():
                 print("Move limit reached, End turn")
                 self.treg.turnSwap()
                 print("New Turn: ", self.treg.currentTurn )
-    
+
     def regroup(self):
         for piece in self.taken_pieces:
             if piece in self.alive_white_leaders:

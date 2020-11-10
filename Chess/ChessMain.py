@@ -179,12 +179,19 @@ def chessGame():
                 p.quit()
                 quit()
             if gs.treg.currentTurn == 1:
-                time.sleep(3)
+                time.sleep(1)
                 bL.step()
-                time.sleep(3)
+                drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+                p.display.flip()
+                time.sleep(2)
                 bC.step()
-                time.sleep(3)
+                drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+                p.display.flip()
+                time.sleep(2)
                 bR.step()
+                drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+                p.display.flip()
+
             if gs.treg.currentTurn == 0 and whiteAI == True:
                 pass # MINA replace this with Corp.step() and time.sleep() methods like above
 
