@@ -162,14 +162,14 @@ def endScreen():
         screen.blit(TextSurf, TextRect)
 
 
-        button("PLAY AGAIN",int(WIDTH/2 - 150),500,100,50,dark_grey,grey,resart)
+        button("PLAY AGAIN",int(WIDTH/2 - 150),500,100,50,dark_grey,grey,restart)
         button("EXIT",int(WIDTH/2 + 50),500,100,50,dark_grey,grey,quit)
 
         p.display.flip()
 
 # resets gamestate to default and starts up chessgame()
-def resart():
-    #reset gs function goes here
+def restart():
+    gs.__init__()
 
     chessGame() #loads up chess game
 
