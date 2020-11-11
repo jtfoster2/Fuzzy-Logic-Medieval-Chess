@@ -35,7 +35,7 @@ black = (0,0,0)
 grey = (200,200,200)
 dark_grey = (130,130,130)
 tableOpen = 0
-whiteAI = True
+whiteAI = False
 
 
 #initialize game
@@ -212,8 +212,17 @@ def restart():
 
     chessGame() #loads up chess game
 def spectate():
+    global whiteAI
     whiteAI = True
     chessGame()
+
+def switchWhite():
+    global whiteAI
+    if whiteAI == True:
+        whiteAI =False
+    else:
+        whiteAI = True
+
 #initialize backend (10/12/2020 edit: moved outside of chessGame function to save gamesstate when leaving mid game)
 gs = ChessEngine.GameState()
 mov = LegalMoveGen.LegalMoveGen(gs)
@@ -224,6 +233,7 @@ bR = AI.Corp(gs,1,2)
 wL = AI.Corp(gs,0,0)
 wC = AI.Corp(gs,0,1)
 wR = AI.Corp(gs,0,2)
+global whiteAI
 #game play function
 def chessGame():
     attack_array = []
