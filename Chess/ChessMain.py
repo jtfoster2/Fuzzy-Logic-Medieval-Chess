@@ -33,7 +33,8 @@ black = (0,0,0)
 grey = (200,200,200)
 dark_grey = (130,130,130)
 tableOpen = 0
-whiteAI = True
+whiteAI = False
+count = 0
 
 #initialize game
 p.init()
@@ -201,11 +202,6 @@ def chessGame():
     attack_array = []
     valid_array = []
 
-    # initialize backend (moved up)
-    #gs = ChessEngine.GameState()
-    #mov = LegalMoveGen.LegalMoveGen(gs)
-    #vmov = LegalMoveGen.VariantLegalMoveGen(gs)
-
     #initialize variables used to log clicks
     sqSelected = ()  # no square is selected initially, keeps track of last click of user ( tuple:(row, col))
     playerClicks = []  # keeps track of player clicks( two tuples: [(x,y), (x,y)])
@@ -240,7 +236,6 @@ def chessGame():
                 p.display.flip()
 
             if gs.treg.currentTurn == 0 and whiteAI == True:
-                #pass  MINA replace this with Corp.step() and time.sleep() methods like above
                 time.sleep(1)
                 wL.step()
                 drawGameState(screen, gs, valid_array, attack_array, sqSelected)
@@ -253,7 +248,11 @@ def chessGame():
                 wR.step()
                 drawGameState(screen, gs, valid_array, attack_array, sqSelected)
                 p.display.flip()
-            
+                count = count + 1
+                if count == 5:
+                    #trigger menu containing continue exit and stop spectator mode
+                    count = 0
+
             elif e.type == p.MOUSEBUTTONDOWN:
                 location = p.mouse.get_pos()  # (x,y) location of mouse
                 col = location[0]//SQ_SIZE
