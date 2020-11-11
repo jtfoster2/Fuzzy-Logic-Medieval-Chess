@@ -29,6 +29,7 @@ DIMENSION = 8
 SQ_SIZE = HEIGHT // DIMENSION
 MAX_FPS = 15 #frames per second
 IMAGES = {}
+INFO = {}
 black = (0,0,0)
 grey = (200,200,200)
 dark_grey = (130,130,130)
@@ -51,8 +52,9 @@ def loadImages():
     for img in imgs:
         IMAGES[img] = p.transform.scale(p.image.load("Backend/images/" + img + ".png"), (SQ_SIZE, SQ_SIZE))
     # Note: we can access an image by saying 'IMAGES['wP']'
-
-
+    info = ['table', 'rules']
+    for inf in info:
+        INFO[inf] = p.image.load("Backend/images/" + inf + ".png")
 
 #main function
 def main():
@@ -78,7 +80,7 @@ def button(msg,x,y,w,h,ic,ac,action=None):
 
 #menu function
 def menuScreen():
-
+    loadImages()
     menu = True
 
     while menu:
@@ -119,6 +121,7 @@ def endScreen():
         screen.fill(p.Color("white"))
         largeText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 55)
         smallText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 15)
+        nameText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 12)
             
         if 'wK' in gs.taken_pieces:
             TextSurf, TextRect = text_objects("Black Wins", largeText)
@@ -126,18 +129,44 @@ def endScreen():
             TextSurf, TextRect = text_objects("White Wins", largeText)
         else:
             TextSurf, TextRect = text_objects("Game Over", largeText)
-
         TextRect.center = (int(WIDTH / 2), 100)
-        screen.blit(TextSurf, TextRect)
-
-        TextSurf, TextRect = text_objects("Credits", smallText)
-        TextRect.center = (int(WIDTH / 2 ), 200)
         screen.blit(TextSurf, TextRect)
 
         TextSurf, TextRect = text_objects("--------------------------------------------", smallText)
         TextRect.center = (int(WIDTH / 2 ), 160)
         screen.blit(TextSurf, TextRect)
 
+        TextSurf, TextRect = text_objects("Credits", smallText)
+        TextRect.center = (int(WIDTH / 2 ), 200)
+        screen.blit(TextSurf, TextRect)
+
+        TextSurf, TextRect = text_objects("John Foster", nameText)
+        TextRect.center = (int(WIDTH / 2 ), 240)
+        screen.blit(TextSurf, TextRect)
+
+        TextSurf, TextRect = text_objects("Jordan Gibbons", nameText)
+        TextRect.center = (int(WIDTH / 2 ), 270)
+        screen.blit(TextSurf, TextRect)
+
+        TextSurf, TextRect = text_objects("Ian Gregoire", nameText)
+        TextRect.center = (int(WIDTH / 2 ), 300)
+        screen.blit(TextSurf, TextRect)
+
+        TextSurf, TextRect = text_objects("Mina Hanna", nameText)
+        TextRect.center = (int(WIDTH / 2 ), 330)
+        screen.blit(TextSurf, TextRect)
+
+        TextSurf, TextRect = text_objects("Leonel Hernandez", nameText)
+        TextRect.center = (int(WIDTH / 2 ), 360)
+        screen.blit(TextSurf, TextRect)
+
+        TextSurf, TextRect = text_objects("John Hurd", nameText)
+        TextRect.center = (int(WIDTH / 2 ), 390)
+        screen.blit(TextSurf, TextRect)
+
+        TextSurf, TextRect = text_objects("Rafael Quarles", nameText)
+        TextRect.center = (int(WIDTH / 2 ), 420)
+        screen.blit(TextSurf, TextRect)
 
         button("PLAY AGAIN",int(WIDTH/2 - 150),500,100,50,dark_grey,grey,restart)
         button("EXIT",int(WIDTH/2 + 50),500,100,50,dark_grey,grey,quit)
@@ -161,17 +190,14 @@ def infoScreen():
         smallText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 15)
 
         TextSurf, TextRect = text_objects("RULES", largeText)
-        TextRect.center = (int(WIDTH / 2), 100)
-        screen.blit(TextSurf, TextRect)
-
-        TextSurf, TextRect = text_objects("Will add rules here soon", smallText)
-        TextRect.center = (int(WIDTH / 2 ), 200)
+        TextRect.center = (int(WIDTH / 2), 50)
         screen.blit(TextSurf, TextRect)
 
         TextSurf, TextRect = text_objects("--------------------------------------------", smallText)
-        TextRect.center = (int(WIDTH / 2 ), 160)
+        TextRect.center = (int(WIDTH / 2 ), 100)
         screen.blit(TextSurf, TextRect)
 
+        screen.blit(INFO['rules'], (0, 0))
 
         button("PLAY",int(WIDTH/2 - 150),500,100,50,dark_grey,grey,chessGame)
         #add button here that triggers spectate
@@ -433,7 +459,6 @@ def drawHud(screen):
     button("QUIT", 890, 130, 100, 50, p.Color("white"), grey, quit)
     button("END TURN", 775, 360, 200, 50, p.Color("lightgreen"), p.Color("brown1"), gs.treg.turnSwap)
 
-
     #whose turn
     if gs.treg.currentTurn == 0: #white turn
         p.draw.rect(screen, p.Color("white"), (775, 300, 200, 50))
@@ -513,23 +538,25 @@ def drawHud(screen):
 
     #visual dice being rolled ?
     # handle display of dice roll
+    p.draw.rect(screen, p.Color("black"), (780, 10, 100, 80)) #dice background
     if gs.treg.hudDice == 1:
-        screen.blit(p.transform.scale(IMAGES['d1'], (75, 75)), (785, 15))
+        screen.blit(p.transform.scale(IMAGES['d1'], (75, 75)), (793, 12))
     if gs.treg.hudDice == 2:
-        screen.blit(p.transform.scale(IMAGES['d2'], (75, 75)), (785, 15))
+        screen.blit(p.transform.scale(IMAGES['d2'], (75, 75)), (793, 12))
     if gs.treg.hudDice == 3:
-        screen.blit(p.transform.scale(IMAGES['d3'], (75, 75)), (785, 15))
+        screen.blit(p.transform.scale(IMAGES['d3'], (75, 75)), (793, 12))
     if gs.treg.hudDice == 4:
-        screen.blit(p.transform.scale(IMAGES['d4'], (75, 75)), (785, 15))
+        screen.blit(p.transform.scale(IMAGES['d4'], (75, 75)), (793, 12))
     if gs.treg.hudDice == 5:
-        screen.blit(p.transform.scale(IMAGES['d5'], (75, 75)), (785, 15))
+        screen.blit(p.transform.scale(IMAGES['d5'], (75, 75)), (793, 12))
     if gs.treg.hudDice == 6:
-        screen.blit(p.transform.scale(IMAGES['d6'], (75, 75)), (785, 15))
+        screen.blit(p.transform.scale(IMAGES['d6'], (75, 75)), (793, 12))
     
     #dice capture table
     if tableOpen == 1:
         p.draw.rect(screen, p.Color("lightgreen"), (100, 100, 400, 400))
         p.draw.rect(screen, p.Color("gray3"), (110, 110, 380, 380))
+        screen.blit(INFO['table'], (110, 110))
         #add png here for dice roll mechanics, png should be < 380x380 pixels
 
 
