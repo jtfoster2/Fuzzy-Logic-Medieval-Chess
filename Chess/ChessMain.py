@@ -33,6 +33,7 @@ black = (0,0,0)
 grey = (200,200,200)
 dark_grey = (130,130,130)
 tableOpen = 0
+whiteAI = True
 
 #initialize game
 p.init()
@@ -172,6 +173,7 @@ def infoScreen():
 
 
         button("PLAY",int(WIDTH/2 - 150),500,100,50,dark_grey,grey,chessGame)
+        #add button here that triggers spectate
         button("MENU",int(WIDTH/2 + 50),500,100,50,dark_grey,grey,menuScreen)
 
         p.display.flip()
@@ -181,7 +183,9 @@ def restart():
     gs.__init__()
 
     chessGame() #loads up chess game
-
+def spectate():
+    whiteAI = True
+    chessGame()
 #initialize backend (10/12/2020 edit: moved outside of chessGame function to save gamesstate when leaving mid game)
 gs = ChessEngine.GameState()
 mov = LegalMoveGen.LegalMoveGen(gs)
@@ -192,7 +196,6 @@ bR = AI.Corp(gs,1,2)
 wL = AI.Corp(gs,0,0)
 wC = AI.Corp(gs,0,1)
 wR = AI.Corp(gs,0,2)
-whiteAI = True
 #game play function
 def chessGame():
     attack_array = []
