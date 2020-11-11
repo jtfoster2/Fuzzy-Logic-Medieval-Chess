@@ -22,6 +22,7 @@ from Backend import LegalMoveGen #generates legal moves
 
 #import AI
 import AI
+
 #set game properties
 WIDTH = 1000
 HEIGHT = 600 #size of window
@@ -34,8 +35,8 @@ black = (0,0,0)
 grey = (200,200,200)
 dark_grey = (130,130,130)
 tableOpen = 0
-whiteAI = False
-count = 0
+whiteAI = True
+
 
 #initialize game
 p.init()
@@ -236,50 +237,46 @@ def chessGame():
     running = True
 
     while running == True:
-    
+        
+        if gs.treg.currentTurn == 1 and p.mouse.get_pos()[0]<600:
+            time.sleep(2)
+            bL.step()
+            drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+            p.display.flip()
+            time.sleep(2)
+            bC.step()
+            drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+            p.display.flip()
+            time.sleep(2)
+            bR.step()
+            drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+            p.display.flip()
+
+        elif gs.treg.currentTurn == 0 and p.mouse.get_pos()[0]<600 :
+            time.sleep(2)
+            wL.step()
+            drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+            p.display.flip()
+            time.sleep(2)
+            wC.step()
+            drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+            p.display.flip()
+            time.sleep(2)
+            wR.step()
+            drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+            p.display.flip()
+
         for e in p.event.get():
             if e.type == p.QUIT:
                 p.quit()
                 quit()
-
+        
             if "bK" in gs.taken_pieces: #endscreen on black King capture
                 endScreen()
             if "wK" in gs.taken_pieces: #endscreen on white King capture
                 endScreen()
-
-            if gs.treg.currentTurn == 1:
-                time.sleep(1)
-                bL.step()
-                drawGameState(screen, gs, valid_array, attack_array, sqSelected)
-                p.display.flip()
-                time.sleep(2)
-                bC.step()
-                drawGameState(screen, gs, valid_array, attack_array, sqSelected)
-                p.display.flip()
-                time.sleep(2)
-                bR.step()
-                drawGameState(screen, gs, valid_array, attack_array, sqSelected)
-                p.display.flip()
-
-            if gs.treg.currentTurn == 0 and whiteAI == True:
-                time.sleep(1)
-                wL.step()
-                drawGameState(screen, gs, valid_array, attack_array, sqSelected)
-                p.display.flip()
-                time.sleep(2)
-                wC.step()
-                drawGameState(screen, gs, valid_array, attack_array, sqSelected)
-                p.display.flip()
-                time.sleep(2)
-                wR.step()
-                drawGameState(screen, gs, valid_array, attack_array, sqSelected)
-                p.display.flip()
-                count = count + 1
-                if count == 5:
-                    #trigger menu containing continue exit and stop spectator mode
-                    count = 0
-
-            elif e.type == p.MOUSEBUTTONDOWN:
+ 
+            if e.type == p.MOUSEBUTTONDOWN:
                 location = p.mouse.get_pos()  # (x,y) location of mouse
                 col = location[0]//SQ_SIZE
                 row = location[1]//SQ_SIZE
