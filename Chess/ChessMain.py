@@ -233,7 +233,6 @@ bR = AI.Corp(gs,1,2)
 wL = AI.Corp(gs,0,0)
 wC = AI.Corp(gs,0,1)
 wR = AI.Corp(gs,0,2)
-global whiteAI
 #game play function
 def chessGame():
     attack_array = []
@@ -248,7 +247,7 @@ def chessGame():
 
     while running == True:
         
-        if gs.treg.currentTurn == 1 and p.mouse.get_pos()[0]<600:
+        if gs.treg.currentTurn == 1 and  p.mouse.get_pos()[0]<600:
             time.sleep(2)
             bL.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
@@ -262,7 +261,7 @@ def chessGame():
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
 
-        elif gs.treg.currentTurn == 0 and p.mouse.get_pos()[0]<600 :
+        elif gs.treg.currentTurn == 0 and whiteAI == True and  p.mouse.get_pos()[0]<600 :
             time.sleep(2)
             wL.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
