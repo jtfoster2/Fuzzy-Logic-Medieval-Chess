@@ -103,7 +103,7 @@ def menuScreen():
         screen.blit(TextSurf, TextRect)
 
         button("PLAY",int(WIDTH/2 - 250),450,100,50,dark_grey,grey,chessGame)
-        button("AI vs AI", int(WIDTH / 2 - 50), 450, 100, 50, dark_grey, grey, spectate)
+        button("SPECTATE", int(WIDTH / 2 - 50), 450, 100, 50, dark_grey, grey, spectate)
         button("RULES",int(WIDTH/2 + 150),450,100,50,dark_grey,grey,infoScreen)
 
         clock.tick(MAX_FPS)
