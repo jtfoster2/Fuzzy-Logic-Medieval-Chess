@@ -263,6 +263,11 @@ def chessGame():
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
 
+        if "bK" in gs.taken_pieces: #endscreen on black King capture
+            endScreen()
+        if "wK" in gs.taken_pieces: #endscreen on white King capture
+            endScreen()
+
         elif gs.treg.currentTurn == 0 and whiteAI == True and  p.mouse.get_pos()[0]<600 :
             time.sleep(2)
             wL.step()
@@ -276,17 +281,18 @@ def chessGame():
             wR.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
+        
+        if "bK" in gs.taken_pieces: #endscreen on black King capture
+            endScreen()
+        if "wK" in gs.taken_pieces: #endscreen on white King capture
+            endScreen()
+
 
         for e in p.event.get():
             if e.type == p.QUIT:
                 p.quit()
                 quit()
-        
-            if "bK" in gs.taken_pieces: #endscreen on black King capture
-                endScreen()
-            if "wK" in gs.taken_pieces: #endscreen on white King capture
-                endScreen()
- 
+         
             if e.type == p.MOUSEBUTTONDOWN:
                 location = p.mouse.get_pos()  # (x,y) location of mouse
                 col = location[0]//SQ_SIZE
@@ -348,7 +354,7 @@ def chessGame():
                             if piece in gs.treg.blackCorpR:
                                 gs.treg.blackRightMoveFlag = True
                             
-                            if gs.treg.currentTurn == 0 and whiteAI == False:
+                            if gs.treg.currentTurn == 0:
                                 leaders = gs.treg.leadersW
                                 if gs.treg.turnMoveCount() == leaders:
                                     print("Move limit reached, End turn")
