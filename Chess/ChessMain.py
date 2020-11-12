@@ -102,8 +102,9 @@ def menuScreen():
         TextRect.center = (int(WIDTH / 2), int(HEIGHT / 2 + 30))
         screen.blit(TextSurf, TextRect)
 
-        button("PLAY",int(WIDTH/2 - 150),450,100,50,dark_grey,grey,chessGame)
-        button("RULES",int(WIDTH/2 + 50),450,100,50,dark_grey,grey,infoScreen)
+        button("PLAY",int(WIDTH/2 - 250),450,100,50,dark_grey,grey,chessGame)
+        button("AI vs AI", int(WIDTH / 2 - 50), 450, 100, 50, dark_grey, grey, spectate)
+        button("RULES",int(WIDTH/2 + 150),450,100,50,dark_grey,grey,infoScreen)
 
         clock.tick(MAX_FPS)
         p.display.flip()
@@ -233,6 +234,7 @@ bR = AI.Corp(gs,1,2)
 wL = AI.Corp(gs,0,0)
 wC = AI.Corp(gs,0,1)
 wR = AI.Corp(gs,0,2)
+
 #game play function
 def chessGame():
     attack_array = []
@@ -463,6 +465,7 @@ def drawHud(screen):
     button("DICE TABLE", 780, 100, 100, 50, p.Color("white"), grey, captureTableScreen)
     button("RETIRE", 780, 160, 100, 50, p.Color("white"), grey, endScreen)
     button("QUIT", 890, 130, 100, 50, p.Color("white"), grey, quit)
+    button("SPECTATE", 890, 190, 100, 50, p.Color("white"), grey, switchWhite)
     button("END TURN", 775, 360, 200, 50, p.Color("lightgreen"), p.Color("brown1"), gs.treg.turnSwap)
 
     #whose turn
