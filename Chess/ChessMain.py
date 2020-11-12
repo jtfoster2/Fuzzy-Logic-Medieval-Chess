@@ -249,6 +249,11 @@ def chessGame():
 
     while running == True:
         
+        if "bK" in gs.taken_pieces: #endscreen on black King capture
+            endScreen()
+        if "wK" in gs.taken_pieces: #endscreen on white King capture
+            endScreen()
+
         if gs.treg.currentTurn == 1 and  p.mouse.get_pos()[0]<600:
             time.sleep(2)
             bL.step()
