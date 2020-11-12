@@ -263,10 +263,10 @@ def chessGame():
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
 
-        if "bK" in gs.taken_pieces: #endscreen on black King capture
-            endScreen()
-        if "wK" in gs.taken_pieces: #endscreen on white King capture
-            endScreen()
+            if "bK" in gs.taken_pieces: #endscreen on black King capture
+                endScreen()
+            if "wK" in gs.taken_pieces: #endscreen on white King capture
+                endScreen()
 
         elif gs.treg.currentTurn == 0 and whiteAI == True and  p.mouse.get_pos()[0]<600 :
             time.sleep(2)
@@ -282,10 +282,10 @@ def chessGame():
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
         
-        if "bK" in gs.taken_pieces: #endscreen on black King capture
-            endScreen()
-        if "wK" in gs.taken_pieces: #endscreen on white King capture
-            endScreen()
+            if "bK" in gs.taken_pieces: #endscreen on black King capture
+                endScreen()
+            if "wK" in gs.taken_pieces: #endscreen on white King capture
+                endScreen()
 
 
         for e in p.event.get():
