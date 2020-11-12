@@ -254,6 +254,10 @@ def chessGame():
         if "wK" in gs.taken_pieces: #endscreen on white King capture
             endScreen()
 
+        drawGameState(screen, gs, valid_array, attack_array, sqSelected)
+        p.display.flip()
+
+
         if gs.treg.currentTurn == 1 and  p.mouse.get_pos()[0]<600:
             time.sleep(2)
             bL.step()
