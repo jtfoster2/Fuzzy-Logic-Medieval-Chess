@@ -468,6 +468,9 @@ def drawHud(screen):
     button("SPECTATE", 890, 190, 100, 50, p.Color("white"), grey, switchWhite)
     button("END TURN", 775, 360, 200, 50, p.Color("lightgreen"), p.Color("brown1"), gs.treg.turnSwap)
 
+    if whiteAI == True:
+        button("PLAY", 890, 190, 100, 50, p.Color("white"), grey, switchWhite)
+
     #whose turn
     if gs.treg.currentTurn == 0: #white turn
         p.draw.rect(screen, p.Color("white"), (775, 300, 200, 50))
@@ -505,8 +508,6 @@ def drawHud(screen):
         TextSurf, TextRect = text_objects("Illegal Move", smallText)
         TextRect.center = (880, 275)
         screen.blit(TextSurf, TextRect)
-
-
 
     #moves left indicator
     p.draw.rect(screen, p.Color("gray3"), (610, 420, 380, 175))
@@ -567,6 +568,18 @@ def drawHud(screen):
         p.draw.rect(screen, p.Color("gray3"), (110, 110, 380, 380))
         screen.blit(INFO['table'], (110, 110))
         #add png here for dice roll mechanics, png should be < 380x380 pixels
+
+    if whiteAI == True:
+        p.draw.rect(screen, p.Color("gray3"), (610, 420, 380, 175))
+        TextSurf, TextRect = text_objects_white("AI vs AI", largeText)
+        TextRect.center = (800, 450)
+        screen.blit(TextSurf, TextRect)
+        TextSurf, TextRect = text_objects_white("Keep cursor on board", smallText)
+        TextRect.center = (800, 500)
+        screen.blit(TextSurf, TextRect)
+        TextSurf, TextRect = text_objects_white("for active play", smallText)
+        TextRect.center = (800, 520)
+        screen.blit(TextSurf, TextRect)
 
 
 def captureTableScreen(): #toggles capture table screen
