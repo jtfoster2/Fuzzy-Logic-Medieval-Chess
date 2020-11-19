@@ -372,7 +372,7 @@ def chessGame():
                             if piece in gs.treg.blackCorpR:
                                 gs.treg.blackRightMoveFlag = True
                             
-                            if gs.treg.currentTurn == 0:
+                            if gs.treg.currentTurn == 0 and whiteAI == False:
                                 leaders = gs.treg.leadersW
                                 if gs.treg.turnMoveCount() == leaders:
                                     print("Move limit reached, End turn")
