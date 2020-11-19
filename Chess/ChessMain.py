@@ -11,6 +11,7 @@ File Description: This file draws the board and integrates the chess engine to t
 
 #import pygame
 import pygame as p
+import sys
 
 #extra utils
 import random
@@ -60,6 +61,9 @@ def loadImages():
 #main function
 def main():
     menuScreen()
+
+def quit():
+    sys.exit(0)
 
 #button function
 def button(msg,x,y,w,h,ic,ac,action=None):
@@ -475,6 +479,7 @@ def drawHud(screen):
         screen.blit(p.transform.scale(IMAGES['wP'], (50, 50)), (720, 360))
 
     #buttons
+    
     button("MENU", 890, 10, 100, 50, p.Color("white"), grey, menuScreen)
     button("RULES", 890, 70, 100, 50, p.Color("white"), grey, infoScreen)
     button("DICE TABLE", 780, 100, 100, 50, p.Color("white"), grey, captureTableScreen)
