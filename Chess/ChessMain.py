@@ -214,7 +214,12 @@ def infoScreen():
 # resets gamestate to default and starts up chessgame()
 def restart():
     gs.__init__()
-
+    bL.reset()
+    bC.reset()
+    bR.reset()
+    wL.reset()
+    wC.reset()
+    wR.reset()
     chessGame() #loads up chess game
 def spectate():
     global whiteAI
@@ -232,12 +237,12 @@ def switchWhite():
 gs = ChessEngine.GameState()
 mov = LegalMoveGen.LegalMoveGen(gs)
 vmov = LegalMoveGen.VariantLegalMoveGen(gs)
-bL = AI.Corp(gs,1,0)
-bC = AI.Corp(gs,1,1)
-bR = AI.Corp(gs,1,2)
-wL = AI.Corp(gs,0,0)
-wC = AI.Corp(gs,0,1)
-wR = AI.Corp(gs,0,2)
+bC = AI.KingCorp(gs,1,1)
+bL = AI.BishopCorp(gs,bC,1,0)
+bR = AI.BishopCorp(gs,bC,1,2)
+wC = AI.KingCorp(gs,0,1)
+wL = AI.BishopCorp(gs,wC,0,0)
+wR = AI.BishopCorp(gs,wC,0,2)
 
 #game play function
 def chessGame():

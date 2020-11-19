@@ -23,6 +23,9 @@ class Corp():
     best_capture = 0
     best_move = 0
     corp = -1
+    taken = 0
+    lost = 0
+    numPieces = 0
 
     def __init__(self, gs, color, corp):
         self.color = color
@@ -68,7 +71,8 @@ class Corp():
                 for location in self.vmov.legal_attacks:
                     self.captures.append((piece,self.identify(location)))
             self.vmov.clearGenerated()
-
+        
+        self.numPieces = len(self.pieces)
         self.clear()
  
     #returns the row and column of piece
@@ -388,37 +392,39 @@ class Corp():
             for piece in self.gs.treg.blackCorpR:
                 self.opposing.append(piece)
 
+        n = len(self.pieces)
+
+        if n < self.numPieces:
+            self.lost = self.lost + (self.numPieces - n)
+
+        self.numPieces = n
+
         #changes mode
-        num_of_white_dead = 0
-        num_of_black_dead = 0
-        for piece in self.gs.taken_pieces:
-            if piece[0] == "w":
-                num_of_white_dead = num_of_white_dead + 1
-            if piece[0] == "b":
-                num_of_black_dead = num_of_black_dead + 1
-        diff = num_of_white_dead - num_of_black_dead
-
-        #if AI is white
+        diff = self.taken - self.lost
+       
         if self.color == 0:
-            if diff >3:
-                self.mode ="retreat"
-            if diff <= 3 and diff >= -1 or ("wR1" in self.gs.taken_pieces and "wR2" in self.gs.taken_pieces):
-                self.mode = "advance"
-            if diff < -1:
-                self.mode = "attack"
-
-        #if AI is black
-        if self.color == 1:
-            if diff <-3:
-                self.mode ="retreat"
-            if diff >= -3 and diff <= 1 or ("bR1" in self.gs.taken_pieces and "bR2" in self.gs.taken_pieces):
+            if diff <-2:
+                self.mode = "retreat"
+            if diff >=-2 and diff <= 1 or ("wR1" in self.gs.taken_pieces and "wR2" in self.gs.taken_pieces):
                 self.mode = "advance"
             if diff > 1:
                 self.mode = "attack"
 
+        if self.color == 1:
+            if diff <-2:
+                self.mode = "retreat"
+            if diff >=-2 and diff <= 1 or ("bR1" in self.gs.taken_pieces and "bR2" in self.gs.taken_pieces):
+                self.mode = "advance"
+            if diff > 1:
+                self.mode = "attack"
+
+    
         print("Current Corps: " + str(self.corp))
         print("Pieces: " + str(self.pieces))
+        print("Taken: " + str(self.taken))
+        print("Lost: " + str(self.lost))
         print("Current Mode: " + self.mode)
+
     def move(self):
         #sets percentage variable
         percentage = random.randint(0,100)
@@ -434,9 +440,9 @@ class Corp():
                     roll = roll - 1
                     self.vmov.knight_special_attack = False
                 if self.gs.validate_capture(self.gs.getPiece(self.best_capture.startRow, self.best_capture.startCol), self.gs.getPiece(self.best_capture.endRow, self.best_capture.endCol), roll, self.gs.treg.Movable(self.best_capture.pieceMoved)):
-
-                    if self.best_capture.moveCompleted == True: #if move is successful
-                        print(self.best_capture.getChessNotation())  # prints move log entry
+                                
+                    self.taken = self.taken + 1
+                    print(self.best_capture.getChessNotation())  # prints move log entry
                     self.gs.makeMove(self.best_capture)  # makes move
 
                 elif self.color == 1:
@@ -526,8 +532,8 @@ class Corp():
                     self.vmov.knight_special_attack = False
                 if self.gs.validate_capture(self.gs.getPiece(self.best_capture.startRow, self.best_capture.startCol), self.gs.getPiece(self.best_capture.endRow, self.best_capture.endCol), roll, self.gs.treg.Movable(self.best_capture.pieceMoved)):
     
-                    if self.best_capture.moveCompleted == True: #if move is successful
-                        print(self.best_capture.getChessNotation())  # prints move log entry
+                    self.taken = self.taken + 1
+                    print(self.best_capture.getChessNotation())  # prints move log entry
                     self.gs.makeMove(self.best_capture)  # makes move
                 
                 elif self.color == 1:
@@ -619,8 +625,8 @@ class Corp():
                     self.vmov.knight_special_attack = False
                 if self.gs.validate_capture(self.gs.getPiece(self.best_capture.startRow, self.best_capture.startCol), self.gs.getPiece(self.best_capture.endRow, self.best_capture.endCol), roll, self.gs.treg.Movable(self.best_capture.pieceMoved)):
 
-                    if self.best_capture.moveCompleted == True: #if move is successful
-                        print(self.best_capture.getChessNotation())  # prints move log entry
+                    self.taken = self.taken + 1
+                    print(self.best_capture.getChessNotation())  # prints move log entry
                     self.gs.makeMove(self.best_capture)  # makes move
 
                 elif self.color == 1:
@@ -707,6 +713,17 @@ class Corp():
         self.best_capture = 0
         self.best_move = 0
 
+    def reset(self):
+        self.taken = 0
+        self.lost = 0
+        self.numPieces = 0
+        self.moves = []
+        self.captures = []
+        self.opposing = []
+        self.op_caps = []
+        self.best_capture = 0
+        self.best_move = 0
+
     #executes method sequence required to make a move
     def step(self):
         print()
@@ -724,4 +741,153 @@ class Corp():
             self.strategize()
             print()
             self.clear()
+    
+class KingCorp(Corp):
+    mode = 'advance' #sets whether AI will advance, attack, or retreat
+    gs = 0
+    vmov = 0
+    color = 0
+    pieces = []
+    moves = []
+    captures = []
+    op_caps = []
+    opposing = []
+    best_capture = 0
+    best_move = 0
+    corp = -1
+    taken = 0
+    lost = 0
+    numPieces = 0
+    
+    #returns mode for bishop corps based on reported losses and gains by bishop corps
+    def commandMode(self, taken, lost):
+        diff = taken - lost
+        if self.color == 0:
+            if diff <-2:
+                mode = "retreat"
+            if diff >=-2 and diff <= 1 or ("wR1" in self.gs.taken_pieces and "wR2" in self.gs.taken_pieces):
+                mode = "advance"
+            if diff > 1:
+                mode = "attack"
+        if self.color == 1:
+            if diff <-2:
+                mode = "retreat"
+            if diff >=-2 and diff <= 1 or ("bR1" in self.gs.taken_pieces and "bR2" in self.gs.taken_pieces):
+                mode = "advance"
+            if diff > 1:
+                mode = "attack"
+
+        return mode
+class BishopCorp(Corp):
+    mode = 'advance' #sets whether AI will advance, attack, or retreat
+    gs = 0
+    vmov = 0
+    color = 0
+    pieces = []
+    moves = []
+    captures = []
+    op_caps = []
+    opposing = []
+    best_capture = 0
+    best_move = 0
+    corp = -1
+    taken = 0
+    lost = 0
+    numPieces = 0
+    king = 0
+    #new init function that directs to king corp
+    def __init__(self, gs, kingCorp, color, corp):
+        self.color = color
+        self.king = kingCorp
+        self.gs = gs
+        self.vmov = LegalMoveGen.VariantLegalMoveGen(gs)
+        self.corp = corp
+        if self.color == 1:
+            if self.corp == 0:
+                self.pieces = self.gs.treg.blackCorpL
+            elif self.corp == 1:
+                self.pieces = self.gs.treg.blackCorpC
+            else:
+                self.pieces = self.gs.treg.blackCorpR
+
+            for piece in self.gs.treg.whiteCorpL:
+                self.opposing.append(piece)
+            for piece in self.gs.treg.whiteCorpC:
+                self.opposing.append(piece)
+            for piece in self.gs.treg.whiteCorpR:
+                self.opposing.append(piece)
+
+
+        else:
+            if self.corp == 0:
+                self.pieces = self.gs.treg.whiteCorpL
+            elif self.corp == 1:
+                self.pieces = self.gs.treg.whiteCorpC
+            else:
+                self.pieces = self.gs.treg.whiteCorpR
+
+            for piece in self.gs.treg.blackCorpL:
+                self.opposing.append(piece)
+            for piece in self.gs.treg.blackCorpC:
+                self.opposing.append(piece)
+            for piece in self.gs.treg.blackCorpR:
+                self.opposing.append(piece)
+
+        for piece in self.pieces:
+            if piece not in self.gs.taken_pieces:
+                self.vmov.generate(self.locate(piece)[0],self.locate(piece)[1])
+                for move in self.vmov.legal_moves:
+                    self.moves.append((self.locate(piece),move))
+                for location in self.vmov.legal_attacks:
+                    self.captures.append((piece,self.identify(location)))
+            self.vmov.clearGenerated()
+
+        self.numPieces = len(self.pieces)
+        self.clear()
+
+    #count losses, update pieces and relay taken and lost to king for marching orders
+    def strategize(self):
+        if self.color == 1:
+            if self.corp == 0:
+                self.pieces = self.gs.treg.blackCorpL
+            elif self.corp == 1:
+                self.pieces = self.gs.treg.blackCorpC
+            else:
+                self.pieces = self.gs.treg.blackCorpR
+            for piece in self.gs.treg.whiteCorpL:
+                self.opposing.append(piece)
+            for piece in self.gs.treg.whiteCorpC:
+                self.opposing.append(piece)
+            for piece in self.gs.treg.whiteCorpR:
+                self.opposing.append(piece)
+
+
+        else:
+            if self.corp == 0:
+                self.pieces = self.gs.treg.whiteCorpL
+            elif self.corp == 1:
+                self.pieces = self.gs.treg.whiteCorpC
+            else:
+                self.pieces = self.gs.treg.whiteCorpR
+
+            for piece in self.gs.treg.blackCorpL:
+                self.opposing.append(piece)
+            for piece in self.gs.treg.blackCorpC:
+                self.opposing.append(piece)
+            for piece in self.gs.treg.blackCorpR:
+                self.opposing.append(piece)
+
+        n = len(self.pieces)
+
+        if n < self.numPieces:
+            self.lost = self.lost + (self.numPieces - n)
+
+        self.numPieces = n
+
+        self.mode = self.king.commandMode(self.taken, self.lost)
+        print("Current Corps: " + str(self.corp))
+        print("Pieces: " + str(self.pieces))
+        print("Taken: " + str(self.taken))
+        print("Lost: " + str(self.lost))
+        print("Current Mode: " + self.mode)
 
