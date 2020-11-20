@@ -28,6 +28,7 @@ import AI
 WIDTH = 1000
 HEIGHT = 600 #size of window
 DIMENSION = 8
+DIMENSION = 8 
 SQ_SIZE = HEIGHT // DIMENSION
 MAX_FPS = 15 #frames per second
 IMAGES = {}
@@ -372,7 +373,7 @@ def chessGame():
                             if piece in gs.treg.blackCorpR:
                                 gs.treg.blackRightMoveFlag = True
                             
-                            if gs.treg.currentTurn == 0 and whiteAI == False:
+                            if gs.treg.currentTurn == 0:
                                 leaders = gs.treg.leadersW
                                 if gs.treg.turnMoveCount() == leaders:
                                     print("Move limit reached, End turn")
