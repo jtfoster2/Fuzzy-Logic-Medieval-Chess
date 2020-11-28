@@ -269,15 +269,15 @@ def chessGame():
 
 
         if gs.treg.currentTurn == 1 and  p.mouse.get_pos()[0]<600:
-            #time.sleep(2)
+            time.sleep(2)
             bL.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
-            #time.sleep(2)
+            time.sleep(2)
             bC.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
-            #time.sleep(2)
+            time.sleep(2)
             bR.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
@@ -288,15 +288,15 @@ def chessGame():
                 endScreen()
 
         elif gs.treg.currentTurn == 0 and whiteAI == True and  p.mouse.get_pos()[0]<600 :
-            #time.sleep(2)
+            time.sleep(2)
             wL.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
-            #time.sleep(2)
+            time.sleep(2)
             wC.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
-            #time.sleep(2)
+            time.sleep(2)
             wR.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
@@ -626,17 +626,17 @@ def drawHud(screen):
         #TextRect.center = (800, 370)
         #screen.blit(TextSurf, TextRect)
 
-        #corp 1 move logs
-        log_message_display_1('Corp: %s' % gs.movedPieces)
-        log_message_display_2('Pieces: %s' % gs.movedPieces)
-        log_message_display_3('Takes: %s' % gs.movedPieces)
-        log_message_display_4('Lost: %s' % gs.movedPieces)
-        log_message_display_5('Mode: %s' % gs.movedPieces)
-        log_message_display_6('Best Move: %s' % gs.movedPieces)
-        log_message_display_7('Best Capture: %s' % gs.movedPieces)
-        log_message_display_8('Chosen: %s' % gs.movedPieces)
+        #black corp 1 move logs
+        log_message_display_1('Black King\'s Corp')
+        log_message_display_2('Pieces: %s' % bC.pieces)
+        log_message_display_3('Taken: %s' % bC.taken)
+        log_message_display_4('Lost: %s' % bC.lost)
+        log_message_display_5('Mode: %s' % bC.mode)
+        log_message_display_6('Calculating...')
+        log_message_display_7('Calculating...')
+        log_message_display_8('Calculating...')
 
-        #corp 2 move logs
+        #black corp 2 move logs
         log_message_display_10('Corp: %s' % gs.movedPieces)
         log_message_display_20('Pieces: %s' % gs.movedPieces)
         log_message_display_30('Takes: %s' % gs.movedPieces)
