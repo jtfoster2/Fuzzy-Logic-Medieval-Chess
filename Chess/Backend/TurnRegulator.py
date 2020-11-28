@@ -38,6 +38,36 @@ class TurnRegulator():
 
     hudCapture = 0
     hudDice = 0
+    
+    def __init__(self):
+        #separate pieces into corps, make flags for each's movement per turn
+        self.whiteCorpL = ["wB1", "wN1", "wP1", "wP2", "wP3"]
+        self.whiteLeftMoveFlag = False
+        self.whiteCorpC = ["wK", "wQ", "wR1", "wR2", "wP4", "wP5"]
+        self.whiteCenterMoveFlag = False
+        self.whiteCorpR = ["wB2", "wN2", "wP6", "wP7", "wP8"]
+        self.whiteRightMoveFlag = False
+
+        self.blackCorpL = ["bB1", "bN1", "bP1", "bP2", "bP3"]
+        self.blackLeftMoveFlag = False
+        self.blackCorpC = ["bK", "bQ", "bR1", "bR2", "bP4", "bP5"]
+        self.blackCenterMoveFlag = False
+        self.blackCorpR = ["bB2", "bN2", "bP6", "bP7", "bP8"]
+        self.blackRightMoveFlag = False
+
+        self.wN1Flag = True
+        self.wN2Flag = True
+        self.bN1Flag = True
+        self.bN2Flag = True
+        self.currentTurn = 0
+        self.leadersW = 3
+        self.leadersB = 3
+        self.attack = 0
+
+        self.hudCapture = 0
+        self.hudDice = 0
+
+
 
     #returns amount of corps that have used their moves for the turn
     def turnMoveCount(self):

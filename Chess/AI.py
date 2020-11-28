@@ -190,7 +190,7 @@ class Corp():
                         if self.evaluate(self.identify(move[0])) > power and self.evaluate(self.identify(move[0])) < 4:
                             power = self.evaluate(self.identify(move[0]))
 
-                #find most powerful piece (kings)
+                #find most powerful piece (excluding kings)
                 if percentage >70:
                     for move in self.moves:
                         if self.evaluate(self.identify(move[0])) > power and self.evaluate(self.identify(move[0])) < 5:

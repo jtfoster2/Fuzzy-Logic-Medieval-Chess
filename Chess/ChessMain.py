@@ -214,6 +214,7 @@ def infoScreen():
 # resets gamestate to default and starts up chessgame()
 def restart():
     gs.__init__()
+    gs.treg.__init__()
     bL.reset()
     bC.reset()
     bR.reset()
@@ -268,15 +269,15 @@ def chessGame():
 
 
         if gs.treg.currentTurn == 1 and  p.mouse.get_pos()[0]<600:
-            time.sleep(2)
+            #time.sleep(2)
             bL.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
-            time.sleep(2)
+            #time.sleep(2)
             bC.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
-            time.sleep(2)
+            #time.sleep(2)
             bR.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
@@ -287,15 +288,15 @@ def chessGame():
                 endScreen()
 
         elif gs.treg.currentTurn == 0 and whiteAI == True and  p.mouse.get_pos()[0]<600 :
-            time.sleep(2)
+            #time.sleep(2)
             wL.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
-            time.sleep(2)
+            #time.sleep(2)
             wC.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
-            time.sleep(2)
+            #time.sleep(2)
             wR.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
