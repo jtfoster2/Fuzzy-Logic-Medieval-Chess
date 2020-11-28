@@ -416,7 +416,7 @@ def drawHud(screen):
 
     #move log background
     p.draw.rect(screen, p.Color("gray3"), (1001, 1, 198, 598))
-    TextSurf, TextRect = text_objects_white("Move Log", smallText)
+    TextSurf, TextRect = text_objects_white("Feedback", smallText)
     TextRect.center = (1100, 10)
     screen.blit(TextSurf, TextRect)
 
@@ -558,13 +558,10 @@ def drawHud(screen):
 
     if gs.treg.whiteLeftMoveFlag == True or "wB1" in gs.taken_pieces:
         p.draw.rect(screen, p.Color("red"), (625, 480, 110, 2))
-        log_message_display_1('%s' % gs.movedPieces)
     if  gs.treg.whiteCenterMoveFlag == True:
         p.draw.rect(screen, p.Color("red"), (750, 480, 110, 2))
-        log_message_display_2('%s' % gs.movedPieces)
     if gs.treg.whiteRightMoveFlag == True or "wB2" in gs.taken_pieces:
         p.draw.rect(screen, p.Color("red"), (875, 480, 110, 2))
-        log_message_display_3('%s' % gs.movedPieces)
     #knight special extra move
     TextSurf, TextRect = text_objects_white("Knight Special", med_smallText)
     TextRect.center = (800, 520)
@@ -628,7 +625,39 @@ def drawHud(screen):
         #TextRect.center = (800, 370)
         #screen.blit(TextSurf, TextRect)
 
-    #move log background
+        #corp 1 move logs
+        log_message_display_1('Corp: %s' % gs.movedPieces)
+        log_message_display_2('Pieces: %s' % gs.movedPieces)
+        log_message_display_3('Takes: %s' % gs.movedPieces)
+        log_message_display_4('Lost: %s' % gs.movedPieces)
+        log_message_display_5('Mode: %s' % gs.movedPieces)
+        log_message_display_6('Best Move: %s' % gs.movedPieces)
+        log_message_display_7('Best Capture: %s' % gs.movedPieces)
+        log_message_display_8('Chosen: %s' % gs.movedPieces)
+
+        #corp 2 move logs
+        log_message_display_10('Corp: %s' % gs.movedPieces)
+        log_message_display_20('Pieces: %s' % gs.movedPieces)
+        log_message_display_30('Takes: %s' % gs.movedPieces)
+        log_message_display_40('Lost: %s' % gs.movedPieces)
+        log_message_display_50('Mode: %s' % gs.movedPieces)
+        log_message_display_60('Best Move: %s' % gs.movedPieces)
+        log_message_display_70('Best Capture: %s' % gs.movedPieces)
+        log_message_display_80('Chosen: %s' % gs.movedPieces)
+
+        #corp 3 move logs
+        log_message_display_11('Corp: %s' % gs.movedPieces)
+        log_message_display_21('Pieces: %s' % gs.movedPieces)
+        log_message_display_31('Takes: %s' % gs.movedPieces)
+        log_message_display_41('Lost: %s' % gs.movedPieces)
+        log_message_display_51('Mode: %s' % gs.movedPieces)
+        log_message_display_61('Best Move: %s' % gs.movedPieces)
+        log_message_display_71('Best Capture: %s' % gs.movedPieces)
+        log_message_display_81('Chosen: %s' % gs.movedPieces)
+
+
+
+    #movelog background
     #p.draw.rect(screen, p.Color("gray3"), (1001, 1, 198, 598))
     #TextSurf, TextRect = text_objects_white("Move Log", smallText)
     #TextRect.center = (1100, 10)
@@ -640,21 +669,145 @@ def log_message_display_1(text):
     TextSurf, TextRect = text_objects_white(text, lText)
     TextRect.center = (1100, 30)
     screen.blit(TextSurf, TextRect)
-    #time.sleep(3)
 
 def log_message_display_2(text):
     lText = p.font.Font('freesansbold.ttf', 10)
     TextSurf, TextRect = text_objects_white(text, lText)
-    TextRect.center = (1100, 50)
+    TextRect.center = (1100, 45)
     screen.blit(TextSurf, TextRect)
-    #time.sleep(3)
 
 def log_message_display_3(text):
     lText = p.font.Font('freesansbold.ttf', 10)
     TextSurf, TextRect = text_objects_white(text, lText)
-    TextRect.center = (1100, 70)
+    TextRect.center = (1100, 60)
     screen.blit(TextSurf, TextRect)
-    #time.sleep(3)
+
+def log_message_display_4(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 75)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_5(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 90)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_6(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 105)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_7(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 120)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_8(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 135)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_10(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 165)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_20(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 180)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_30(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 195)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_40(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 210)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_50(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 225)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_60(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 240)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_70(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 255)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_80(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 270)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_11(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 300)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_21(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 315)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_31(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 330)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_41(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 345)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_51(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 360)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_61(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 375)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_71(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 390)
+    screen.blit(TextSurf, TextRect)
+
+def log_message_display_81(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 405)
+    screen.blit(TextSurf, TextRect)
+
 
 def captureTableScreen(): #toggles capture table screen
     global tableOpen
