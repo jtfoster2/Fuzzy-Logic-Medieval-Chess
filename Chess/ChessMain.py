@@ -25,7 +25,7 @@ from Backend import LegalMoveGen #generates legal moves
 import AI
 
 #set game properties
-WIDTH = 1000
+WIDTH = 1200
 HEIGHT = 600 #size of window
 DIMENSION = 8
 DIMENSION = 8 
@@ -38,7 +38,6 @@ grey = (200,200,200)
 dark_grey = (130,130,130)
 tableOpen = 0
 whiteAI = False
-
 
 #initialize game
 p.init()
@@ -415,6 +414,12 @@ def drawHud(screen):
     med_smallText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 15)
     smallText = p.font.Font('Backend/fonts/8-BIT WONDER.ttf', 12)
 
+    #move log background
+    p.draw.rect(screen, p.Color("gray3"), (1001, 1, 198, 598))
+    TextSurf, TextRect = text_objects_white("Move Log", smallText)
+    TextRect.center = (1100, 10)
+    screen.blit(TextSurf, TextRect)
+
     #displays each taken piece
     if "bK" in gs.taken_pieces:
         screen.blit(p.transform.scale(IMAGES['bK'], (50, 50)), (600, 10))
@@ -550,12 +555,16 @@ def drawHud(screen):
     TextRect.center = (930, 480)
     screen.blit(TextSurf, TextRect)
     #cross out turn indicator
+
     if gs.treg.whiteLeftMoveFlag == True or "wB1" in gs.taken_pieces:
         p.draw.rect(screen, p.Color("red"), (625, 480, 110, 2))
+        log_message_display_1('%s' % gs.movedPieces)
     if  gs.treg.whiteCenterMoveFlag == True:
         p.draw.rect(screen, p.Color("red"), (750, 480, 110, 2))
+        log_message_display_2('%s' % gs.movedPieces)
     if gs.treg.whiteRightMoveFlag == True or "wB2" in gs.taken_pieces:
         p.draw.rect(screen, p.Color("red"), (875, 480, 110, 2))
+        log_message_display_3('%s' % gs.movedPieces)
     #knight special extra move
     TextSurf, TextRect = text_objects_white("Knight Special", med_smallText)
     TextRect.center = (800, 520)
@@ -607,6 +616,45 @@ def drawHud(screen):
         TextRect.center = (800, 520)
         screen.blit(TextSurf, TextRect)
 
+    #if whiteAI == True:
+        #p.draw.rect(screen, p.Color("gray3"), (610, 300, 380, 295))
+        #TextSurf, TextRect = text_objects_white("AI vs AI", largeText)
+        #TextRect.center = (800, 320)
+        #screen.blit(TextSurf, TextRect)
+        #TextSurf, TextRect = text_objects_white("Keep cursor on board", smallText)
+        #TextRect.center = (800, 350)
+        #screen.blit(TextSurf, TextRect)
+        #TextSurf, TextRect = text_objects_white("for active play", smallText)
+        #TextRect.center = (800, 370)
+        #screen.blit(TextSurf, TextRect)
+
+    #move log background
+    #p.draw.rect(screen, p.Color("gray3"), (1001, 1, 198, 598))
+    #TextSurf, TextRect = text_objects_white("Move Log", smallText)
+    #TextRect.center = (1100, 10)
+    #screen.blit(TextSurf, TextRect)
+
+
+def log_message_display_1(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 30)
+    screen.blit(TextSurf, TextRect)
+    #time.sleep(3)
+
+def log_message_display_2(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 50)
+    screen.blit(TextSurf, TextRect)
+    #time.sleep(3)
+
+def log_message_display_3(text):
+    lText = p.font.Font('freesansbold.ttf', 10)
+    TextSurf, TextRect = text_objects_white(text, lText)
+    TextRect.center = (1100, 70)
+    screen.blit(TextSurf, TextRect)
+    #time.sleep(3)
 
 def captureTableScreen(): #toggles capture table screen
     global tableOpen
@@ -669,3 +717,5 @@ def text_objects_white(text, font):
 
 if __name__ == "__main__":
     main()
+
+
