@@ -48,6 +48,34 @@ screen = p.display.set_mode((int(WIDTH), HEIGHT))
 clock = p.time.Clock()
 screen.fill(p.Color("white"))
 
+#feedback board
+class Feedback():
+    def __init__(self):
+        self.corp1 = ''
+        self.corp2 = ''
+        self.corp3 = ''
+        self.leader1 = ''
+        self.leader2 = ''
+        self.leader3 = ''
+        self.taken1 = ''
+        self.taken2 = ''
+        self.taken3 = ''
+        self.lost1 = ''
+        self.lost2 = ''
+        self.lost3 = ''
+        self.mode1 = ''
+        self.mode2 = ''
+        self.mode3 = ''
+        self.bm1= ''
+        self.bm2 = ''
+        self.bm3 = ''
+        self.bc1 = ''
+        self.bc2 = ''
+        self.bc3 = ''
+        self.c1 = ''
+        self.c2 = ''
+        self.c3 = ''
+
 #loads images for use on board
 def loadImages():
     imgs = ['wP', 'wR', 'wN', 'wB', 'wQ', 'wK', 'bP', 'bR', 'bN', 'bB', 'bQ', 'bK', 'd1', 'd2', 'd3', 'd4', 'd5', 'd6']
@@ -238,12 +266,13 @@ def switchWhite():
 gs = ChessEngine.GameState()
 mov = LegalMoveGen.LegalMoveGen(gs)
 vmov = LegalMoveGen.VariantLegalMoveGen(gs)
-bC = AI.KingCorp(gs,1,1)
-bL = AI.BishopCorp(gs,bC,1,0)
-bR = AI.BishopCorp(gs,bC,1,2)
-wC = AI.KingCorp(gs,0,1)
-wL = AI.BishopCorp(gs,wC,0,0)
-wR = AI.BishopCorp(gs,wC,0,2)
+f = Feedback()
+bC = AI.KingCorp(gs,1,1,f)
+bL = AI.BishopCorp(gs,bC,1,0,f)
+bR = AI.BishopCorp(gs,bC,1,2,f)
+wC = AI.KingCorp(gs,0,1,f)
+wL = AI.BishopCorp(gs,wC,0,0,f)
+wR = AI.BishopCorp(gs,wC,0,2,f)
 
 #game play function
 def chessGame():
@@ -270,6 +299,7 @@ def chessGame():
 
         if gs.treg.currentTurn == 1 and  p.mouse.get_pos()[0]<600:
             time.sleep(2)
+            f.__init__()
             bL.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
@@ -281,6 +311,7 @@ def chessGame():
             bR.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
+            
 
             if "bK" in gs.taken_pieces: #endscreen on black King capture
                 endScreen()
@@ -289,6 +320,7 @@ def chessGame():
 
         elif gs.treg.currentTurn == 0 and whiteAI == True and  p.mouse.get_pos()[0]<600 :
             time.sleep(2)
+            f.__init__()
             wL.step()
             drawGameState(screen, gs, valid_array, attack_array, sqSelected)
             p.display.flip()
@@ -626,36 +658,33 @@ def drawHud(screen):
         #TextRect.center = (800, 370)
         #screen.blit(TextSurf, TextRect)
 
-        #black corp 1 move logs
-        log_message_display_1('Black King\'s Corp')
-        log_message_display_2('Pieces: %s' % bC.pieces)
-        log_message_display_3('Taken: %s' % bC.taken)
-        log_message_display_4('Lost: %s' % bC.lost)
-        log_message_display_5('Mode: %s' % bC.mode)
-        log_message_display_6('Calculating...')
-        log_message_display_7('Calculating...')
-        log_message_display_8('Calculating...')
+        log_message_display_1(f.corp1)
+        log_message_display_2(f.leader1)
+        log_message_display_3(f.taken1)
+        log_message_display_4(f.lost1)
+        log_message_display_5(f.mode1)
+        log_message_display_6(f.bm1)
+        log_message_display_7(f.bc1)
+        log_message_display_8(f.c1)
 
-        #black corp 2 move logs
-        log_message_display_10('Corp: %s' % gs.movedPieces)
-        log_message_display_20('Pieces: %s' % gs.movedPieces)
-        log_message_display_30('Takes: %s' % gs.movedPieces)
-        log_message_display_40('Lost: %s' % gs.movedPieces)
-        log_message_display_50('Mode: %s' % gs.movedPieces)
-        log_message_display_60('Best Move: %s' % gs.movedPieces)
-        log_message_display_70('Best Capture: %s' % gs.movedPieces)
-        log_message_display_80('Chosen: %s' % gs.movedPieces)
+        
+        log_message_display_10(f.corp2)
+        log_message_display_20(f.leader2)
+        log_message_display_30(f.taken2)
+        log_message_display_40(f.lost2)
+        log_message_display_50(f.mode2)
+        log_message_display_60(f.bm2)
+        log_message_display_70(f.bc2)
+        log_message_display_80(f.c2)
 
-        #corp 3 move logs
-        log_message_display_11('Corp: %s' % gs.movedPieces)
-        log_message_display_21('Pieces: %s' % gs.movedPieces)
-        log_message_display_31('Takes: %s' % gs.movedPieces)
-        log_message_display_41('Lost: %s' % gs.movedPieces)
-        log_message_display_51('Mode: %s' % gs.movedPieces)
-        log_message_display_61('Best Move: %s' % gs.movedPieces)
-        log_message_display_71('Best Capture: %s' % gs.movedPieces)
-        log_message_display_81('Chosen: %s' % gs.movedPieces)
-
+        log_message_display_11(f.corp3)
+        log_message_display_21(f.leader3)
+        log_message_display_31(f.taken3)
+        log_message_display_41(f.lost3)
+        log_message_display_51(f.mode3)
+        log_message_display_61(f.bm3)
+        log_message_display_71(f.bc3)
+        log_message_display_81(f.c3)
 
 
     #movelog background

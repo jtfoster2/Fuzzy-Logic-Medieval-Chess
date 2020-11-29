@@ -26,12 +26,13 @@ class Corp():
     taken = 0
     lost = 0
     numPieces = 0
-
-    def __init__(self, gs, color, corp):
+    feedback = 0
+    def __init__(self, gs, color, corp, feedback):
         self.color = color
         self.gs = gs
         self.vmov = LegalMoveGen.VariantLegalMoveGen(gs)
         self.corp = corp
+        self.feedback = feedback
         if self.color == 1:
             if self.corp == 0:
                 self.pieces = self.gs.treg.blackCorpL
@@ -160,9 +161,21 @@ class Corp():
                 move = ChessEngine.Move(self.locate(best[0]), self.locate(best[1]),self.gs.board)
                 self.best_capture = move
                 print("Best Capture: " + self.identify((self.best_capture.startRow,self.best_capture.startCol)) + " takes " +self.identify((self.best_capture.endRow,self.best_capture.endCol)))
+                if self.corp == 0:
+                    self.feedback.bc1 = "Best Capture: " + self.best_capture.pieceMoved + " takes " + self.best_capture.pieceCaptured
+                elif self.corp == 1:
+                    self.feedback.bc2 = "Best Capture: " + self.best_capture.pieceMoved + " takes " + self.best_capture.pieceCaptured
+                else:
+                    self.feedback.bc3 = "Best Capture: " + self.best_capture.pieceMoved + " takes " + self.best_capture.pieceCaptured
 
         else:
             self.best_capture = 0
+            if self.corp == 0:
+                self.feedback.bc1 = "Best Capture: " + "No Suitable Capture"
+            elif self.corp == 1:
+                self.feedback.bc2 = "Best Capture: " + "No Suitable Capture"
+            else:
+                self.feedback.bc3 = "Best Capture: " + "No Suitable Capture"
 
     #performs removal operation
     def listRemove(self, list1,list2):
@@ -233,7 +246,36 @@ class Corp():
                     move = self.moves[pick]
                     self.best_move = ChessEngine.Move(move[0],move[1],self.gs.board)
                     print("Best Move: " + self.identify(move[0]) + " to " + str(move[1]))
+                    
+                if self.corp == 0:
+                    if self.best_move != 0:
+                        self.feedback.bm1 = "Best Move: " + self.identify(move[0]) + " to " + str(move[1])
+                    else:
+                        self.feedback.bm1 = "Best Move: No Suitable Move"
+                    if self.color == 1 and 'bB1' in self.gs.taken_pieces:
+                        self.feedback.bm1 = "No Best Move: Corp Dissolved"
+                    elif self.color == 0 and 'wB1' in self.gs.taken_pieces:
+                        self.feedback.bm1 = "No Best Move: Corp Dissolved"
 
+                elif self.corp == 1:
+                    if self.best_move != 0:
+                        self.feedback.bm2 = "Best Move: " + self.identify(move[0]) + " to " + str(move[1])
+                    else:
+                        self.feedback.bm2 = "Best Move: No Suitable Move"
+                    if self.color == 1 and 'bK' in self.gs.taken_pieces:
+                        self.feedback.bm2 = "No Best Move: Corp Dissolved"
+                    elif self.color == 0 and 'wK' in self.gs.taken_pieces:
+                        self.feedback.bm2 = "No Best Move: Corp Dissolved"
+
+                else:
+                    if self.best_move != 0:
+                        self.feedback.bm3 = "Best Move: " + self.identify(move[0]) + " to " + str(move[1])
+                    else:
+                        self.feedback.bm3 = "Best Move: No Suitable Move"
+                    if self.color == 1 and 'bB2' in self.gs.taken_pieces:
+                        self.feedback.bm3 = "No Best Move: Corp Dissolved"
+                    elif self.color == 0 and 'wB2' in self.gs.taken_pieces:
+                        self.feedback.bm3 = "No Best Move: Corp Dissolved"
 
         #finds furthest forward move 30 percent of the time and furthest safe (invunerable except to archers) move 70 percent of the time. Does not allow unsafe moves by leaders
         #70 30 rule also enables 2 AIs to actually attack each other. Otherwise, the AIs would never go into vulnerable places.
@@ -298,6 +340,36 @@ class Corp():
                     move = self.moves[pick]
                     self.best_move = ChessEngine.Move(move[0],move[1],self.gs.board)
                     print("Best Move: " + self.identify(move[0]) + " to " + str(move[1]))
+                    
+                if self.corp == 0:
+                    if self.best_move != 0:
+                        self.feedback.bm1 = "Best Move: " + self.identify(move[0]) + " to " + str(move[1])
+                    else:
+                        self.feedback.bm1 = "Best Move: No Suitable Move"
+                    if self.color == 1 and 'bB1' in self.gs.taken_pieces:
+                        self.feedback.bm1 = "No Best Move: Corp Dissolved"
+                    elif self.color == 0 and 'wB1' in self.gs.taken_pieces:
+                        self.feedback.bm1 = "No Best Move: Corp Dissolved"
+
+                elif self.corp == 1:
+                    if self.best_move != 0:
+                        self.feedback.bm2 = "Best Move: " + self.identify(move[0]) + " to " + str(move[1])
+                    else:
+                        self.feedback.bm2 = "Best Move: No Suitable Move"
+                    if self.color == 1 and 'bK' in self.gs.taken_pieces:
+                        self.feedback.bm2 = "No Best Move: Corp Dissolved"
+                    elif self.color == 0 and 'wK' in self.gs.taken_pieces:
+                        self.feedback.bm2 = "No Best Move: Corp Dissolved"
+
+                else:
+                    if self.best_move != 0:
+                        self.feedback.bm3 = "Best Move: " + self.identify(move[0]) + " to " + str(move[1])
+                    else:
+                        self.feedback.bm3 = "Best Move: No Suitable Move"
+                    if self.color == 1 and 'bB2' in self.gs.taken_pieces:
+                        self.feedback.bm3 = "No Best Move: Corp Dissolved"
+                    elif self.color == 0 and 'wB2' in self.gs.taken_pieces:
+                        self.feedback.bm3 = "No Best Move: Corp Dissolved"
 
 
 
@@ -355,6 +427,36 @@ class Corp():
                 move = self.moves[pick]
                 self.best_move = ChessEngine.Move(move[0],move[1],self.gs.board)
                 print("Best Move: " + self.identify(move[0]) + " to " + str(move[1]))
+            
+            if self.corp == 0:
+                if self.best_move != 0:
+                    self.feedback.bm1 = "Best Move: " + self.identify(move[0]) + " to " + str(move[1])
+                else:
+                    self.feedback.bm1 = "Best Move: No Suitable Move"
+                if self.color == 1 and 'bB1' in self.gs.taken_pieces:
+                    self.feedback.bm1 = "No Best Move: Corp Dissolved"
+                elif self.color == 0 and 'wB1' in self.gs.taken_pieces:
+                    self.feedback.bm1 = "No Best Move: Corp Dissolved"
+
+            elif self.corp == 1:
+                if self.best_move != 0:
+                    self.feedback.bm2 = "Best Move: " + self.identify(move[0]) + " to " + str(move[1])
+                else:
+                    self.feedback.bm2 = "Best Move: No Suitable Move"
+                if self.color == 1 and 'bK' in self.gs.taken_pieces:
+                    self.feedback.bm2 = "No Best Move: Corp Dissolved"
+                elif self.color == 0 and 'wK' in self.gs.taken_pieces:
+                    self.feedback.bm2 = "No Best Move: Corp Dissolved"
+
+            else:
+                if self.best_move != 0:
+                    self.feedback.bm3 = "Best Move: " + self.identify(move[0]) + " to " + str(move[1])
+                else:
+                    self.feedback.bm3 = "Best Move: No Suitable Move"
+                if self.color == 1 and 'bB2' in self.gs.taken_pieces:
+                    self.feedback.bm3 = "No Best Move: Corp Dissolved"
+                elif self.color == 0 and 'wB2' in self.gs.taken_pieces:
+                    self.feedback.bm3 = "No Best Move: Corp Dissolved"
 
         
     #updates pieces on the board and changes mode accordingly
@@ -425,6 +527,34 @@ class Corp():
         print("Lost: " + str(self.lost))
         print("Current Mode: " + self.mode)
 
+        if self.corp == 0:
+            if self.color == 1:
+                self.feedback.corp1 = "Black Left Corp"
+            else:
+                self.feedback.corp1 = "White Left Corp"
+
+        elif self.corp == 1:
+            if self.color == 1:
+                self.feedback.corp2 = "Black King\'s Corp"
+                self.feedback.leader2 = "Leader State: Alive"
+                self.feedback.taken2 = "Number Taken: " +str(self.taken)
+                self.feedback.lost2 = "Number Lost: " +str(self.lost)
+                self.feedback.mode2 = "Current Mode: " +self.mode
+            else:
+                self.feedback.corp2 = "White King\'s Corp"
+                self.feedback.leader2 = "Leader State: Alive"
+                self.feedback.taken2 = "Number Taken: " +str(self.taken)
+                self.feedback.lost2 = "Number Lost: " +str(self.lost)
+                self.feedback.mode2 = "Current Mode: " +self.mode
+
+        else:
+            if self.color == 1:
+                self.feedback.corp3 = "Black Right Corp"
+            else:
+                self.feedback.corp3 = "White Right Corp"
+
+
+
     def move(self):
         #sets percentage variable
         percentage = random.randint(0,100)
@@ -434,6 +564,25 @@ class Corp():
              
             #move handling
             if percentage <=70 and self.best_capture != 0:
+                if self.corp == 0:
+                    self.feedback.c1 = "Chosen Move: Best Capture"
+                    if self.color == 1 and 'bB1' in self.gs.taken_pieces:
+                        self.feedback.c1 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wB1' in self.gs.taken_pieces:
+                        self.feedback.c1 = "No Move Chosen: Corp Dissolved"
+                elif self.corp ==1:
+                    self.feedback.c2 = "Chosen Move: Best Capture"
+                    if self.color == 1 and 'bK' in self.gs.taken_pieces:
+                        self.feedback.c2 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wK' in self.gs.taken_pieces:
+                        self.feedback.c2 = "No Move Chosen: Corp Dissolved"
+                else:
+                    self.feedback.c3 = "Chosen Move: Best Capture"
+                    if self.color == 1 and 'bB2' in self.gs.taken_pieces:
+                        self.feedback.c3 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wB2' in self.gs.taken_pieces:
+                        self.feedback.c3 = "No Move Chosen: Corp Dissolved"
+
                 self.gs.treg.attack = 1
                 roll = random.randint(1, 6)
                 if self.vmov.knight_special_attack == True and self.evaluate(self.best_capture.pieceMoved) == 2:
@@ -485,6 +634,26 @@ class Corp():
                     self.gs.treg.bN2Flag = True
  
             elif self.best_move !=0:
+                if self.corp == 0:
+                    self.feedback.c1 = "Chosen Move: Best Move"
+                    if self.color == 1 and 'bB1' in self.gs.taken_pieces:
+                        self.feedback.c1 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wB1' in self.gs.taken_pieces:
+                        self.feedback.c1 = "No Move Chosen: Corp Dissolved"
+                elif self.corp ==1:
+                    self.feedback.c2 = "Chosen Move: Best Move"
+                    if self.color == 1 and 'bK' in self.gs.taken_pieces:
+                        self.feedback.c2 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wK' in self.gs.taken_pieces:
+                        self.feedback.c2 = "No Move Chosen: Corp Dissolved"
+                else:
+                    self.feedback.c3 = "Chosen Move: Best Move"
+                    if self.color == 1 and 'bB2' in self.gs.taken_pieces:
+                        self.feedback.c3 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wB2' in self.gs.taken_pieces:
+                        self.feedback.c3 = "No Move Chosen: Corp Dissolved"
+
+
                 self.gs.treg.attack = 0
                 self.gs.makeMove(self.best_move)  # makes move
                 if self.best_move.moveCompleted == True: #if move is successful
@@ -525,6 +694,25 @@ class Corp():
 
             #move handling
             if percentage <= 60 and self.best_capture != 0:
+                if self.corp == 0:
+                    self.feedback.c1 = "Chosen Move: Best Capture"
+                    if self.color == 1 and 'bB1' in self.gs.taken_pieces:
+                        self.feedback.c1 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wB1' in self.gs.taken_pieces:
+                        self.feedback.c1 = "No Move Chosen: Corp Dissolved"
+                elif self.corp ==1:
+                    self.feedback.c2 = "Chosen Move: Best Capture"
+                    if self.color == 1 and 'bK' in self.gs.taken_pieces:
+                        self.feedback.c2 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wK' in self.gs.taken_pieces:
+                        self.feedback.c2 = "No Move Chosen: Corp Dissolved"
+                else:
+                    self.feedback.c3 = "Chosen Move: Best Capture"
+                    if self.color == 1 and 'bB2' in self.gs.taken_pieces:
+                        self.feedback.c3 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wB2' in self.gs.taken_pieces:
+                        self.feedback.c3 = "No Move Chosen: Corp Dissolved"
+
                 self.gs.treg.attack = 1
                 roll = random.randint(1, 6)
                 if self.vmov.knight_special_attack == True and self.evaluate(self.best_capture.pieceMoved) == 2:
@@ -577,6 +765,26 @@ class Corp():
 
 
             elif self.best_move != 0:
+                if self.corp == 0:
+                    self.feedback.c1 = "Chosen Move: Best Move"
+                    if self.color == 1 and 'bB1' in self.gs.taken_pieces:
+                        self.feedback.c1 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wB1' in self.gs.taken_pieces:
+                        self.feedback.c1 = "No Move Chosen: Corp Dissolved"
+                elif self.corp ==1:
+                    self.feedback.c2 = "Chosen Move: Best Move"
+                    if self.color == 1 and 'bK' in self.gs.taken_pieces:
+                        self.feedback.c2 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wK' in self.gs.taken_pieces:
+                        self.feedback.c2 = "No Move Chosen: Corp Dissolved"
+                else:
+                    self.feedback.c3 = "Chosen Move: Best Move"
+                    if self.color == 1 and 'bB2' in self.gs.taken_pieces:
+                        self.feedback.c3 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wB2' in self.gs.taken_pieces:
+                        self.feedback.c3 = "No Move Chosen: Corp Dissolved"
+
+
                 self.gs.treg.attack = 0
                 self.gs.makeMove(self.best_move)  # makes move
                 if self.best_move.moveCompleted == True: #if move is successful
@@ -618,6 +826,25 @@ class Corp():
 
             #move handling
             if percentage <=30 and self.best_capture != 0:
+                if self.corp == 0:
+                    self.feedback.c1 = "Chosen Move: Best Capture"
+                    if self.color == 1 and 'bB1' in self.gs.taken_pieces:
+                        self.feedback.c1 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wB1' in self.gs.taken_pieces:
+                        self.feedback.c1 = "No Move Chosen: Corp Dissolved"
+                elif self.corp ==1:
+                    self.feedback.c2 = "Chosen Move: Best Capture"
+                    if self.color == 1 and 'bK' in self.gs.taken_pieces:
+                        self.feedback.c2 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wK' in self.gs.taken_pieces:
+                        self.feedback.c2 = "No Move Chosen: Corp Dissolved"
+                else:
+                    self.feedback.c3 = "Chosen Move: Best Capture"
+                    if self.color == 1 and 'bB2' in self.gs.taken_pieces:
+                        self.feedback.c3 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wB2' in self.gs.taken_pieces:
+                        self.feedback.c3 = "No Move Chosen: Corp Dissolved"
+
                 self.gs.treg.attack = 1
                 roll = random.randint(1, 6)
                 if self.vmov.knight_special_attack == True and self.evaluate(self.best_capture.pieceMoved) == 2:
@@ -667,6 +894,25 @@ class Corp():
                     self.gs.treg.bN2Flag = True
 
             elif self.best_move !=0:
+                if self.corp == 0:
+                    self.feedback.c1 = "Chosen Move: Best Move"
+                    if self.color == 1 and 'bB1' in self.gs.taken_pieces:
+                        self.feedback.c1 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wB1' in self.gs.taken_pieces:
+                        self.feedback.c1 = "No Move Chosen: Corp Dissolved"
+                elif self.corp ==1:
+                    self.feedback.c2 = "Chosen Move: Best Move"
+                    if self.color == 1 and 'bK' in self.gs.taken_pieces:
+                        self.feedback.c2 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wK' in self.gs.taken_pieces:
+                        self.feedback.c2 = "No Move Chosen: Corp Dissolved"
+                else:
+                    self.feedback.c3 = "Chosen Move: Best Move"
+                    if self.color == 1 and 'bB2' in self.gs.taken_pieces:
+                        self.feedback.c3 = "No Move Chosen: Corp Dissolved"
+                    elif self.color == 0 and 'wB2' in self.gs.taken_pieces:
+                        self.feedback.c3 = "No Move Chosen: Corp Dissolved"
+
                 self.gs.treg.attack = 0
                 self.gs.makeMove(self.best_move)  # makes move
                 if self.best_move.moveCompleted == True: #if move is successful
@@ -795,13 +1041,15 @@ class BishopCorp(Corp):
     lost = 0
     numPieces = 0
     king = 0
+    feedback = 0
     #new init function that directs to king corp
-    def __init__(self, gs, kingCorp, color, corp):
+    def __init__(self, gs, kingCorp, color, corp, feedback):
         self.color = color
         self.king = kingCorp
         self.gs = gs
         self.vmov = LegalMoveGen.VariantLegalMoveGen(gs)
         self.corp = corp
+        self.feedback = feedback
         if self.color == 1:
             if self.corp == 0:
                 self.pieces = self.gs.treg.blackCorpL
@@ -890,4 +1138,63 @@ class BishopCorp(Corp):
         print("Taken: " + str(self.taken))
         print("Lost: " + str(self.lost))
         print("Current Mode: " + self.mode)
+        
+        if self.corp == 0:
+            if self.color == 1:
+                self.feedback.corp1 = "Black Left Corp"
+                if 'bB1' not in self.gs.taken_pieces:
+                    self.feedback.leader1 = "Leader State: Alive"
+                    self.feedback.taken1 = "Number Taken: " +str(self.taken)
+                    self.feedback.lost1 = "Number Lost: " +str(self.lost)
+                    self.feedback.mode1 = "Current Mode: " +self.mode
+                else:
+                    self.feedback.leader1 = "Leader State: Dead"
+                    self.feedback.taken1 = "No Number Taken: Corp Dissolved"
+                    self.feedback.lost1 = "No Number Lost: Corp Dissolved"
+                    self.feedback.mode1 = "No Mode: Corp Dissolved"
+            else:
+                self.feedback.corp1 = "White Left Corp"
+                if 'wB1' not in self.gs.taken_pieces:
+                    self.feedback.leader1 = "Leader State: Alive"
+                    self.feedback.taken1 = "Number Taken: " +str(self.taken)
+                    self.feedback.lost1 = "Number Lost: " +str(self.lost)
+                    self.feedback.mode1 = "Current Mode: " +self.mode
+                else:
+                    self.feedback.leader1 = "Leader State: Dead"
+                    self.feedback.taken1 = "No Number Taken: Corp Dissolved"
+                    self.feedback.lost1 = "No Number Lost: Corp Dissolved"
+                    self.feedback.mode1 = "No Mode: Corp Dissolved"
+
+
+        elif self.corp == 1:
+            if self.color == 1:
+                self.feedback.corp2 = "Black King\'s Corp"
+            else:
+                self.feedback.corp2 = "White King\'s Corp"
+        else:
+            if self.color == 1:
+                self.feedback.corp3 = "Black Right Corp"
+                if 'bB2' not in self.gs.taken_pieces:
+                    self.feedback.leader3 = "Leader State: Alive"
+                    self.feedback.taken3 = "Number Taken: " +str(self.taken)
+                    self.feedback.lost3 = "Number Lost: " +str(self.lost)
+                    self.feedback.mode3 = "Current Mode: " +self.mode
+                else:
+                    self.feedback.leader3 = "Leader State: Dead"
+                    self.feedback.taken3 = "No Number Taken: Corp Dissolved"
+                    self.feedback.lost3 = "No Number Lost: Corp Dissolved"
+                    self.feedback.mode3 = "No Mode: Corp Dissolved"
+
+            else:
+                self.feedback.corp3 = "White Right Corp"
+                if 'wB2' not in self.gs.taken_pieces:
+                    self.feedback.leader3 = "Leader State: Alive"
+                    self.feedback.taken3 = "Number Taken: " +str(self.taken)
+                    self.feedback.lost3 = "Number Lost: " +str(self.lost)
+                    self.feedback.mode3 = "Current Mode: " +self.mode
+                else:
+                    self.feedback.leader3 = "Leader State: Dead"
+                    self.feedback.taken3 = "No Number Taken: Corp Dissolved"
+                    self.feedback.lost3 = "No Number Lost: Corp Dissolved"
+                    self.feedback.mode3 = "No Mode: Corp Dissolved"
 

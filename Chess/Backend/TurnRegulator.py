@@ -110,7 +110,7 @@ class TurnRegulator():
             self.hudCapture = 0
             print("current turn (in method): ", self.currentTurn)
         print("turn complete, swapping sides")
-    
+
     def getCorps(self, piece):
         if piece in self.whiteCorpL:
             return 0
