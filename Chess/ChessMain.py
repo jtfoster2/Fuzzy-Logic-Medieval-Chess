@@ -231,7 +231,7 @@ def infoScreen():
         TextRect.center = (int(WIDTH / 2 ), 100)
         screen.blit(TextSurf, TextRect)
 
-        screen.blit(INFO['rules'], (0, 0))
+        screen.blit(INFO['rules'], (100, 0))
 
         button("PLAY",int(WIDTH/2 - 150),500,100,50,dark_grey,grey,chessGame)
         #add button here that triggers spectate
